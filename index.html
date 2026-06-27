@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Roller Splash Pro - Speed Edition</title>
+    <title>STARDUST studio- Perfect Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2 family=Montserrat:wght@700;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -23,7 +23,7 @@
             justify-content: flex-start;
             min-height: 100vh;
             overflow: hidden;
-            padding-top: calc(10px + env(safe-area-inset-top));
+            padding-top: calc(15px + env(safe-area-inset-top));
             padding-bottom: env(safe-area-inset-bottom);
         }
 
@@ -94,20 +94,20 @@
         .btn-medium { background: #ffa502; }
         .btn-hard { background: #ff4757; }
 
-        /* --- MAXIMIZED BOARD ENVIRONMENT --- */
+        /* --- GAME ENGINE BOARD --- */
         .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 95%;
-            margin-bottom: 5px;
+            width: 90%;
+            margin-bottom: 15px;
             z-index: 10;
         }
         .control-circle-btn {
             background: #ffffff;
             border: none;
-            width: 44px;
-            height: 44px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -116,9 +116,9 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
         .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
-        #level-header { font-size: 1.4rem; font-weight: 900; color: #2f3542; }
+        #level-header { font-size: 1.5rem; font-weight: 900; color: #2f3542; }
 
-        /* Stretched container with zero excess borders */
+        /* Maximized container with no unnecessary double borders */
         #canvas-container {
             width: 100vw;
             flex-grow: 1;
@@ -126,27 +126,27 @@
             align-items: center;
             justify-content: center;
             background: #f1f2f6;
-            padding: 0;
         }
         canvas {
             background: #ffffff;
             display: block;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: none;
+            outline: none;
         }
         
         .bottom-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 95%;
-            padding: 10px 0;
+            width: 90%;
+            padding: 15px 0;
             z-index: 10;
         }
         .back-btn {
             background: #ffffff;
             color: #2f3542;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 26px;
             border-radius: 30px;
             font-weight: 700;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -155,8 +155,8 @@
         .hint-btn {
             background: #ffa502;
             border: none;
-            width: 52px;
-            height: 52px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -189,9 +189,9 @@
 
     <div id="menu-screen">
         <h1>ROLLER SPLASH</h1>
-        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY MODE</button>
-        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM MODE</button>
-        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD MODE</button>
+        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY PUZZLE</button>
+        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM PUZZLE</button>
+        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD PUZZLE</button>
     </div>
 
     <div id="game-screen">
@@ -217,59 +217,58 @@
         </div>
     </div>
 
-    <div id="popup-msg">EXCELLENT!</div>
+    <div id="popup-msg">SOLVED!</div>
 
     <script>
-        // --- NO-NOISE PURE AUDIO SYNTHESIZER ---
+        // --- HIGH VOLUME CLEAN SYNTH MELODY ENGINE ---
         let audioCtx = null;
-        let musicGain = null;
-        let notesSequence = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-        let currentNoteIndex = 0;
+        let mainGain = null;
+        let melodyNotes = [293.66, 329.63, 349.23, 392.00, 440.00, 523.25];
+        let noteIndex = 0;
 
         function initAudioEngine() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                musicGain = audioCtx.createGain();
-                musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime); // High volume output
-                musicGain.connect(audioCtx.destination);
-                playNextMelodyNote();
+                mainGain = audioCtx.createGain();
+                mainGain.gain.setValueAtTime(0.8, audioCtx.currentTime); // High volume setting
+                mainGain.connect(audioCtx.destination);
+                runMelodyLoop();
             }
         }
 
-        // Beautiful clean step-by-step music loop with no continuous flat hums
-        function playNextMelodyNote() {
+        function runMelodyLoop() {
             if (!audioCtx || audioCtx.state === 'suspended') {
-                setTimeout(playNextMelodyNote, 400);
+                setTimeout(runMelodyLoop, 300);
                 return;
             }
             let now = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
-            let noteGain = audioCtx.createGain();
+            let gainNode = audioCtx.createGain();
 
-            osc.type = 'sine'; // Super clear sine wave
-            osc.frequency.setValueAtTime(notesSequence[currentNoteIndex], now);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(melodyNotes[noteIndex], now);
             
-            noteGain.gain.setValueAtTime(0.12, now);
-            noteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
 
-            osc.connect(noteGain);
-            noteGain.connect(musicGain);
+            osc.connect(gainNode);
+            gainNode.connect(mainGain);
             
             osc.start(now);
-            osc.stop(now + 0.4);
+            osc.stop(now + 0.35);
 
-            currentNoteIndex = (currentNoteIndex + 1) % notesSequence.length;
-            setTimeout(playNextMelodyNote, 450); // Fluid timing interval
+            noteIndex = (noteIndex + 1) % melodyNotes.length;
+            setTimeout(runMelodyLoop, 400);
         }
 
-        function playCleanSwipeSound() {
+        function playSwipeSound() {
             if (!audioCtx || audioCtx.state === 'suspended') return;
             let now = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let g = audioCtx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(400, now);
-            osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+            osc.frequency.setValueAtTime(450, now);
+            osc.frequency.exponentialRampToValueAtTime(220, now + 0.05);
             g.gain.setValueAtTime(0.25, now);
             g.gain.linearRampToValueAtTime(0.001, now + 0.05);
             osc.connect(g);
@@ -278,7 +277,6 @@
             osc.stop(now + 0.06);
         }
 
-        // Immediate tab switch mute guarantee
         document.addEventListener('visibilitychange', () => {
             if (audioCtx) {
                 if (document.hidden) audioCtx.suspend();
@@ -292,7 +290,7 @@
             setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 300);
         }
 
-        // --- GAME ENGINE ---
+        // --- PUZZLE ENGINE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -304,7 +302,7 @@
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
         
-        const wallColor = '#dcdde1'; 
+        const wallColor = '#2f3542'; 
         const unpaintedPathColor = '#ffffff'; 
         
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
@@ -354,6 +352,7 @@
             grid[1][1] = 2; 
         }
 
+        // Flood fill verification engine to ensure level is 100% puzzle-solvable
         function checkSlideCoverage() {
             let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
             let painted = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -391,25 +390,25 @@
             let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 7 : 8;
             rows = size; cols = size;
 
-            // Maximized full board layout expansion
-            const sideSize = Math.min(window.innerWidth * 0.98, window.innerHeight * 0.72);
+            // Square board scaling perfectly slightly smaller than screen width
+            const sideSize = Math.min(window.innerWidth * 0.90, window.innerHeight * 0.65);
             canvas.width = sideSize;
             canvas.height = sideSize;
             tileSize = canvas.width / cols;
 
             let success = false;
-            for (let loop = 0; loop < 1000; loop++) {
+            for (let loop = 0; loop < 2000; loop++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(0));
                 for(let r=0; r<rows; r++) {
                     for(let c=0; c<cols; c++) {
                         if(r === 0 || r === rows-1 || c === 0 || c === cols-1) grid[r][c] = 1;
                     }
                 }
-                let internalBlocks = currentDifficulty === 'EASY' ? 1 : currentDifficulty === 'MEDIUM' ? 2 : 3;
+                let internalBlocks = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 3 : 4;
                 for (let b = 0; b < internalBlocks; b++) {
-                    let bx = Math.floor(Math.random() * (cols - 3)) + 1;
-                    let by = Math.floor(Math.random() * (rows - 3)) + 1;
-                    if(bx <= 1 && by <= 1) continue;
+                    let bx = Math.floor(Math.random() * (cols - 2)) + 1;
+                    let by = Math.floor(Math.random() * (rows - 2)) + 1;
+                    if(bx === 1 && by === 1) continue;
                     grid[by][bx] = 1;
                 }
                 if (checkSlideCoverage()) {
@@ -460,25 +459,24 @@
                 if (activeHintDir.dy === -1) angle = -Math.PI / 2;
                 ctx.rotate(angle);
 
-                let bounceOffset = Math.sin(pulseTimer) * (tileSize * 0.15);
+                let bounceOffset = Math.sin(pulseTimer) * (tileSize * 0.16);
                 ctx.translate(bounceOffset, 0);
 
                 ctx.fillStyle = '#ffa502';
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = '#ffa502';
                 
-                // Significantly expanded giant arrow dimensions
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.65, 0);
-                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.35);
+                ctx.moveTo(tileSize * 0.7, 0);
+                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.38);
                 ctx.lineTo(0, 0);
-                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.35);
+                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.38);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
 
-            // Ball Paint Actor
+            // Splash Player Ball
             ctx.save();
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.38, 0, Math.PI * 2);
@@ -503,7 +501,7 @@
             if (nextX !== ball.x || nextY !== ball.y) {
                 ball.isMoving = true;
                 ball.targetX = nextX; ball.targetY = nextY;
-                playCleanSwipeSound();
+                playSwipeSound();
 
                 let velocity = 0.85; // 3x ultra-fast sliding movement speed
                 function animate() {
@@ -533,10 +531,19 @@
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const checks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
+            
+            // First check unpainted paths
             for (let d of checks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
                     if (grid[targetY][targetX] === 0) { activeHintDir = d; return; }
+                }
+            }
+            // Fallback check painted paths
+            for (let d of checks) {
+                let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
+                if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
+                    if (grid[targetY][targetX] === 2) { activeHintDir = d; return; }
                 }
             }
         }
@@ -557,12 +564,12 @@
             }, 800);
         }
 
-        // --- REALTIME CONTINUOUS DRAG-SWIPE LOGIC (No lifting finger required) ---
+        // --- CONTINUOUS REALTIME TOUCH TRACKING (No finger lifting needed) ---
         function processRealtimeTouch(currentX, currentY) {
             if (!isTouchActive || ball.isMoving) return;
             let diffX = currentX - touchStartX;
             let diffY = currentY - touchStartY;
-            let threshold = 18; // Short ultra-responsive trigger distance
+            let threshold = 18; 
 
             if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
@@ -570,7 +577,6 @@
                 } else {
                     if (diffY > 0) moveBall(0, 1); else moveBall(0, -1);
                 }
-                // Reset origin to current point to chain moves continuously
                 touchStartX = currentX;
                 touchStartY = currentY;
             }
