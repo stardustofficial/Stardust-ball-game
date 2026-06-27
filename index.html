@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Roller Splash Pro - Stardust Master Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2 family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -520,7 +520,6 @@
             currentPaintColor = paintColorsPool[Math.floor(Math.random() * paintColorsPool.length)];
         }
 
-        // --- LEVEL REFRESH ENGINE (Preserves Map Structure, Clears Paint Status) ---
         function refreshCurrentLevel() {
             if (ball.isMoving) return;
             activeHintDir = null;
@@ -535,7 +534,7 @@
             draw();
         }
 
-        // --- ADVANCED SLIDE-STOP SOLVER (Checks and Rejects Trap Tiles Globally) ---
+        // --- VALIDATION ENGINE (Evaluates Full Physics Paintability) ---
         function checkSlideCoverage() {
             let visitedPoints = Array.from({length: rows}, () => new Array(cols).fill(false));
             let paintedTracker = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -553,7 +552,6 @@
                     let cx = curr.x;
                     let cy = curr.y;
 
-                    // Simulated Slide Physics matching grid mechanics
                     while (cx + dx >= 0 && cx + dx < cols && cy + dy >= 0 && cy + dy < rows && grid[cy + dy][cx + dx] !== 1) {
                         cx += dx;
                         cy += dy;
@@ -567,7 +565,6 @@
                 }
             }
 
-            // Reject layout instantly if any floor path is completely unreachable via standard slide stops
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 0 && !paintedTracker[r][c]) {
@@ -618,7 +615,6 @@
                     }
                 }
 
-                // Add random outer wall structures to enrich corner bounce spots
                 for (let i = 0; i < (size === 7 ? 2 : size === 9 ? 4 : 6); i++) {
                     let rx = Math.floor(Math.random() * (cols - 2)) + 1;
                     let ry = Math.floor(Math.random() * (rows - 2)) + 1;
@@ -657,7 +653,7 @@
                 if (grid[checkR][checkC] === 0) grid[checkR][checkC] = 2;
             }
 
-            // --- PRO NEON GLOW HINT ARROW ---
+            // --- CANVAS INTEGRATED GLOWING HINT SYSTEM ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 let exactBallX = ball.x * tileSize + tileSize / 2;
@@ -676,10 +672,10 @@
                 ctx.shadowColor = '#f1c40f';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.3, 0);
-                ctx.lineTo(-tileSize * 0.15, -tileSize * 0.22);
-                ctx.lineTo(-tileSize * 0.04, 0);
-                ctx.lineTo(-tileSize * 0.15,  tileSize * 0.22);
+                ctx.moveTo(tileSize * 0.4, 0);
+                ctx.lineTo(-tileSize * 0.15, -tileSize * 0.25);
+                ctx.lineTo(-0.04, 0);
+                ctx.lineTo(-tileSize * 0.15,  tileSize * 0.25);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
@@ -694,10 +690,7 @@
 
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
-            
-            if (activeHintDir) {
-                activeHintDir = null; 
-            }
+            activeHintDir = null; 
 
             let nextX = ball.x; let nextY = ball.y;
             while (nextX + dx >= 0 && nextX + dx < cols && nextY + dy >= 0 && nextY + dy < rows && grid[nextY + dy][nextX + dx] !== 1) {
@@ -736,17 +729,19 @@
             }
         }
 
-        // --- HINT ENGINE BOT ---
+        // --- PERFECT PATHFINDING HINT DISPATCHER ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const checks = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
             
+            // Priority 1: Unpainted blocks direction
             for (let d of checks) {
                 let cx = ball.x + d.dx; let cy = ball.y + d.dy;
                 if (cy >= 0 && cy < rows && cx >= 0 && cx < cols && grid[cy][cx] === 0) {
                     activeHintDir = d; draw(); return;
                 }
             }
+            // Priority 2: Safe bounce pivot direction
             for (let d of checks) {
                 let cx = ball.x + d.dx; let cy = ball.y + d.dy;
                 if (cy >= 0 && cy < rows && cx >= 0 && cx < cols && grid[cy][cx] === 2) {
