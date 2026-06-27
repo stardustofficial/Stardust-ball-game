@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust Open Space Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Roller Splash - Stardust Premium Light Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -16,55 +16,47 @@
         }
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #1e1e2f 0%, #111119 100%);
+            background: #f1f2f6;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             overflow: hidden;
-            color: #ffffff;
+            /* Safe area spacing for mobile cameras / notches */
+            padding-top: calc(10px + env(safe-area-inset-top));
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         /* --- STARDUST SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #0d0e15;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 999;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease;
         }
         .splash-logo {
-            font-family: 'Orbitron', sans-serif;
             font-size: 3rem;
             font-weight: 900;
-            letter-spacing: 6px;
-            background: linear-gradient(45deg, #ffd700, #ffb300);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-        .splash-sub {
-            font-size: 1rem;
-            color: #636e72;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            margin-bottom: 40px;
+            color: #ff4757;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
         }
         .start-app-btn {
-            background: linear-gradient(45deg, #ffd700, #ff9f43);
-            color: #0d0e15;
+            background: #2ed573;
+            color: white;
             border: none;
             padding: 16px 50px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 900;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255,215,0,0.4);
+            box-shadow: 0 10px 20px rgba(46,213,115,0.3);
         }
 
         /* --- SCREENS --- */
@@ -72,137 +64,119 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             width: 100%;
-            max-width: 480px;
-            height: 100vh;
-            padding: 20px;
+            height: 100%;
             position: absolute;
-            transition: all 0.4s ease-in-out;
+            transition: opacity 0.3s ease;
             opacity: 0; pointer-events: none;
         }
-        #menu-screen { opacity: 1; pointer-events: auto; }
+        #menu-screen { opacity: 1; pointer-events: auto; justify-content: center; }
         
         h1 {
-            font-size: 3rem;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2.8rem;
+            color: #2f3542;
             font-weight: 900;
-            letter-spacing: 2px;
-        }
-        .subtitle {
-            color: #a0a0b0;
-            margin-bottom: 40px;
-            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 30px;
         }
         .btn {
             color: white;
             border: none;
-            padding: 16px 40px;
+            padding: 18px 40px;
             font-size: 1.2rem;
-            font-weight: 800;
-            border-radius: 50px;
+            font-weight: 900;
+            border-radius: 40px;
             cursor: pointer;
-            transition: transform 0.2s;
-            width: 85%;
+            width: 80%;
             margin: 12px 0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-easy { background: linear-gradient(45deg, #11998e, #38ef7d); }
-        .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
-        .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
+        .btn-easy { background: #2ed573; }
+        .btn-medium { background: #ffa502; }
+        .btn-hard { background: #ff4757; }
 
-        /* --- GAME LAYOUT --- */
+        /* --- FULL SCREEN GAME PLAY LAYOUT --- */
         .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
+            width: 92%;
+            margin-bottom: 10px;
+            z-index: 10;
         }
         .control-circle-btn {
-            background: #2a2a3a;
+            background: #ffffff;
             border: none;
-            width: 48px;
-            height: 48px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
-        .control-circle-btn svg { width: 22px; height: 22px; fill: #ffffff; }
+        .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
         
-        #level-header { font-size: 1.5rem; font-weight: 900; }
-        #difficulty-badge {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            margin-top: 4px;
-        }
+        #level-header { font-size: 1.4rem; font-weight: 900; color: #2f3542; }
 
+        /* Full Screen Canvas Container stretched up to bottom controls */
         #canvas-container {
-            background: #1a1a26;
-            border-radius: 28px;
-            padding: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            width: 100%;
-            aspect-ratio: 1/1;
+            width: 100vw;
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #f1f2f6;
         }
         canvas {
-            border-radius: 18px;
-            background: #252538;
-            width: 100%;
-            height: 100%;
+            background: #e4e7eb;
+            display: block;
         }
         
         .bottom-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            margin-top: 25px;
+            width: 92%;
+            padding: 15px 0;
+            z-index: 10;
         }
         .back-btn {
-            background: #3a3a50;
-            color: white;
+            background: #ffffff;
+            color: #2f3542;
             border: none;
-            padding: 12px 28px;
+            padding: 12px 24px;
             border-radius: 30px;
             font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             cursor: pointer;
         }
         .hint-btn {
-            background: #f1c40f;
+            background: #ffa502;
             border: none;
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+            box-shadow: 0 6px 15px rgba(255, 165, 2, 0.3);
         }
-        .hint-btn svg { width: 26px; height: 26px; fill: #111; }
+        .hint-btn svg { width: 24px; height: 24px; fill: #ffffff; }
 
         #popup-msg {
             position: fixed;
+            top: 40%;
             font-size: 3rem;
             font-weight: 900;
-            color: #f1c40f;
+            color: #2ed573;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transform: scale(0);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
-            z-index: 10;
+            z-index: 99;
         }
         #popup-msg.show { transform: scale(1); }
     </style>
@@ -210,17 +184,15 @@
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo">STARDUST</div>
-        <div class="splash-sub">Studios</div>
-        <button class="start-app-btn" onclick="dismissSplash()">PLAY NOW</button>
+        <div class="splash-logo">ROLLER SPLASH</div>
+        <button class="start-app-btn" onclick="dismissSplash()">START</button>
     </div>
 
     <div id="menu-screen">
         <h1>ROLLER SPLASH</h1>
-        <p class="subtitle">Bigger Halls & Smooth Paint Physics</p>
-        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY (Big Areas)</button>
-        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM (Spacious)</button>
-        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD (Pro Arena)</button>
+        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY MODE</button>
+        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM MODE</button>
+        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD MODE</button>
     </div>
 
     <div id="game-screen">
@@ -228,10 +200,7 @@
             <button class="control-circle-btn" onclick="backToMenu()">
                 <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
             </button>
-            <div style="text-align: center;">
-                <div id="level-header">Level <span id="level-num">1</span></div>
-                <div id="difficulty-badge">EASY</div>
-            </div>
+            <div id="level-header">Level <span id="level-num">1</span></div>
             <button class="control-circle-btn" onclick="refreshCurrentLevel()">
                 <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
@@ -242,19 +211,19 @@
         </div>
 
         <div class="bottom-controls">
-            <button class="back-btn" onclick="backToMenu()">Quit</button>
-            <button class="hint-btn" onclick="triggerHintArrow()" title="Show Guide Arrow">
+            <button class="back-btn" onclick="backToMenu()">Menu</button>
+            <button class="hint-btn" onclick="triggerHintArrow()">
                 <svg viewBox="0 0 24 24"><path d="M12 2C7.58 2 4 5.58 4 10c0 2.66 1.29 5.02 3.28 6.5v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c1.99-1.48 3.28-3.84 3.28-6.5 0-4.42-3.58-8-8-8zm1 14h-2v-1h2v1z"/></svg>
             </button>
         </div>
     </div>
 
-    <div id="popup-msg">PERFECT!</div>
+    <div id="popup-msg">EXCELLENT!</div>
 
     <script>
         function dismissSplash() {
             document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500);
+            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 400);
         }
 
         const canvas = document.getElementById('gameCanvas');
@@ -264,14 +233,17 @@
         let currentLevel = 1;
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
-        let currentPaintColor = '#38ef7d';
-        let activeHintDir = null; 
+        
+        // Premium Light Mode Paint Colors
+        const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
+        let currentPaintColor = '#ff4757';
+        
+        // Clean Real Light Game Theme Styling
+        const wallColor = '#dcdde1'; 
+        const unpaintedPathColor = '#ffffff'; 
         
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
-        const paintColorsPool = ['#38ef7d', '#ff5e62', '#ee0979', '#f1c40f', '#00d2d3', '#ff9f43'];
-        const wallColor = '#252538';
-        const unpaintedPathColor = '#4a4a6a';
-
+        let activeHintDir = null;
         let touchStartX = 0, touchStartY = 0;
 
         function selectDifficulty(difficulty) {
@@ -286,11 +258,6 @@
             document.getElementById('menu-screen').style.pointerEvents = 'none';
             document.getElementById('game-screen').style.opacity = '1';
             document.getElementById('game-screen').style.pointerEvents = 'auto';
-            
-            const badge = document.getElementById('difficulty-badge');
-            badge.innerText = currentDifficulty;
-            badge.style.background = currentDifficulty === 'EASY' ? '#38ef7d' : currentDifficulty === 'MEDIUM' ? '#ff9966' : '#ee0979';
-
             generateValidMaze();
         }
 
@@ -320,7 +287,7 @@
             draw();
         }
 
-        // Check if the board is 100% reachable via sliding physics
+        // Mathematical verification solver ensuring 100% paint coverage
         function checkSlideCoverage() {
             let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
             let painted = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -354,45 +321,38 @@
             return true;
         }
 
-        // --- OPEN SPACE ROOM GENERATOR ---
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
             activeHintDir = null;
 
-            // Setting grid dynamic dimensions
-            let size = currentDifficulty === 'EASY' ? 8 : currentDifficulty === 'MEDIUM' ? 10 : 12;
+            // Perfectly balanced proportions
+            let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 7 : 8;
             rows = size; cols = size;
 
-            canvas.width = 400;
-            canvas.height = 400;
+            // Automatically stretch and fill container space perfectly
+            const sideSize = Math.min(window.innerWidth, window.innerHeight * 0.65);
+            canvas.width = sideSize;
+            canvas.height = sideSize;
             tileSize = canvas.width / cols;
 
             let success = false;
             for (let loop = 0; loop < 1000; loop++) {
-                // Outer strong border walls
                 grid = Array.from({length: rows}, () => new Array(cols).fill(0));
+                
+                // Solid outer block walls
                 for(let r=0; r<rows; r++) {
                     for(let c=0; c<cols; c++) {
                         if(r === 0 || r === rows-1 || c === 0 || c === cols-1) grid[r][c] = 1;
                     }
                 }
 
-                // Carving big chunk blocks/islands instead of multiple lines
-                let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 4 : 6;
-                for (let b = 0; b < blockCount; b++) {
-                    let bw = Math.floor(Math.random() * 2) + 2; // Rooms size 2-3 width
-                    let bh = Math.floor(Math.random() * 2) + 2; // Rooms size 2-3 height
-                    let bx = Math.floor(Math.random() * (cols - bw - 2)) + 1;
-                    let by = Math.floor(Math.random() * (rows - bh - 2)) + 1;
-
-                    // Don't overwrite the starter layout
-                    if(bx <= 2 && by <= 2) continue;
-
-                    for(let y=by; y<by+bh; y++) {
-                        for(let x=bx; x<bx+bw; x++) {
-                            grid[y][x] = 1;
-                        }
-                    }
+                // Spacious Large Open Halls Builder
+                let internalBlocks = currentDifficulty === 'EASY' ? 1 : currentDifficulty === 'MEDIUM' ? 2 : 3;
+                for (let b = 0; b < internalBlocks; b++) {
+                    let bx = Math.floor(Math.random() * (cols - 3)) + 1;
+                    let by = Math.floor(Math.random() * (rows - 3)) + 1;
+                    if(bx <= 1 && by <= 1) continue; // Keep clear launch site
+                    grid[by][bx] = 1;
                 }
 
                 if (checkSlideCoverage()) {
@@ -410,7 +370,7 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Paths and solid walls
+            // Draw full layout
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
@@ -419,15 +379,11 @@
                     } else {
                         ctx.fillStyle = (grid[r][c] === 2) ? currentPaintColor : unpaintedPathColor;
                         ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
-                        
-                        // Clean grid borders
-                        ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-                        ctx.strokeRect(c * tileSize, r * tileSize, tileSize, tileSize);
                     }
                 }
             }
 
-            // Real-time trace paint tracker
+            // Continuous trace tracking
             if (ball.isMoving) {
                 let checkR = Math.round(ball.renderY);
                 let checkC = Math.round(ball.renderX);
@@ -436,7 +392,7 @@
                 }
             }
 
-            // --- FIXED VECTOR GLOWING ARROW SYSTEM ---
+            // --- REAL DIRECT NAVIGATION HINT ARROW ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 let arrowX = ball.x * tileSize + tileSize / 2;
@@ -450,28 +406,27 @@
                 if (activeHintDir.dy === -1) angle = -Math.PI / 2;
                 
                 ctx.rotate(angle);
-                ctx.fillStyle = '#f1c40f';
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#f1c40f';
+                ctx.fillStyle = '#ffa502';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ffa502';
                 
-                // Drawing a sharp premium navigation arrow pointer
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.5, 0);
-                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.25);
+                ctx.moveTo(tileSize * 0.45, 0);
+                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.22);
                 ctx.lineTo(-0.02, 0);
-                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.25);
+                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.22);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
 
-            // Splash Player Ball
+            // Sharp Player Ball Rendering
             ctx.save();
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.38, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
             ctx.fill();
             ctx.restore();
         }
@@ -489,7 +444,7 @@
                 ball.isMoving = true;
                 ball.targetX = nextX; ball.targetY = nextY;
 
-                let velocity = 0.40; // Super fluid smooth movement speed
+                let velocity = 0.45; // Super slick instant response velocity
                 function animate() {
                     let arrived = true;
                     if (ball.renderX !== ball.targetX) {
@@ -515,19 +470,19 @@
             }
         }
 
-        // Intelligent Arrow Hint Trigger
+        // Dynamic solver hint engine
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const checks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
             
-            // Prioritize unpainted spots
+            // Prioritize clean open unpainted lanes
             for (let d of checks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
                     if (grid[targetY][targetX] === 0) { activeHintDir = d; draw(); return; }
                 }
             }
-            // Fallback direction bounce
+            // Secondary rebound path
             for (let d of checks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
@@ -549,14 +504,14 @@
                 currentLevel++;
                 pickRandomColor();
                 generateValidMaze();
-            }, 1000);
+            }, 900);
         }
 
         function handleSwipe(diffX, diffY) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 30) moveBall(1, 0); else if (diffX < -30) moveBall(-1, 0);
+                if (diffX > 25) moveBall(1, 0); else if (diffX < -25) moveBall(-1, 0);
             } else {
-                if (diffY > 30) moveBall(0, 1); else if (diffY < -30) moveBall(0, -1);
+                if (diffY > 25) moveBall(0, 1); else if (diffY < -25) moveBall(0, -1);
             }
         }
 
