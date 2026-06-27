@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust</title>
+    <title>Roller Splash Pro - Stardust Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
@@ -39,29 +39,32 @@
         }
         .splash-logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 900;
-            color: #ffffff;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             text-transform: uppercase;
             background: linear-gradient(45deg, #ffecb3, #ffd700, #ffb300);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255,215,0,0.2);
-            animation: logoFade 1.8s ease-in-out infinite alternate;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+            animation: logoIntro 2.5s ease-in-out forwards;
         }
         .splash-sub {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #636e72;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 10px;
+            letter-spacing: 6px;
+            margin-top: 12px;
             font-weight: 700;
+            opacity: 0;
+            animation: fadeInSub 1s ease-in-out 0.8s forwards;
         }
-        @keyframes logoFade {
-            0% { transform: scale(0.98); opacity: 0.8; }
-            100% { transform: scale(1.02); opacity: 1; filter: drop-shadow(0 0 15px rgba(255,215,0,0.4)); }
+        @keyframes logoIntro {
+            0% { transform: scale(0.8); opacity: 0; filter: blur(5px); }
+            50% { transform: scale(1.05); opacity: 1; filter: blur(0); }
+            100% { transform: scale(1); opacity: 1; }
         }
+        @keyframes fadeInSub { to { opacity: 1; } }
 
         /* --- GAME SCREENS --- */
         #menu-screen, #game-screen {
@@ -121,7 +124,6 @@
             align-items: center;
             width: 85%;
             margin-bottom: 15px;
-            position: relative;
         }
         .settings-btn {
             background: #ffffff;
@@ -263,23 +265,6 @@
             z-index: 10;
         }
         #popup-msg.show { transform: scale(1); }
-        
-        #hint-text {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(44, 62, 80, 0.9);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        #hint-text.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -304,15 +289,15 @@
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-badge">EASY</div>
             </div>
-            <div style="width:45px;"></div> </div>
+            <div style="width:45px;"></div>
+        </div>
 
         <div id="canvas-container">
             <canvas id="gameCanvas"></canvas>
-            <div id="hint-text">Bot: Try moving Up!</div>
         </div>
         <div class="bottom-controls">
             <button class="back-btn" onclick="backToMenu()">Menu</button>
-            <button class="hint-btn" onclick="giveHint()">💡</button>
+            <button class="hint-btn" onclick="triggerHintArrow()">💡</button>
         </div>
     </div>
 
@@ -320,8 +305,12 @@
         <div class="modal-content">
             <div class="modal-title">Settings</div>
             <div class="setting-row">
-                <span>Sound Effects</span>
+                <span>Sound FX</span>
                 <button id="sound-toggle" class="toggle-btn" onclick="toggleSound()">ON</button>
+            </div>
+            <div class="setting-row">
+                <span>Music</span>
+                <button id="music-toggle" class="toggle-btn" onclick="toggleMusic()">ON</button>
             </div>
             <button class="close-modal-btn" onclick="toggleSettingsModal(false)">Close</button>
         </div>
@@ -330,15 +319,116 @@
     <div id="popup-msg">GOOD!</div>
 
     <script>
-        // Splash Screen Logic (Auto-disappears after 2.5 seconds)
+        // --- ADVANCED AUDIO ENGINE (WEB AUDIO API) ---
+        let audioCtx = null;
+        let soundEnabled = true;
+        let musicEnabled = true;
+        let bgMusicOsc = null;
+        let bgMusicGain = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playStardustIntroMusic() {
+            initAudio();
+            if (!soundEnabled) return;
+            
+            let now = audioCtx.currentTime;
+            // Majestic Synth Chord Entry
+            let freqs = [196.00, 293.66, 392.00, 493.88]; // G Major Cinematic Chord
+            freqs.forEach((f, index) => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(f, now);
+                
+                // Smooth professional fade-in and long fade-out
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.06, now + 0.4);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+                
+                // Filter to make it warm
+                let filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(800, now);
+                
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 2.3);
+            });
+        }
+
+        function startBackgroundMusicLoop() {
+            initAudio();
+            if (!musicEnabled || bgMusicOsc) return;
+
+            let now = audioCtx.currentTime;
+            bgMusicOsc = audioCtx.createOscillator();
+            bgMusicGain = audioCtx.createGain();
+            
+            bgMusicOsc.type = 'triangle'; // Super soft chill tone
+            bgMusicOsc.frequency.setValueAtTime(146.83, now); // D3 comforting frequency
+            
+            // Subtle rhythmic volume modulation for premium chill mood
+            bgMusicGain.gain.setValueAtTime(0.04, now);
+            
+            bgMusicOsc.connect(bgMusicGain);
+            bgMusicGain.connect(audioCtx.destination);
+            bgMusicOsc.start(now);
+        }
+
+        function stopBackgroundMusicLoop() {
+            if (bgMusicOsc) {
+                try { bgMusicOsc.stop(); } catch(e){}
+                bgMusicOsc = null;
+                bgMusicGain = null;
+            }
+        }
+
+        function playLoudSwipeSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            let now = audioCtx.currentTime;
+            
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(450, now); // High punchy start
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.12); // Deep slide down
+            
+            gain.gain.setValueAtTime(0.4, now); // Increased punchy volume
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.14);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        }
+
+        // Auto-Trigger Splash Screen Assets
         window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                playStardustIntroMusic();
+            }, 200);
+
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 800);
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    startBackgroundMusicLoop(); // Start soft ambient loop when menu loads
+                }, 800);
             }, 2500);
         });
 
+        // --- GAME CORE ENGINE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -346,47 +436,16 @@
         let currentLevel = 1;
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
-        let soundEnabled = true;
-        let currentPaintColor = '#38ef7d'; // Default initial color
+        let currentPaintColor = '#38ef7d';
+        let activeHintDir = null; // Stores target hint direction {dx, dy}
         
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
-        
         const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!", "AMAZING!"];
-        
-        // Dynamic Variable Colors array (Levels badhne par ye list se colors change honge)
         const paintColorsPool = ['#38ef7d', '#ff5e62', '#ee0979', '#f1c40f', '#2ecc71', '#9b59b6', '#00d2d3', '#ff9f43'];
         const wallColor = '#2c3e50';
         const unpaintedPathColor = '#bdc3c7';
-
         let touchStartX = 0, touchStartY = 0;
 
-        // --- WEB AUDIO API JUICY SOUND GENERATOR ---
-        function playSwipeSound() {
-            if (!soundEnabled) return;
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const audioCtx = new AudioContext();
-                
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                
-                oscillator.type = 'triangle'; // Smooth retro sound
-                oscillator.frequency.setValueAtTime(300, audioCtx.currentTime); // Start pitch
-                oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15); // Slide up pitch
-                
-                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18); // Fade out smoothly
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.18);
-            } catch (e) { console.log("Sound error context:", e); }
-        }
-
-        // Settings Controls
         function toggleSettingsModal(show) {
             document.getElementById('settings-modal').classList.toggle('show', show);
         }
@@ -396,15 +455,23 @@
             btn.innerText = soundEnabled ? 'ON' : 'OFF';
             btn.className = soundEnabled ? 'toggle-btn' : 'toggle-btn off';
         }
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const btn = document.getElementById('music-toggle');
+            btn.innerText = musicEnabled ? 'ON' : 'OFF';
+            btn.className = musicEnabled ? 'toggle-btn' : 'toggle-btn off';
+            if (musicEnabled) startBackgroundMusicLoop();
+            else stopBackgroundMusicLoop();
+        }
 
         function startGame(difficulty) {
+            initAudio();
             currentDifficulty = difficulty;
             currentLevel = 1;
             pickRandomColor();
             
             document.getElementById('menu-screen').style.opacity = '0';
             document.getElementById('menu-screen').style.pointerEvents = 'none';
-            
             const gameScreen = document.getElementById('game-screen');
             gameScreen.style.opacity = '1';
             gameScreen.style.pointerEvents = 'auto';
@@ -423,19 +490,55 @@
             document.getElementById('menu-screen').style.pointerEvents = 'auto';
             document.getElementById('game-screen').style.opacity = '0';
             document.getElementById('game-screen').style.pointerEvents = 'none';
+            activeHintDir = null;
         }
 
         function pickRandomColor() {
-            // Pick a random paint color from the pool different from last time
             let index = Math.floor(Math.random() * paintColorsPool.length);
             currentPaintColor = paintColorsPool[index];
         }
 
+        // --- FLOOD FILL VALIDATOR (Anti-trap level checker) ---
+        function isMaze100PercentSolvable() {
+            let reachableCount = 0;
+            let totalPathCells = 0;
+            let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
+            
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === 0) totalPathCells++;
+                }
+            }
+            totalPathCells++; // account for starting (1,1) position
+            
+            let queue = [{r: 1, c: 1}];
+            visited[1][1] = true;
+            
+            while(queue.length > 0) {
+                let curr = queue.shift();
+                reachableCount++;
+                
+                let dirs = [[-1,0], [1,0], [0,-1], [0,1]];
+                for (let [dr, dc] of dirs) {
+                    let nr = curr.r + dr;
+                    let nc = curr.c + dc;
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                        if (grid[nr][nc] === 0 && !visited[nr][nc]) {
+                            visited[nr][nc] = true;
+                            queue.push({r: nr, c: nc});
+                        }
+                    }
+                }
+            }
+            return reachableCount === totalPathCells;
+        }
+
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
+            activeHintDir = null;
 
             let baseSize = currentDifficulty === 'EASY' ? 5 : currentDifficulty === 'MEDIUM' ? 7 : 9;
-            let levelBonus = Math.min(Math.floor(currentLevel / 4), 3); 
+            let levelBonus = Math.min(Math.floor(currentLevel / 4), 2); 
             
             rows = baseSize + levelBonus;
             cols = baseSize + levelBonus;
@@ -446,20 +549,28 @@
             canvas.width = cols * tileSize;
             canvas.height = rows * tileSize;
 
-            grid = Array.from({length: rows}, () => new Array(cols).fill(1));
-
-            function dfs(r, c) {
-                grid[r][c] = 0;
-                const directions = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
-                for (let [dr, dc] of directions) {
-                    let nr = r + dr, nc = c + dc;
-                    if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && grid[nr][nc] === 1) {
-                        grid[r + dr/2][c + dc/2] = 0;
-                        dfs(nr, nc);
+            let generationAttempts = 0;
+            while (generationAttempts < 100) {
+                grid = Array.from({length: rows}, () => new Array(cols).fill(1));
+                
+                function dfs(r, c) {
+                    grid[r][c] = 0;
+                    const directions = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
+                    for (let [dr, dc] of directions) {
+                        let nr = r + dr, nc = c + dc;
+                        if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && grid[nr][nc] === 1) {
+                            grid[r + dr/2][c + dc/2] = 0;
+                            dfs(nr, nc);
+                        }
                     }
                 }
+                dfs(1, 1);
+                
+                if (isMaze100PercentSolvable()) {
+                    break; 
+                }
+                generationAttempts++;
             }
-            dfs(1, 1);
 
             ball.x = 1; ball.y = 1;
             ball.renderX = 1; ball.renderY = 1;
@@ -473,6 +584,7 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Draw Maze
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
@@ -486,6 +598,7 @@
                 }
             }
 
+            // Continuous safe painting
             if (ball.isMoving) {
                 let currC = Math.round(ball.renderX);
                 let currR = Math.round(ball.renderY);
@@ -494,7 +607,37 @@
                 }
             }
 
-            // Draw Ball
+            // Draw Bot Hint Neon Arrow if active
+            if (activeHintDir && !ball.isMoving) {
+                ctx.save();
+                let arrowX = ball.x * tileSize + tileSize / 2;
+                let arrowY = ball.y * tileSize + tileSize / 2;
+                ctx.translate(arrowX, arrowY);
+                
+                // Rotate based on hint direction
+                let angle = 0;
+                if (activeHintDir.dx === 1) angle = 0;
+                if (activeHintDir.dx === -1) angle = Math.PI;
+                if (activeHintDir.dy === 1) angle = Math.PI / 2;
+                if (activeHintDir.dy === -1) angle = -Math.PI / 2;
+                ctx.rotate(angle);
+
+                // Neon Arrow Geometry design
+                ctx.fillStyle = '#f1c40f';
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#f1c40f';
+                
+                ctx.beginPath();
+                ctx.moveTo(tileSize * 0.2, 0);
+                ctx.lineTo(-tileSize * 0.2, -tileSize * 0.18);
+                ctx.lineTo(-tileSize * 0.1, 0);
+                ctx.lineTo(-tileSize * 0.2,  tileSize * 0.18);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Draw Premium Ball
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.35, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
@@ -504,6 +647,11 @@
 
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
+
+            // Turn off matching hint arrow once player follows it
+            if (activeHintDir && activeHintDir.dx === dx && activeHintDir.dy === dy) {
+                activeHintDir = null;
+            }
 
             let nextX = ball.x;
             let nextY = ball.y;
@@ -524,9 +672,9 @@
                 ball.targetX = nextX;
                 ball.targetY = nextY;
                 
-                playSwipeSound(); // Trigger premium swipe bounce audio asset code
+                playLoudSwipeSound(); 
 
-                let speed = 0.25; 
+                let speed = 0.28; 
                 function animate() {
                     let moveDone = true;
                     
@@ -558,38 +706,36 @@
             }
         }
 
-        function giveHint() {
+        // --- BOT LIVE ARROW HINT LOGIC ---
+        function triggerHintArrow() {
             if (ball.isMoving) return;
             const directions = [
-                { name: 'Up', dx: 0, dy: -1 },
-                { name: 'Down', dx: 0, dy: 1 },
-                { name: 'Left', dx: -1, dy: 0 },
-                { name: 'Right', dx: 1, dy: 0 }
+                { dx: 0, dy: -1 }, // Up
+                { dx: 0, dy: 1 },  // Down
+                { dx: -1, dy: 0 }, // Left
+                { dx: 1, dy: 0 }   // Right
             ];
 
+            // Look for non-colored paths first
             for (let d of directions) {
                 let tx = ball.x + d.dx;
                 let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] === 0) {
-                    showHintPopup(`Bot: Swipe ${d.name}!`);
+                    activeHintDir = d;
+                    draw();
                     return;
                 }
             }
+            // General valid direction fallback
             for (let d of directions) {
                 let tx = ball.x + d.dx;
                 let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] !== 1) {
-                    showHintPopup(`Bot: Try moving ${d.name}!`);
+                    activeHintDir = d;
+                    draw();
                     return;
                 }
             }
-        }
-
-        function showHintPopup(msg) {
-            const el = document.getElementById('hint-text');
-            el.innerText = msg;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 2000);
         }
 
         function checkWinCondition() {
@@ -609,7 +755,7 @@
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
-                pickRandomColor(); // New level means new random paint color!
+                pickRandomColor(); 
                 generateValidMaze();
             }, 1000);
         }
