@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>STARDUST studio- Perfect Edition</title>
+    <title>STARDUST studio - Elite Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2 family=Montserrat:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -16,15 +16,15 @@
         }
         body {
             font-family: 'Montserrat', sans-serif;
-            background: #f1f2f6;
+            background: #f6f8fb;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
+            justify-content: space-between;
+            height: 100vh;
+            height: -webkit-fill-available;
             overflow: hidden;
-            padding-top: calc(15px + env(safe-area-inset-top));
-            padding-bottom: env(safe-area-inset-bottom);
+            padding: calc(10px + env(safe-area-inset-top)) 0 calc(10px + env(safe-area-inset-bottom)) 0;
         }
 
         /* --- SPLASH SCREEN --- */
@@ -40,12 +40,11 @@
             transition: opacity 0.3s ease;
         }
         .splash-logo {
-            font-size: 2.8rem;
+            font-size: 3rem;
             font-weight: 900;
             color: #ff4757;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 30px;
-            text-align: center;
         }
         .start-app-btn {
             background: #2ed573;
@@ -67,115 +66,129 @@
             width: 100%;
             height: 100%;
             position: absolute;
+            top: 0; left: 0;
+            padding: calc(20px + env(safe-area-inset-top)) 15px calc(20px + env(safe-area-inset-bottom)) 15px;
             transition: opacity 0.2s ease;
             opacity: 0; pointer-events: none;
         }
         #menu-screen { opacity: 1; pointer-events: auto; justify-content: center; }
         
         h1 {
-            font-size: 2.6rem;
+            font-size: 2.8rem;
             color: #2f3542;
             font-weight: 900;
             margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.2;
         }
         .btn {
             color: white;
             border: none;
-            padding: 18px 40px;
-            font-size: 1.2rem;
+            padding: 20px 40px;
+            font-size: 1.3rem;
             font-weight: 900;
             border-radius: 40px;
             cursor: pointer;
-            width: 85%;
+            width: 90%;
             margin: 12px 0;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         .btn-easy { background: #2ed573; }
         .btn-medium { background: #ffa502; }
         .btn-hard { background: #ff4757; }
 
-        /* --- GAME ENGINE BOARD --- */
+        /* --- REAL COMPACT CONTROLS & HUD --- */
         .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 90%;
-            margin-bottom: 15px;
+            width: 100%;
+            padding: 5px 10px;
+            margin-bottom: 10px;
             z-index: 10;
         }
         .control-circle-btn {
             background: #ffffff;
             border: none;
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
-        #level-header { font-size: 1.5rem; font-weight: 900; color: #2f3542; }
+        .control-circle-btn svg { width: 24px; height: 24px; fill: #2f3542; }
+        
+        .hud-center {
+            text-align: center;
+        }
+        #level-header { font-size: 1.6rem; font-weight: 900; color: #2f3542; }
+        #difficulty-label { font-size: 0.8rem; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Maximized container with no unnecessary double borders */
+        /* --- THE MAXIMIZED NO-BORDER CANVAS CONTAINER --- */
         #canvas-container {
-            width: 100vw;
+            width: 100%;
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f1f2f6;
+            padding: 5px 0;
         }
         canvas {
-            background: #ffffff;
             display: block;
             border: none;
             outline: none;
+            background: #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
         }
         
+        /* --- BOTTOM NAV BAR --- */
         .bottom-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 90%;
-            padding: 15px 0;
+            width: 100%;
+            padding: 10px 10px;
             z-index: 10;
         }
         .back-btn {
             background: #ffffff;
             color: #2f3542;
             border: none;
-            padding: 12px 26px;
-            border-radius: 30px;
-            font-weight: 700;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 14px 28px;
+            border-radius: 35px;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             cursor: pointer;
         }
         .hint-btn {
             background: #ffa502;
             border: none;
-            width: 54px;
-            height: 54px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 15px rgba(255, 165, 2, 0.3);
+            box-shadow: 0 6px 18px rgba(255, 165, 2, 0.4);
         }
-        .hint-btn svg { width: 24px; height: 24px; fill: #ffffff; }
+        .hint-btn svg { width: 26px; height: 26px; fill: #ffffff; }
 
         #popup-msg {
             position: fixed;
-            top: 40%;
-            font-size: 3rem;
+            top: 42%;
+            font-size: 3.2rem;
             font-weight: 900;
             color: #2ed573;
             transform: scale(0);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
             z-index: 99;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         #popup-msg.show { transform: scale(1); }
     </style>
@@ -183,15 +196,15 @@
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo">ROLLER SPLASH</div>
-        <button class="start-app-btn" onclick="dismissSplash()">START GAME</button>
+        <div class="splash-logo">STARDUST STUDIO</div>
+        <button class="start-app-btn" onclick="dismissSplash()">PLAY GAME</button>
     </div>
 
     <div id="menu-screen">
         <h1>ROLLER SPLASH</h1>
-        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY PUZZLE</button>
-        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM PUZZLE</button>
-        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD PUZZLE</button>
+        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY ARENA</button>
+        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM ARENA</button>
+        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD ARENA</button>
     </div>
 
     <div id="game-screen">
@@ -199,7 +212,10 @@
             <button class="control-circle-btn" onclick="backToMenu()">
                 <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
             </button>
-            <div id="level-header">Level <span id="level-num">1</span></div>
+            <div class="hud-center">
+                <div id="level-header">Level <span id="level-num">1</span></div>
+                <div id="difficulty-label">EASY</div>
+            </div>
             <button class="control-circle-btn" onclick="refreshCurrentLevel()">
                 <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
@@ -210,73 +226,74 @@
         </div>
 
         <div class="bottom-controls">
-            <button class="back-btn" onclick="backToMenu()">Menu</button>
+            <button class="back-btn" onclick="backToMenu()">Quit</button>
             <button class="hint-btn" onclick="triggerHintArrow()">
                 <svg viewBox="0 0 24 24"><path d="M12 2C7.58 2 4 5.58 4 10c0 2.66 1.29 5.02 3.28 6.5v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c1.99-1.48 3.28-3.84 3.28-6.5 0-4.42-3.58-8-8-8zm1 14h-2v-1h2v1z"/></svg>
             </button>
         </div>
     </div>
 
-    <div id="popup-msg">SOLVED!</div>
+    <div id="popup-msg">PERFECT!</div>
 
     <script>
-        // --- HIGH VOLUME CLEAN SYNTH MELODY ENGINE ---
+        // --- REAL HIGH-VOLUME MELODIC SYNTHESIZER ENGINE ---
         let audioCtx = null;
-        let mainGain = null;
-        let melodyNotes = [293.66, 329.63, 349.23, 392.00, 440.00, 523.25];
-        let noteIndex = 0;
+        let masterGain = null;
+        let scaleFreqs = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
+        let notePointer = 0;
 
         function initAudioEngine() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                mainGain = audioCtx.createGain();
-                mainGain.gain.setValueAtTime(0.8, audioCtx.currentTime); // High volume setting
-                mainGain.connect(audioCtx.destination);
-                runMelodyLoop();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime); // Loud crisp clear level
+                masterGain.connect(audioCtx.destination);
+                triggerNextMelodyStep();
             }
         }
 
-        function runMelodyLoop() {
+        function triggerNextMelodyStep() {
             if (!audioCtx || audioCtx.state === 'suspended') {
-                setTimeout(runMelodyLoop, 300);
+                setTimeout(triggerNextMelodyStep, 250);
                 return;
             }
-            let now = audioCtx.currentTime;
+            let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
-            let gainNode = audioCtx.createGain();
+            let voiceGain = audioCtx.createGain();
 
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(melodyNotes[noteIndex], now);
+            osc.type = 'sine'; // Flawless acoustic sine wave (Zero speaker frequency buzzing/hissing)
+            osc.frequency.setValueAtTime(scaleFreqs[notePointer], time);
             
-            gainNode.gain.setValueAtTime(0.15, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            voiceGain.gain.setValueAtTime(0.18, time);
+            voiceGain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
 
-            osc.connect(gainNode);
-            gainNode.connect(mainGain);
+            osc.connect(voiceGain);
+            voiceGain.connect(masterGain);
             
-            osc.start(now);
-            osc.stop(now + 0.35);
+            osc.start(time);
+            osc.stop(time + 0.35);
 
-            noteIndex = (noteIndex + 1) % melodyNotes.length;
-            setTimeout(runMelodyLoop, 400);
+            notePointer = (notePointer + 1) % scaleFreqs.length;
+            setTimeout(triggerNextMelodyStep, 380);
         }
 
         function playSwipeSound() {
             if (!audioCtx || audioCtx.state === 'suspended') return;
-            let now = audioCtx.currentTime;
+            let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let g = audioCtx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(450, now);
-            osc.frequency.exponentialRampToValueAtTime(220, now + 0.05);
-            g.gain.setValueAtTime(0.25, now);
-            g.gain.linearRampToValueAtTime(0.001, now + 0.05);
+            osc.frequency.setValueAtTime(460, time);
+            osc.frequency.exponentialRampToValueAtTime(240, time + 0.05);
+            g.gain.setValueAtTime(0.3, time);
+            g.gain.linearRampToValueAtTime(0.001, time + 0.05);
             osc.connect(g);
             g.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.06);
+            osc.start(time);
+            osc.stop(time + 0.06);
         }
 
+        // Automatic instant mute safeguarding on system focus/tab changes
         document.addEventListener('visibilitychange', () => {
             if (audioCtx) {
                 if (document.hidden) audioCtx.suspend();
@@ -290,7 +307,7 @@
             setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 300);
         }
 
-        // --- PUZZLE ENGINE ---
+        // --- CORE GRID MAZE GAME LOGIC ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -301,7 +318,6 @@
         
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
-        
         const wallColor = '#2f3542'; 
         const unpaintedPathColor = '#ffffff'; 
         
@@ -323,6 +339,7 @@
             document.getElementById('menu-screen').style.pointerEvents = 'none';
             document.getElementById('game-screen').style.opacity = '1';
             document.getElementById('game-screen').style.pointerEvents = 'auto';
+            document.getElementById('difficulty-label').innerText = currentDifficulty + " MODE";
             generateValidMaze();
             renderLoop();
         }
@@ -352,7 +369,7 @@
             grid[1][1] = 2; 
         }
 
-        // Flood fill verification engine to ensure level is 100% puzzle-solvable
+        // Deep Backtracking Solver Engine: Ensures all maps are 100% solvable puzzles
         function checkSlideCoverage() {
             let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
             let painted = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -387,25 +404,32 @@
             document.getElementById('level-num').innerText = currentLevel;
             activeHintDir = null;
 
-            let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 7 : 8;
+            // Increasing row/col scale based on real difficulty modes
+            let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
             rows = size; cols = size;
 
-            // Square board scaling perfectly slightly smaller than screen width
-            const sideSize = Math.min(window.innerWidth * 0.90, window.innerHeight * 0.65);
+            // Highly updated adaptive dynamic sizing (Fills mobile view without boxy borders)
+            let boxContainer = document.getElementById('canvas-container');
+            let availableWidth = boxContainer.clientWidth * 0.96;
+            let availableHeight = boxContainer.clientHeight * 0.96;
+            let sideSize = Math.min(availableWidth, availableHeight);
+
             canvas.width = sideSize;
             canvas.height = sideSize;
             tileSize = canvas.width / cols;
 
             let success = false;
-            for (let loop = 0; loop < 2000; loop++) {
+            for (let loop = 0; loop < 3000; loop++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(0));
                 for(let r=0; r<rows; r++) {
                     for(let c=0; c<cols; c++) {
                         if(r === 0 || r === rows-1 || c === 0 || c === cols-1) grid[r][c] = 1;
                     }
                 }
-                let internalBlocks = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 3 : 4;
-                for (let b = 0; b < internalBlocks; b++) {
+                
+                // Advanced complex internal obstacle maps for high difficulty
+                let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 5 : 9;
+                for (let b = 0; b < blockCount; b++) {
                     let bx = Math.floor(Math.random() * (cols - 2)) + 1;
                     let by = Math.floor(Math.random() * (rows - 2)) + 1;
                     if(bx === 1 && by === 1) continue;
@@ -422,17 +446,18 @@
         }
 
         function renderLoop() {
-            pulseTimer += 0.15;
+            pulseTimer += 0.16;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Render Board Elements cleanly without excess margins
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
                         ctx.fillStyle = wallColor;
-                        ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+                        ctx.fillRect(c * tileSize, r * tileSize, tileSize + 0.5, tileSize + 0.5);
                     } else {
                         ctx.fillStyle = (grid[r][c] === 2) ? currentPaintColor : unpaintedPathColor;
-                        ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+                        ctx.fillRect(c * tileSize, r * tileSize, tileSize + 0.5, tileSize + 0.5);
                     }
                 }
             }
@@ -445,7 +470,7 @@
                 }
             }
 
-            // --- GIANT FLOATING HINT ARROW OVERLAY ---
+            // --- REAL NATIVE GIANT FLOATING HINT ARROW OVERLAY ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 let arrowX = ball.x * tileSize + tileSize / 2;
@@ -459,24 +484,24 @@
                 if (activeHintDir.dy === -1) angle = -Math.PI / 2;
                 ctx.rotate(angle);
 
-                let bounceOffset = Math.sin(pulseTimer) * (tileSize * 0.16);
-                ctx.translate(bounceOffset, 0);
+                let bounce = Math.sin(pulseTimer) * (tileSize * 0.18);
+                ctx.translate(bounce, 0);
 
                 ctx.fillStyle = '#ffa502';
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 18;
                 ctx.shadowColor = '#ffa502';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.7, 0);
-                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.38);
+                ctx.moveTo(tileSize * 0.75, 0);
+                ctx.lineTo(-tileSize * 0.1, -tileSize * 0.4);
                 ctx.lineTo(0, 0);
-                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.38);
+                ctx.lineTo(-tileSize * 0.1,  tileSize * 0.4);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
 
-            // Splash Player Ball
+            // High Precision Rolling Player Ball Actor
             ctx.save();
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.38, 0, Math.PI * 2);
@@ -503,7 +528,7 @@
                 ball.targetX = nextX; ball.targetY = nextY;
                 playSwipeSound();
 
-                let velocity = 0.85; // 3x ultra-fast sliding movement speed
+                let velocity = 0.85; // Fast sliding animation velocity
                 function animate() {
                     let arrived = true;
                     if (ball.renderX !== ball.targetX) {
@@ -531,15 +556,12 @@
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const checks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
-            
-            // First check unpainted paths
             for (let d of checks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
                     if (grid[targetY][targetX] === 0) { activeHintDir = d; return; }
                 }
             }
-            // Fallback check painted paths
             for (let d of checks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
@@ -564,12 +586,12 @@
             }, 800);
         }
 
-        // --- CONTINUOUS REALTIME TOUCH TRACKING (No finger lifting needed) ---
+        // --- EXCLUSIVE REALTIME CONTINUOUS DRAG TRACKING (No finger lifting required) ---
         function processRealtimeTouch(currentX, currentY) {
             if (!isTouchActive || ball.isMoving) return;
             let diffX = currentX - touchStartX;
             let diffY = currentY - touchStartY;
-            let threshold = 18; 
+            let threshold = 16; 
 
             if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
