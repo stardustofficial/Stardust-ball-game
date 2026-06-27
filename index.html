@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro</title>
+    <title>Roller Splash Pro - Stardust</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
+
         * {
             box-sizing: border-box;
             user-select: none;
@@ -13,7 +15,7 @@
             padding: 0;
         }
         body {
-            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             flex-direction: column;
@@ -22,6 +24,46 @@
             min-height: 100vh;
             overflow: hidden;
         }
+
+        /* --- STARDUST SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0d0e15;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .splash-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #ffecb3, #ffd700, #ffb300);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,215,0,0.2);
+            animation: logoFade 1.8s ease-in-out infinite alternate;
+        }
+        .splash-sub {
+            font-size: 0.9rem;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            font-weight: 700;
+        }
+        @keyframes logoFade {
+            0% { transform: scale(0.98); opacity: 0.8; }
+            100% { transform: scale(1.02); opacity: 1; filter: drop-shadow(0 0 15px rgba(255,215,0,0.4)); }
+        }
+
+        /* --- GAME SCREENS --- */
         #menu-screen, #game-screen {
             display: flex;
             flex-direction: column;
@@ -33,20 +75,10 @@
             padding: 20px;
             position: absolute;
             transition: all 0.5s ease-in-out;
+            opacity: 0; pointer-events: none;
         }
-        #game-screen { opacity: 0; pointer-events: none; transform: scale(0.9); }
+        #menu-screen { opacity: 1; pointer-events: auto; }
         
-        /* Premium Animations */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
         h1 {
             font-size: 3.5rem;
             color: #2c3e50;
@@ -55,7 +87,6 @@
             letter-spacing: 4px;
             font-weight: 900;
             text-shadow: 2px 4px 10px rgba(0,0,0,0.1);
-            animation: bounce 3s ease-in-out infinite;
         }
         .subtitle {
             color: #7f8c8d;
@@ -78,26 +109,51 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             letter-spacing: 1px;
         }
-        .btn:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn:active { transform: scale(0.95); }
         .btn-easy { background: linear-gradient(45deg, #11998e, #38ef7d); }
         .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
         .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
 
+        /* --- GAME LAYOUT ELEMENTS --- */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 85%;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .settings-btn {
+            background: #ffffff;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header-center {
+            text-align: center;
+            flex-grow: 1;
+        }
         #level-header {
             font-size: 2rem;
             font-weight: 900;
             color: #2c3e50;
-            margin-bottom: 2px;
         }
         #difficulty-badge {
-            padding: 6px 20px;
+            display: inline-block;
+            padding: 4px 15px;
             border-radius: 50px;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 800;
-            margin-bottom: 25px;
+            margin-top: 4px;
             letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         #canvas-container {
             background: #ffffff;
@@ -112,7 +168,6 @@
             background: #ecf0f1;
         }
         
-        /* Bottom Controls Row */
         .bottom-controls {
             display: flex;
             justify-content: space-between;
@@ -142,7 +197,58 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 6px 15px rgba(241, 196, 15, 0.4);
-            animation: pulse 2s infinite;
+        }
+
+        /* --- SETTINGS MODAL --- */
+        #settings-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #settings-modal.show { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 20px; color: #2c3e50;}
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .toggle-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .toggle-btn.off { background: #e74c3c; }
+        .close-modal-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: 700;
         }
 
         #popup-msg {
@@ -172,12 +278,16 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
-            white-space: nowrap;
         }
         #hint-text.show { opacity: 1; }
     </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="splash-logo">STARDUST</div>
+        <div class="splash-sub">Studios</div>
+    </div>
 
     <div id="menu-screen">
         <h1>ROLLER</h1>
@@ -188,8 +298,14 @@
     </div>
 
     <div id="game-screen">
-        <div id="level-header">Level <span id="level-num">1</span></div>
-        <div id="difficulty-badge">EASY</div>
+        <div class="top-row">
+            <button class="settings-btn" onclick="toggleSettingsModal(true)">⚙️</button>
+            <div class="header-center">
+                <div id="level-header">Level <span id="level-num">1</span></div>
+                <div id="difficulty-badge">EASY</div>
+            </div>
+            <div style="width:45px;"></div> </div>
+
         <div id="canvas-container">
             <canvas id="gameCanvas"></canvas>
             <div id="hint-text">Bot: Try moving Up!</div>
@@ -200,9 +316,29 @@
         </div>
     </div>
 
+    <div id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-title">Settings</div>
+            <div class="setting-row">
+                <span>Sound Effects</span>
+                <button id="sound-toggle" class="toggle-btn" onclick="toggleSound()">ON</button>
+            </div>
+            <button class="close-modal-btn" onclick="toggleSettingsModal(false)">Close</button>
+        </div>
+    </div>
+
     <div id="popup-msg">GOOD!</div>
 
     <script>
+        // Splash Screen Logic (Auto-disappears after 2.5 seconds)
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 800);
+            }, 2500);
+        });
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -210,22 +346,61 @@
         let currentLevel = 1;
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
+        let soundEnabled = true;
+        let currentPaintColor = '#38ef7d'; // Default initial color
         
-        // Ball exact dynamic pixel tracking for ultra smooth paint
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
         
         const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!", "AMAZING!"];
-        const themeColors = {
-            EASY: { wall: '#2c3e50', path: '#bdc3c7', paint: '#38ef7d', ball: '#ffffff' },
-            MEDIUM: { wall: '#2c3e50', path: '#bdc3c7', paint: '#ff5e62', ball: '#ffffff' },
-            HARD: { wall: '#2c3e50', path: '#bdc3c7', paint: '#ee0979', ball: '#ffffff' }
-        };
+        
+        // Dynamic Variable Colors array (Levels badhne par ye list se colors change honge)
+        const paintColorsPool = ['#38ef7d', '#ff5e62', '#ee0979', '#f1c40f', '#2ecc71', '#9b59b6', '#00d2d3', '#ff9f43'];
+        const wallColor = '#2c3e50';
+        const unpaintedPathColor = '#bdc3c7';
 
         let touchStartX = 0, touchStartY = 0;
+
+        // --- WEB AUDIO API JUICY SOUND GENERATOR ---
+        function playSwipeSound() {
+            if (!soundEnabled) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'triangle'; // Smooth retro sound
+                oscillator.frequency.setValueAtTime(300, audioCtx.currentTime); // Start pitch
+                oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15); // Slide up pitch
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18); // Fade out smoothly
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.18);
+            } catch (e) { console.log("Sound error context:", e); }
+        }
+
+        // Settings Controls
+        function toggleSettingsModal(show) {
+            document.getElementById('settings-modal').classList.toggle('show', show);
+        }
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-toggle');
+            btn.innerText = soundEnabled ? 'ON' : 'OFF';
+            btn.className = soundEnabled ? 'toggle-btn' : 'toggle-btn off';
+        }
 
         function startGame(difficulty) {
             currentDifficulty = difficulty;
             currentLevel = 1;
+            pickRandomColor();
             
             document.getElementById('menu-screen').style.opacity = '0';
             document.getElementById('menu-screen').style.pointerEvents = 'none';
@@ -233,7 +408,6 @@
             const gameScreen = document.getElementById('game-screen');
             gameScreen.style.opacity = '1';
             gameScreen.style.pointerEvents = 'auto';
-            gameScreen.style.transform = 'scale(1)';
             
             const badge = document.getElementById('difficulty-badge');
             badge.innerText = difficulty;
@@ -247,21 +421,22 @@
         function backToMenu() {
             document.getElementById('menu-screen').style.opacity = '1';
             document.getElementById('menu-screen').style.pointerEvents = 'auto';
-            
-            const gameScreen = document.getElementById('game-screen');
-            gameScreen.style.opacity = '0';
-            gameScreen.style.pointerEvents = 'none';
-            gameScreen.style.transform = 'scale(0.9)';
+            document.getElementById('game-screen').style.opacity = '0';
+            document.getElementById('game-screen').style.pointerEvents = 'none';
         }
 
-        // 100% Solvable Perfect Maze Builder (No Dead Blocks)
+        function pickRandomColor() {
+            // Pick a random paint color from the pool different from last time
+            let index = Math.floor(Math.random() * paintColorsPool.length);
+            currentPaintColor = paintColorsPool[index];
+        }
+
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
 
             let baseSize = currentDifficulty === 'EASY' ? 5 : currentDifficulty === 'MEDIUM' ? 7 : 9;
             let levelBonus = Math.min(Math.floor(currentLevel / 4), 3); 
             
-            // Grid must be odd for DFS perfect cell calculation
             rows = baseSize + levelBonus;
             cols = baseSize + levelBonus;
             if (rows % 2 === 0) { rows++; cols++; }
@@ -273,7 +448,6 @@
 
             grid = Array.from({length: rows}, () => new Array(cols).fill(1));
 
-            // Generate clean solvable paths
             function dfs(r, c) {
                 grid[r][c] = 0;
                 const directions = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
@@ -287,35 +461,31 @@
             }
             dfs(1, 1);
 
-            // Set Ball start position securely
             ball.x = 1; ball.y = 1;
             ball.renderX = 1; ball.renderY = 1;
             ball.targetX = 1; ball.targetY = 1;
             ball.isMoving = false;
-            grid[1][1] = 2; // Paint starting point
+            grid[1][1] = 2; 
 
             draw();
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let colors = themeColors[currentDifficulty];
 
-            // Render Maze Cells
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
-                        ctx.fillStyle = colors.wall;
+                        ctx.fillStyle = wallColor;
                     } else if (grid[r][c] === 2) {
-                        ctx.fillStyle = colors.paint;
+                        ctx.fillStyle = currentPaintColor;
                     } else {
-                        ctx.fillStyle = colors.path;
+                        ctx.fillStyle = unpaintedPathColor;
                     }
                     ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
                 }
             }
 
-            // Real-time painting while ball is sliding smoothly
             if (ball.isMoving) {
                 let currC = Math.round(ball.renderX);
                 let currR = Math.round(ball.renderY);
@@ -324,14 +494,11 @@
                 }
             }
 
-            // Draw Smooth Ball
+            // Draw Ball
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.35, 0, Math.PI * 2);
-            ctx.fillStyle = colors.ball;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "rgba(0,0,0,0.2)";
+            ctx.fillStyle = '#ffffff';
             ctx.fill();
-            ctx.shadowBlur = 0; // Reset shadow
             ctx.closePath();
         }
 
@@ -341,7 +508,6 @@
             let nextX = ball.x;
             let nextY = ball.y;
 
-            // Find wall landing spot
             while (true) {
                 let checkX = nextX + dx;
                 let checkY = nextY + dy;
@@ -358,7 +524,9 @@
                 ball.targetX = nextX;
                 ball.targetY = nextY;
                 
-                let speed = 0.25; // Smooth movement speed
+                playSwipeSound(); // Trigger premium swipe bounce audio asset code
+
+                let speed = 0.25; 
                 function animate() {
                     let moveDone = true;
                     
@@ -390,7 +558,6 @@
             }
         }
 
-        // Automated AI Idea / Bot Hint generator
         function giveHint() {
             if (ball.isMoving) return;
             const directions = [
@@ -400,7 +567,6 @@
                 { name: 'Right', dx: 1, dy: 0 }
             ];
 
-            // AI looks for paths that haven't been painted yet
             for (let d of directions) {
                 let tx = ball.x + d.dx;
                 let ty = ball.y + d.dy;
@@ -409,8 +575,6 @@
                     return;
                 }
             }
-            
-            // Backup generic open path hint
             for (let d of directions) {
                 let tx = ball.x + d.dx;
                 let ty = ball.y + d.dy;
@@ -445,11 +609,11 @@
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
+                pickRandomColor(); // New level means new random paint color!
                 generateValidMaze();
             }, 1000);
         }
 
-        // Swipe Controls Logic
         function handleSwipe(diffX, diffY) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
                 if (diffX > 30) moveBall(1, 0);
