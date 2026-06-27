@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>STARDUST studio - Elite Edition</title>
+    <title>STARDUST STUDIO- Ultimate Premium</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
 
@@ -97,7 +97,7 @@
         .btn-medium { background: #ffa502; }
         .btn-hard { background: #ff4757; }
 
-        /* --- REAL COMPACT CONTROLS & HUD --- */
+        /* --- COMPACT HUD & CONTROLS --- */
         .top-row {
             display: flex;
             justify-content: space-between;
@@ -106,6 +106,10 @@
             padding: 5px 10px;
             margin-bottom: 10px;
             z-index: 10;
+        }
+        .controls-right-group {
+            display: flex;
+            gap: 12px;
         }
         .control-circle-btn {
             background: #ffffff;
@@ -216,9 +220,15 @@
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-label">EASY</div>
             </div>
-            <button class="control-circle-btn" onclick="refreshCurrentLevel()">
-                <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-            </button>
+            <div class="controls-right-group">
+                <button class="control-circle-btn" id="audio-toggle-btn" onclick="toggleAudioMuteState()">
+                    <svg id="sound-on-svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg id="sound-off-svg" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                </button>
+                <button class="control-circle-btn" onclick="refreshCurrentLevel()">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+            </div>
         </div>
 
         <div id="canvas-container">
@@ -236,9 +246,10 @@
     <div id="popup-msg">PERFECT!</div>
 
     <script>
-        // --- REAL HIGH-VOLUME MELODIC SYNTHESIZER ENGINE ---
+        // --- HIGH-VOLUME MUSIC SYNTHESIZER ---
         let audioCtx = null;
         let masterGain = null;
+        let isAudioMuted = false;
         let scaleFreqs = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
         let notePointer = 0;
 
@@ -246,7 +257,7 @@
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 masterGain = audioCtx.createGain();
-                masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime); // Loud crisp clear level
+                masterGain.gain.setValueAtTime(isAudioMuted ? 0 : 0.85, audioCtx.currentTime);
                 masterGain.connect(audioCtx.destination);
                 triggerNextMelodyStep();
             }
@@ -261,7 +272,7 @@
             let osc = audioCtx.createOscillator();
             let voiceGain = audioCtx.createGain();
 
-            osc.type = 'sine'; // Flawless acoustic sine wave (Zero speaker frequency buzzing/hissing)
+            osc.type = 'sine';
             osc.frequency.setValueAtTime(scaleFreqs[notePointer], time);
             
             voiceGain.gain.setValueAtTime(0.18, time);
@@ -277,8 +288,17 @@
             setTimeout(triggerNextMelodyStep, 380);
         }
 
+        function toggleAudioMuteState() {
+            isAudioMuted = !isAudioMuted;
+            if (masterGain && audioCtx) {
+                masterGain.gain.setValueAtTime(isAudioMuted ? 0 : 0.85, audioCtx.currentTime);
+            }
+            document.getElementById('sound-on-svg').style.display = isAudioMuted ? 'none' : 'block';
+            document.getElementById('sound-off-svg').style.display = isAudioMuted ? 'block' : 'none';
+        }
+
         function playSwipeSound() {
-            if (!audioCtx || audioCtx.state === 'suspended') return;
+            if (!audioCtx || audioCtx.state === 'suspended' || isAudioMuted) return;
             let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let g = audioCtx.createGain();
@@ -293,7 +313,6 @@
             osc.stop(time + 0.06);
         }
 
-        // Automatic instant mute safeguarding on system focus/tab changes
         document.addEventListener('visibilitychange', () => {
             if (audioCtx) {
                 if (document.hidden) audioCtx.suspend();
@@ -315,6 +334,7 @@
         let currentLevel = 1;
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
+        let particles = []; // Particle splash emitter container
         
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
@@ -327,9 +347,20 @@
         let touchStartX = 0, touchStartY = 0;
         let pulseTimer = 0;
 
+        // Try restoring persistent saved profile immediately upon initial launch
+        if (localStorage.getItem('rs_level_save')) {
+            currentLevel = parseInt(localStorage.getItem('rs_level_save'));
+            currentDifficulty = localStorage.getItem('rs_diff_save') || 'EASY';
+        }
+
         function selectDifficulty(difficulty) {
             currentDifficulty = difficulty;
-            currentLevel = 1;
+            // Reset state if switching completely new profile
+            if (localStorage.getItem('rs_diff_save') !== difficulty) {
+                currentLevel = 1;
+            } else {
+                currentLevel = parseInt(localStorage.getItem('rs_level_save')) || 1;
+            }
             loadActiveGameScreen();
         }
 
@@ -359,6 +390,7 @@
         function refreshCurrentLevel() {
             if (ball.isMoving) return;
             activeHintDir = null;
+            particles = [];
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 2) grid[r][c] = 0;
@@ -369,7 +401,6 @@
             grid[1][1] = 2; 
         }
 
-        // Deep Backtracking Solver Engine: Ensures all maps are 100% solvable puzzles
         function checkSlideCoverage() {
             let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
             let painted = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -403,12 +434,11 @@
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
             activeHintDir = null;
+            particles = [];
 
-            // Increasing row/col scale based on real difficulty modes
             let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
             rows = size; cols = size;
 
-            // Highly updated adaptive dynamic sizing (Fills mobile view without boxy borders)
             let boxContainer = document.getElementById('canvas-container');
             let availableWidth = boxContainer.clientWidth * 0.96;
             let availableHeight = boxContainer.clientHeight * 0.96;
@@ -427,7 +457,6 @@
                     }
                 }
                 
-                // Advanced complex internal obstacle maps for high difficulty
                 let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 5 : 9;
                 for (let b = 0; b < blockCount; b++) {
                     let bx = Math.floor(Math.random() * (cols - 2)) + 1;
@@ -445,11 +474,22 @@
             grid[1][1] = 2;
         }
 
+        function spawnSwipeParticles(px, py) {
+            for(let i=0; i<3; i++) {
+                particles.push({
+                    x: px * tileSize + tileSize/2 + (Math.random() - 0.5) * (tileSize * 0.4),
+                    y: py * tileSize + tileSize/2 + (Math.random() - 0.5) * (tileSize * 0.4),
+                    size: (Math.random() * 4) + 3,
+                    alpha: 1,
+                    decay: (Math.random() * 0.04) + 0.03
+                });
+            }
+        }
+
         function renderLoop() {
             pulseTimer += 0.16;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Render Board Elements cleanly without excess margins
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
@@ -462,7 +502,25 @@
                 }
             }
 
+            // Continuous animation particle pipeline processing
+            for(let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.alpha -= p.decay;
+                if(p.alpha <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = currentPaintColor;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
             if (ball.isMoving) {
+                spawnSwipeParticles(ball.renderX, ball.renderY);
                 let checkR = Math.round(ball.renderY);
                 let checkC = Math.round(ball.renderX);
                 if (checkR >= 0 && checkR < rows && checkC >= 0 && checkC < cols) {
@@ -470,7 +528,7 @@
                 }
             }
 
-            // --- REAL NATIVE GIANT FLOATING HINT ARROW OVERLAY ---
+            // --- DEEP-SOLVER FLOATING HINT ARROW OVERLAY ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 let arrowX = ball.x * tileSize + tileSize / 2;
@@ -501,7 +559,7 @@
                 ctx.restore();
             }
 
-            // High Precision Rolling Player Ball Actor
+            // Smooth rolling paint actor ball
             ctx.save();
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.38, 0, Math.PI * 2);
@@ -528,7 +586,7 @@
                 ball.targetX = nextX; ball.targetY = nextY;
                 playSwipeSound();
 
-                let velocity = 0.85; // Fast sliding animation velocity
+                let velocity = 0.85; 
                 function animate() {
                     let arrived = true;
                     if (ball.renderX !== ball.targetX) {
@@ -553,19 +611,83 @@
             }
         }
 
+        // --- HIGH DETAILED AI BFS PUZZLE SOLVER ENGINE FOR HINT ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
-            const checks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
-            for (let d of checks) {
+
+            // Helper serializer function to monitor grid map states
+            function getSerializedState(bx, by, gState) {
+                return `${bx},${by},` + gState.map(r => r.join('')).join('|');
+            }
+
+            function isFullyPainted(gState) {
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (gState[r][c] === 0) return false;
+                    }
+                }
+                return true;
+            }
+
+            const vectors = [{dx:1, dy:0}, {dx:-1, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}];
+            
+            // Queue format stores: current position, current grid configuration, and the FIRST move direction taken
+            let queue = [];
+            let visitedStates = new Set();
+
+            // Setup initial root paths
+            for (let v of vectors) {
+                let nx = ball.x; let ny = ball.y;
+                let clonedGrid = grid.map(r => [...r]);
+                
+                // Simulate slide motion path line execution
+                while (nx + v.dx >= 0 && nx + v.dx < cols && ny + v.dy >= 0 && ny + v.dy < rows && clonedGrid[ny + v.dy][nx + v.dx] !== 1) {
+                    nx += v.dx; ny += v.dy;
+                    if (clonedGrid[ny][nx] === 0) clonedGrid[ny][nx] = 2;
+                }
+                if (nx !== ball.x || ny !== ball.y) {
+                    let sKey = getSerializedState(nx, ny, clonedGrid);
+                    queue.push({ x: nx, y: ny, grid: clonedGrid, firstMove: v });
+                    visitedStates.add(sKey);
+                }
+            }
+
+            // Run active multi-stage BFS analysis to discover full maze completion solutions
+            let safetyCounter = 0;
+            while (queue.length > 0 && safetyCounter < 4000) {
+                safetyCounter++;
+                let curr = queue.shift();
+
+                if (isFullyPainted(curr.grid)) {
+                    activeHintDir = curr.firstMove;
+                    return;
+                }
+
+                for (let v of vectors) {
+                    let nx = curr.x; let ny = curr.y;
+                    let clonedGrid = curr.grid.map(r => [...r]);
+
+                    while (nx + v.dx >= 0 && nx + v.dx < cols && ny + v.dy >= 0 && ny + v.dy < rows && clonedGrid[ny + v.dy][nx + v.dx] !== 1) {
+                        nx += v.dx; ny += v.dy;
+                        if (clonedGrid[ny][nx] === 0) clonedGrid[ny][nx] = 2;
+                    }
+
+                    if (nx !== curr.x || ny !== curr.y) {
+                        let sKey = getSerializedState(nx, ny, clonedGrid);
+                        if (!visitedStates.has(sKey)) {
+                            visitedStates.add(sKey);
+                            queue.push({ x: nx, y: ny, grid: clonedGrid, firstMove: curr.firstMove });
+                        }
+                    }
+                }
+            }
+
+            // Fallback recovery check if grid is altered or too complex
+            const casualChecks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
+            for (let d of casualChecks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
                 if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
                     if (grid[targetY][targetX] === 0) { activeHintDir = d; return; }
-                }
-            }
-            for (let d of checks) {
-                let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
-                if (targetY >= 0 && targetY < rows && targetX >= 0 && targetX < cols) {
-                    if (grid[targetY][targetX] === 2) { activeHintDir = d; return; }
                 }
             }
         }
@@ -581,12 +703,17 @@
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
+                
+                // Write active progress profile inside permanent secure memory storage
+                localStorage.setItem('rs_level_save', currentLevel);
+                localStorage.setItem('rs_diff_save', currentDifficulty);
+
                 pickRandomColor();
                 generateValidMaze();
             }, 800);
         }
 
-        // --- EXCLUSIVE REALTIME CONTINUOUS DRAG TRACKING (No finger lifting required) ---
+        // --- REALTIME CONTINUOUS DRAG TRACKING (No finger lifting required) ---
         function processRealtimeTouch(currentX, currentY) {
             if (!isTouchActive || ball.isMoving) return;
             let diffX = currentX - touchStartX;
