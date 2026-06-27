@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust Absolute Fixed</title>
+    <title>Roller Splash Pro - Stardust Absolute Premium</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
@@ -25,7 +25,7 @@
             overflow: hidden;
         }
 
-        /* --- STARDUST SPLASH SCREEN WITH START BUTTON --- */
+        /* --- STARDUST SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -254,7 +254,6 @@
             font-weight: 700;
         }
 
-        /* RESPONSIVE WIN POPUP */
         #popup-msg {
             position: fixed;
             width: 90%;
@@ -282,9 +281,9 @@
     <div id="menu-screen">
         <h1>ROLLER</h1>
         <p class="subtitle">Swipe to paint the entire maze!</p>
-        <button class="btn btn-easy" onclick="startGame('EASY')">EASY</button>
-        <button class="btn btn-medium" onclick="startGame('MEDIUM')">MEDIUM</button>
-        <button class="btn btn-hard" onclick="startGame('HARD')">HARD</button>
+        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY</button>
+        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM</button>
+        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD</button>
     </div>
 
     <div id="game-screen">
@@ -324,7 +323,7 @@
     <div id="popup-msg">GOOD!</div>
 
     <script>
-        // --- SECURE AUDIO DRIVER ENGINE ---
+        // --- AUDIO ENGINE ---
         let audioCtx = null;
         let soundEnabled = true;
         let musicEnabled = true;
@@ -344,18 +343,16 @@
             initAudio();
             if (!soundEnabled) return;
             let now = audioCtx.currentTime;
-            let introNotes = [261.63, 329.63, 392.00, 523.25]; // Rich Cinematic Harmony
+            let introNotes = [261.63, 329.63, 392.00, 523.25];
             
             introNotes.forEach((f) => {
                 let osc = audioCtx.createOscillator();
                 let gain = audioCtx.createGain();
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(f, now);
-                
                 gain.gain.setValueAtTime(0, now);
                 gain.gain.linearRampToValueAtTime(0.12, now + 0.15);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
-                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start(now);
@@ -366,16 +363,12 @@
         function startAmbientBackgroundMusic() {
             initAudio();
             if (!musicEnabled || bgOscillator) return;
-
             let now = audioCtx.currentTime;
             bgOscillator = audioCtx.createOscillator();
             bgGainNode = audioCtx.createGain();
-            
             bgOscillator.type = 'sine';
-            bgOscillator.frequency.setValueAtTime(196.00, now); // Beautiful Low Ambient Synth Chord
-            
-            bgGainNode.gain.setValueAtTime(0.07, now); // Sweet soft spot volume
-            
+            bgOscillator.frequency.setValueAtTime(196.00, now); 
+            bgGainNode.gain.setValueAtTime(0.07, now); 
             bgOscillator.connect(bgGainNode);
             bgGainNode.connect(audioCtx.destination);
             bgOscillator.start(now);
@@ -395,33 +388,31 @@
             let now = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
-            
             osc.type = 'sine';
             osc.frequency.setValueAtTime(520, now);
             osc.frequency.exponentialRampToValueAtTime(190, now + 0.09);
-            
-            gain.gain.setValueAtTime(0.45, now); // Loud, satisfying arcade pop
+            gain.gain.setValueAtTime(0.45, now);
             gain.gain.linearRampToValueAtTime(0.001, now + 0.11);
-            
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start(now);
             osc.stop(now + 0.12);
         }
 
-        // --- BUTTON ACTION TO DISMISS SPLASH AND FIRE AUDIO ---
+        let hasInteracted = false;
         function dismissSplashAndPlay() {
+            hasInteracted = true;
             playStardustIntroMusic();
-            
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
-                startAmbientBackgroundMusic(); // Instantly triggers soft looping music
+                startAmbientBackgroundMusic();
+                checkSavedGameStatus(); // Restore game state after splash dismiss
             }, 500);
         }
 
-        // --- GAME SYSTEM ENGINE ---
+        // --- CORE GAME ENGINE WITH AUTO-SAVE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -430,7 +421,7 @@
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
         let currentPaintColor = '#38ef7d';
-        let activeHintDir = null; // Holds {dx, dy} structure
+        let activeHintDir = null; 
         
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
         const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!"];
@@ -455,10 +446,27 @@
             else stopAmbientMusic();
         }
 
-        function startGame(difficulty) {
-            initAudio();
+        // Check if level was previously saved
+        function checkSavedGameStatus() {
+            const savedLevel = localStorage.getItem('roller_splash_level');
+            const savedDiff = localStorage.getItem('roller_splash_diff');
+            if (savedLevel && savedDiff) {
+                currentLevel = parseInt(savedLevel);
+                currentDifficulty = savedDiff;
+                loadActiveGameScreen();
+            }
+        }
+
+        function selectDifficulty(difficulty) {
             currentDifficulty = difficulty;
             currentLevel = 1;
+            localStorage.setItem('roller_splash_level', currentLevel);
+            localStorage.setItem('roller_splash_diff', currentDifficulty);
+            loadActiveGameScreen();
+        }
+
+        function loadActiveGameScreen() {
+            initAudio();
             pickRandomColor();
             
             document.getElementById('menu-screen').style.opacity = '0';
@@ -467,9 +475,9 @@
             document.getElementById('game-screen').style.pointerEvents = 'auto';
             
             const badge = document.getElementById('difficulty-badge');
-            badge.innerText = difficulty;
-            badge.style.background = difficulty === 'EASY' ? 'linear-gradient(45deg, #11998e, #38ef7d)' : 
-                                    difficulty === 'MEDIUM' ? 'linear-gradient(45deg, #ff9966, #ff5e62)' : 
+            badge.innerText = currentDifficulty;
+            badge.style.background = currentDifficulty === 'EASY' ? 'linear-gradient(45deg, #11998e, #38ef7d)' : 
+                                    currentDifficulty === 'MEDIUM' ? 'linear-gradient(45deg, #ff9966, #ff5e62)' : 
                                     'linear-gradient(45deg, #ee0979, #ff6a00)';
 
             generateValidMaze();
@@ -487,7 +495,7 @@
             currentPaintColor = paintColorsPool[Math.floor(Math.random() * paintColorsPool.length)];
         }
 
-        // --- FULL SLIDE-STOP SOLVABILITY VALIDATION ---
+        // --- ADVANCED SLIDE-STOP VALIDATION ENGINE (Ensures No Glitch or Trap Tiles) ---
         function simulateSlideSolvability() {
             let totalFloorTiles = 0;
             for (let r = 0; r < rows; r++) {
@@ -495,14 +503,14 @@
                     if (grid[r][c] === 0) totalFloorTiles++;
                 }
             }
-            totalFloorTiles++; // Starting point cell
+            totalFloorTiles++; // include (1,1)
 
-            let visitedStates = Array.from({length: rows}, () => new Array(cols).fill(false));
-            let paintedTilesTracker = Array.from({length: rows}, () => new Array(cols).fill(false));
+            let visitedStoppingPoints = Array.from({length: rows}, () => new Array(cols).fill(false));
+            let fullyPaintedTiles = Array.from({length: rows}, () => new Array(cols).fill(false));
             
             let queue = [{x: 1, y: 1}];
-            visitedStates[1][1] = true;
-            paintedTilesTracker[1][1] = true;
+            visitedStoppingPoints[1][1] = true;
+            fullyPaintedTiles[1][1] = true;
 
             const dirs = [[0,-1], [0,1], [-1,0], [1,0]];
 
@@ -513,32 +521,34 @@
                     let cx = curr.x;
                     let cy = curr.y;
 
+                    // Simulated sliding physics until hard-hitting a wall tile block
                     while (true) {
                         let nx = cx + dx;
                         let ny = cy + dy;
                         if (ny >= 0 && ny < rows && nx >= 0 && nx < cols && grid[ny][nx] !== 1) {
                             cx = nx;
                             cy = ny;
-                            paintedTilesTracker[cy][cx] = true;
+                            fullyPaintedTiles[cy][cx] = true;
                         } else {
                             break;
                         }
                     }
 
-                    if (!visitedStates[cy][cx]) {
-                        visitedStates[cy][cx] = true;
+                    if (!visitedStoppingPoints[cy][cx]) {
+                        visitedStoppingPoints[cy][cx] = true;
                         queue.push({x: cx, y: cy});
                     }
                 }
             }
 
-            let actualPaintedCount = 0;
+            // Strict Validation Check: Ensure every single tile is covered by sliding action
+            let paintedCellsCount = 0;
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (paintedTilesTracker[r][c]) actualPaintedCount++;
+                    if (fullyPaintedTiles[r][c]) paintedCellsCount++;
                 }
             }
-            return actualPaintedCount === totalFloorTiles;
+            return paintedCellsCount === totalFloorTiles;
         }
 
         function generateValidMaze() {
@@ -555,7 +565,7 @@
             canvas.width = cols * tileSize; canvas.height = rows * tileSize;
 
             let success = false;
-            for (let attempts = 0; attempts < 300; attempts++) {
+            for (let attempts = 0; attempts < 500; attempts++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(1));
                 
                 function dfs(r, c) {
@@ -601,10 +611,9 @@
                 if (grid[currR][currC] === 0) grid[currR][currC] = 2;
             }
 
-            // --- REAL-TIME NEON HINT ARROW GRAPHICS ENGINE ---
+            // --- FIXED BOT HINT NEON ARROW RENDERING ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
-                // Safe center alignment exactly on the ball's current square
                 let renderBallX = ball.x * tileSize + tileSize / 2;
                 let renderBallY = ball.y * tileSize + tileSize / 2;
                 ctx.translate(renderBallX, renderBallY);
@@ -617,14 +626,14 @@
                 
                 ctx.rotate(angle);
                 ctx.fillStyle = '#f1c40f';
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 15;
                 ctx.shadowColor = '#f1c40f';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.22, 0);
-                ctx.lineTo(-tileSize * 0.18, -tileSize * 0.18);
-                ctx.lineTo(-tileSize * 0.08, 0);
-                ctx.lineTo(-tileSize * 0.18,  tileSize * 0.18);
+                ctx.moveTo(tileSize * 0.25, 0);
+                ctx.lineTo(-tileSize * 0.15, -tileSize * 0.2);
+                ctx.lineTo(-tileSize * 0.05, 0);
+                ctx.lineTo(-tileSize * 0.15,  tileSize * 0.2);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
@@ -639,7 +648,7 @@
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
             
-            // Instantly clear matching directional arrow guide on player swipe move
+            // Turn off bot hint arrow indicator guide as soon as player makes a choice
             if (activeHintDir && activeHintDir.dx === dx && activeHintDir.dy === dy) {
                 activeHintDir = null;
             }
@@ -657,7 +666,7 @@
                 ball.targetX = nextX; ball.targetY = nextY;
                 playLoudSwipeSound();
 
-                let speed = 0.3;
+                let speed = 0.32;
                 function animate() {
                     let moveDone = true;
                     if (ball.renderX !== ball.targetX) {
@@ -683,23 +692,27 @@
             }
         }
 
-        // --- BOT LIVE BOT ARROW HINT DISCOVERY ENGINE ---
+        // --- INSTANT HINT ARROW TRACKER CALCULATOR ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const directions = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
             
-            // First Priority: Find unpainted open floor directions
+            // Search for direct grey paths
             for (let d of directions) {
                 let tx = ball.x + d.dx; let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] === 0) {
-                    activeHintDir = d; draw(); return;
+                    activeHintDir = d; 
+                    draw(); 
+                    return;
                 }
             }
-            // Fallback Priority: Find any unblocked passable corridor paths
+            // Fallback to any valid sliding corridors
             for (let d of directions) {
                 let tx = ball.x + d.dx; let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] !== 1) {
-                    activeHintDir = d; draw(); return;
+                    activeHintDir = d; 
+                    draw(); 
+                    return;
                 }
             }
         }
@@ -716,6 +729,11 @@
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
+                
+                // Save current level progression to Local Storage
+                localStorage.setItem('roller_splash_level', currentLevel);
+                localStorage.setItem('roller_splash_diff', currentDifficulty);
+                
                 pickRandomColor();
                 generateValidMaze();
             }, 1100);
@@ -733,6 +751,13 @@
         window.addEventListener('mouseup', e => { handleSwipe(e.clientX - touchStartX, e.clientY - touchStartY); });
         window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
         window.addEventListener('touchend', e => { handleSwipe(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY); });
+
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowUp' || e.key === 'w') moveBall(0, -1);
+            if (e.key === 'ArrowDown' || e.key === 's') moveBall(0, 1);
+            if (e.key === 'ArrowLeft' || e.key === 'a') moveBall(-1, 0);
+            if (e.key === 'ArrowRight' || e.key === 'd') moveBall(1, 0);
+        });
     </script>
 </body>
 </html>
