@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust Absolute Premium</title>
+    <title>Roller Splash Pro - Stardust Final Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
@@ -76,7 +76,7 @@
         }
         .start-app-btn:active { transform: scale(0.95); }
 
-        /* --- GAME SCREENS --- */
+        /* --- SCREENS MANAGEMENT --- */
         #menu-screen, #game-screen {
             display: flex;
             flex-direction: column;
@@ -126,7 +126,7 @@
         .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
         .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
 
-        /* --- GAME LAYOUT --- */
+        /* --- TOP ROW CONTROLS --- */
         .top-row {
             display: flex;
             justify-content: space-between;
@@ -134,32 +134,36 @@
             width: 90%;
             margin-bottom: 15px;
         }
-        .settings-btn {
+        .control-circle-btn {
             background: #ffffff;
             border: none;
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
         }
+        .control-circle-btn:active { transform: scale(0.9); }
+        
         #level-header {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             color: #2c3e50;
         }
         #difficulty-badge {
             display: inline-block;
-            padding: 4px 15px;
+            padding: 3px 12px;
             border-radius: 50px;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 800;
-            margin-top: 4px;
+            margin-top: 2px;
+            text-transform: uppercase;
         }
         #canvas-container {
             background: #ffffff;
@@ -173,6 +177,7 @@
             background: #ecf0f1;
         }
         
+        /* --- BOTTOM FOOTER SYSTEM --- */
         .bottom-controls {
             display: flex;
             justify-content: space-between;
@@ -204,7 +209,7 @@
             box-shadow: 0 6px 15px rgba(241, 196, 15, 0.4);
         }
 
-        /* --- SETTINGS MODAL --- */
+        /* --- SETTINGS PANEL --- */
         #settings-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -288,12 +293,12 @@
 
     <div id="game-screen">
         <div class="top-row">
-            <button class="settings-btn" onclick="toggleSettingsModal(true)">⚙️</button>
+            <button class="control-circle-btn" onclick="toggleSettingsModal(true)">⚙️</button>
             <div style="text-align: center; flex-grow: 1;">
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-badge">EASY</div>
             </div>
-            <div style="width:45px;"></div>
+            <button class="control-circle-btn" onclick="refreshCurrentLevel()" title="Reset Level">🔄</button>
         </div>
 
         <div id="canvas-container">
@@ -323,7 +328,7 @@
     <div id="popup-msg">GOOD!</div>
 
     <script>
-        // --- AUDIO ENGINE ---
+        // --- SECURE LOW-LATENCY AUDIO DRIVER ENGINE ---
         let audioCtx = null;
         let soundEnabled = true;
         let musicEnabled = true;
@@ -360,15 +365,19 @@
             });
         }
 
+        // True Continuous Looping Soft Ambient Background Music Engine
         function startAmbientBackgroundMusic() {
             initAudio();
             if (!musicEnabled || bgOscillator) return;
+
             let now = audioCtx.currentTime;
             bgOscillator = audioCtx.createOscillator();
             bgGainNode = audioCtx.createGain();
+            
             bgOscillator.type = 'sine';
-            bgOscillator.frequency.setValueAtTime(196.00, now); 
-            bgGainNode.gain.setValueAtTime(0.07, now); 
+            bgOscillator.frequency.setValueAtTime(220.00, now); // Sweet Low-pitch Melodic Tone
+            bgGainNode.gain.setValueAtTime(0.06, now); // Soft background volume
+            
             bgOscillator.connect(bgGainNode);
             bgGainNode.connect(audioCtx.destination);
             bgOscillator.start(now);
@@ -389,30 +398,29 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(520, now);
-            osc.frequency.exponentialRampToValueAtTime(190, now + 0.09);
-            gain.gain.setValueAtTime(0.45, now);
-            gain.gain.linearRampToValueAtTime(0.001, now + 0.11);
+            osc.frequency.setValueAtTime(490, now);
+            osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.1);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start(now);
-            osc.stop(now + 0.12);
+            osc.stop(now + 0.11);
         }
 
-        let hasInteracted = false;
         function dismissSplashAndPlay() {
-            hasInteracted = true;
+            initAudio();
             playStardustIntroMusic();
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
-                startAmbientBackgroundMusic();
-                checkSavedGameStatus(); // Restore game state after splash dismiss
+                startAmbientBackgroundMusic(); // Music triggers safely on action callback
+                checkSavedGameStatus();
             }, 500);
         }
 
-        // --- CORE GAME ENGINE WITH AUTO-SAVE ---
+        // --- GAME SYSTEM SYSTEM ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -446,10 +454,9 @@
             else stopAmbientMusic();
         }
 
-        // Check if level was previously saved
         function checkSavedGameStatus() {
-            const savedLevel = localStorage.getItem('roller_splash_level');
-            const savedDiff = localStorage.getItem('roller_splash_diff');
+            const savedLevel = localStorage.getItem('roller_stardust_lvl');
+            const savedDiff = localStorage.getItem('roller_stardust_diff');
             if (savedLevel && savedDiff) {
                 currentLevel = parseInt(savedLevel);
                 currentDifficulty = savedDiff;
@@ -460,15 +467,13 @@
         function selectDifficulty(difficulty) {
             currentDifficulty = difficulty;
             currentLevel = 1;
-            localStorage.setItem('roller_splash_level', currentLevel);
-            localStorage.setItem('roller_splash_diff', currentDifficulty);
+            localStorage.setItem('roller_stardust_lvl', currentLevel);
+            localStorage.setItem('roller_stardust_diff', currentDifficulty);
             loadActiveGameScreen();
         }
 
         function loadActiveGameScreen() {
-            initAudio();
             pickRandomColor();
-            
             document.getElementById('menu-screen').style.opacity = '0';
             document.getElementById('menu-screen').style.pointerEvents = 'none';
             document.getElementById('game-screen').style.opacity = '1';
@@ -495,94 +500,108 @@
             currentPaintColor = paintColorsPool[Math.floor(Math.random() * paintColorsPool.length)];
         }
 
-        // --- ADVANCED SLIDE-STOP VALIDATION ENGINE (Ensures No Glitch or Trap Tiles) ---
-        function simulateSlideSolvability() {
-            let totalFloorTiles = 0;
+        // --- LEVEL REFRESH MECHANISM (Resets map paint while preserving level scale) ---
+        function refreshCurrentLevel() {
+            if (ball.isMoving) return;
+            activeHintDir = null;
+            
+            // Clear layout painting status back to clean state
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 0) totalFloorTiles++;
+                    if (grid[r][c] === 2) grid[r][c] = 0;
                 }
             }
-            totalFloorTiles++; // include (1,1)
+            ball.x = 1; ball.y = 1; ball.renderX = 1; ball.renderY = 1;
+            ball.targetX = 1; ball.targetY = 1;
+            grid[1][1] = 2; // Initial position painted
+            draw();
+        }
 
-            let visitedStoppingPoints = Array.from({length: rows}, () => new Array(cols).fill(false));
-            let fullyPaintedTiles = Array.from({length: rows}, () => new Array(cols).fill(false));
+        // --- ANTI-GLITCH SLIDE SOLVER (Ensures 100% full corridor wall hitting coverage) ---
+        function checkSlideCoverage() {
+            let visitedPoints = Array.from({length: rows}, () => new Array(cols).fill(false));
+            let paintedTracker = Array.from({length: rows}, () => new Array(cols).fill(false));
             
             let queue = [{x: 1, y: 1}];
-            visitedStoppingPoints[1][1] = true;
-            fullyPaintedTiles[1][1] = true;
+            visitedPoints[1][1] = true;
+            paintedTracker[1][1] = true;
 
-            const dirs = [[0,-1], [0,1], [-1,0], [1,0]];
+            const vectors = [[0,-1], [0,1], [-1,0], [1,0]];
 
             while (queue.length > 0) {
                 let curr = queue.shift();
 
-                for (let [dx, dy] of dirs) {
+                for (let [dx, dy] of vectors) {
                     let cx = curr.x;
                     let cy = curr.y;
 
-                    // Simulated sliding physics until hard-hitting a wall tile block
-                    while (true) {
-                        let nx = cx + dx;
-                        let ny = cy + dy;
-                        if (ny >= 0 && ny < rows && nx >= 0 && nx < cols && grid[ny][nx] !== 1) {
-                            cx = nx;
-                            cy = ny;
-                            fullyPaintedTiles[cy][cx] = true;
-                        } else {
-                            break;
-                        }
+                    // Keep sliding until a wall block is triggered
+                    while (cx + dx >= 0 && cx + dx < cols && cy + dy >= 0 && cy + dy < rows && grid[cy + dy][cx + dx] !== 1) {
+                        cx += dx;
+                        cy += dy;
+                        paintedTracker[cy][cx] = true;
                     }
 
-                    if (!visitedStoppingPoints[cy][cx]) {
-                        visitedStoppingPoints[cy][cx] = true;
+                    if (!visitedPoints[cy][cx]) {
+                        visitedPoints[cy][cx] = true;
                         queue.push({x: cx, y: cy});
                     }
                 }
             }
 
-            // Strict Validation Check: Ensure every single tile is covered by sliding action
-            let paintedCellsCount = 0;
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (fullyPaintedTiles[r][c]) paintedCellsCount++;
+                    if (grid[r][c] === 0 && !paintedTracker[r][c]) {
+                        return false; // Found a trapped unpaintable grey tile floor block
+                    }
                 }
             }
-            return paintedCellsCount === totalFloorTiles;
+            return true;
         }
 
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
             activeHintDir = null;
 
-            let baseSize = currentDifficulty === 'EASY' ? 5 : currentDifficulty === 'MEDIUM' ? 7 : 9;
-            let levelBonus = Math.min(Math.floor(currentLevel / 4), 2); 
-            rows = baseSize + levelBonus; cols = baseSize + levelBonus;
-            if (rows % 2 === 0) { rows++; cols++; }
+            let size = currentDifficulty === 'EASY' ? 7 : currentDifficulty === 'MEDIUM' ? 9 : 11;
+            rows = size; cols = size;
 
-            const maxCanvasWidth = Math.min(window.innerWidth - 50, 380);
+            const maxCanvasWidth = Math.min(window.innerWidth - 60, 360);
             tileSize = Math.floor(maxCanvasWidth / cols);
             canvas.width = cols * tileSize; canvas.height = rows * tileSize;
 
-            let success = false;
-            for (let attempts = 0; attempts < 500; attempts++) {
+            let stable = false;
+            for (let loop = 0; loop < 1000; loop++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(1));
                 
-                function dfs(r, c) {
-                    grid[r][c] = 0;
-                    const directions = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
-                    for (let [dr, dc] of directions) {
-                        let nr = r + dr, nc = c + dc;
-                        if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && grid[nr][nc] === 1) {
-                            grid[r + dr/2][c + dc/2] = 0;
-                            dfs(nr, nc);
+                // Deep Standard Perfect Maze DFS Generator Block
+                let stack = [{r: 1, c: 1}];
+                grid[1][1] = 0;
+
+                while(stack.length > 0) {
+                    let curr = stack[stack.length - 1];
+                    let neighbors = [];
+                    const dirs = [[-2,0],[2,0],[0,-2],[0,2]];
+                    
+                    for(let [dr, dc] of dirs) {
+                        let nr = curr.r + dr; let nc = curr.c + dc;
+                        if(nr > 0 && nr < rows-1 && nc > 0 && nc < cols-1 && grid[nr][nc] === 1) {
+                            neighbors.push({r: nr, c: nc, dr: dr, dc: dc});
                         }
                     }
-                }
-                dfs(1, 1);
 
-                if (simulateSlideSolvability()) {
-                    success = true;
+                    if(neighbors.length > 0) {
+                        let next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                        grid[curr.r + next.dr/2][curr.c + next.dc/2] = 0;
+                        grid[next.r][next.c] = 0;
+                        stack.push({r: next.r, c: next.c});
+                    } else {
+                        stack.pop();
+                    }
+                }
+
+                if (checkSlideCoverage()) {
+                    stable = true;
                     break;
                 }
             }
@@ -596,6 +615,7 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Draw Level Grid Walls/Paths
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) ctx.fillStyle = wallColor;
@@ -605,18 +625,19 @@
                 }
             }
 
+            // Continuous Path Painter Trail Tracker Engine
             if (ball.isMoving) {
-                let currC = Math.round(ball.renderX);
-                let currR = Math.round(ball.renderY);
-                if (grid[currR][currC] === 0) grid[currR][currC] = 2;
+                let checkR = Math.round(ball.renderY);
+                let checkC = Math.round(ball.renderX);
+                if (grid[checkR][checkC] === 0) grid[checkR][checkC] = 2;
             }
 
-            // --- FIXED BOT HINT NEON ARROW RENDERING ---
+            // --- NEON GLOW HINT ARROW GRAPHICS ENGINE ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
-                let renderBallX = ball.x * tileSize + tileSize / 2;
-                let renderBallY = ball.y * tileSize + tileSize / 2;
-                ctx.translate(renderBallX, renderBallY);
+                let exactBallX = ball.x * tileSize + tileSize / 2;
+                let exactBallY = ball.y * tileSize + tileSize / 2;
+                ctx.translate(exactBallX, exactBallY);
                 
                 let angle = 0;
                 if (activeHintDir.dx === 1) angle = 0;
@@ -630,35 +651,34 @@
                 ctx.shadowColor = '#f1c40f';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.25, 0);
-                ctx.lineTo(-tileSize * 0.15, -tileSize * 0.2);
-                ctx.lineTo(-tileSize * 0.05, 0);
-                ctx.lineTo(-tileSize * 0.15,  tileSize * 0.2);
+                ctx.moveTo(tileSize * 0.28, 0);
+                ctx.lineTo(-tileSize * 0.15, -tileSize * 0.22);
+                ctx.lineTo(-tileSize * 0.04, 0);
+                ctx.lineTo(-tileSize * 0.15,  tileSize * 0.22);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
 
+            // Smooth Moving Ball Render
             ctx.beginPath();
-            ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.35, 0, Math.PI * 2);
+            ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.36, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 0; 
             ctx.fill();
         }
 
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
             
-            // Turn off bot hint arrow indicator guide as soon as player makes a choice
-            if (activeHintDir && activeHintDir.dx === dx && activeHintDir.dy === dy) {
-                activeHintDir = null;
+            if (activeHintDir) {
+                activeHintDir = null; // Clear hint instantly on action
             }
 
             let nextX = ball.x; let nextY = ball.y;
-            while (true) {
-                let checkX = nextX + dx; let checkY = nextY + dy;
-                if (checkY >= 0 && checkY < rows && checkX >= 0 && checkX < cols && grid[checkY][checkX] !== 1) {
-                    nextX = checkX; nextY = checkY;
-                } else break;
+            while (nextX + dx >= 0 && nextX + dx < cols && nextY + dy >= 0 && nextY + dy < rows && grid[nextY + dy][nextX + dx] !== 1) {
+                nextX += dx;
+                nextY += dy;
             }
 
             if (nextX !== ball.x || nextY !== ball.y) {
@@ -666,23 +686,23 @@
                 ball.targetX = nextX; ball.targetY = nextY;
                 playLoudSwipeSound();
 
-                let speed = 0.32;
+                let animationVelocity = 0.35;
                 function animate() {
-                    let moveDone = true;
+                    let arrived = true;
                     if (ball.renderX !== ball.targetX) {
                         let diff = ball.targetX - ball.renderX;
-                        if (Math.abs(diff) <= speed) ball.renderX = ball.targetX;
-                        else ball.renderX += Math.sign(diff) * speed;
-                        moveDone = false;
+                        if (Math.abs(diff) <= animationVelocity) ball.renderX = ball.targetX;
+                        else ball.renderX += Math.sign(diff) * animationVelocity;
+                        arrived = false;
                     }
                     if (ball.renderY !== ball.targetY) {
                         let diff = ball.targetY - ball.renderY;
-                        if (Math.abs(diff) <= speed) ball.renderY = ball.targetY;
-                        else ball.renderY += Math.sign(diff) * speed;
-                        moveDone = false;
+                        if (Math.abs(diff) <= animationVelocity) ball.renderY = ball.targetY;
+                        else ball.renderY += Math.sign(diff) * animationVelocity;
+                        arrived = false;
                     }
                     draw();
-                    if (moveDone) {
+                    if (arrived) {
                         ball.x = ball.targetX; ball.y = ball.targetY;
                         ball.isMoving = false;
                         checkWinCondition();
@@ -692,27 +712,21 @@
             }
         }
 
-        // --- INSTANT HINT ARROW TRACKER CALCULATOR ---
+        // --- HINT ENGINE BOT (Looks for valid gray or open paths) ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
-            const directions = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+            const checks = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
             
-            // Search for direct grey paths
-            for (let d of directions) {
-                let tx = ball.x + d.dx; let ty = ball.y + d.dy;
-                if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] === 0) {
-                    activeHintDir = d; 
-                    draw(); 
-                    return;
+            for (let d of checks) {
+                let cx = ball.x + d.dx; let cy = ball.y + d.dy;
+                if (cy >= 0 && cy < rows && cx >= 0 && cx < cols && grid[cy][cx] === 0) {
+                    activeHintDir = d; draw(); return;
                 }
             }
-            // Fallback to any valid sliding corridors
-            for (let d of directions) {
-                let tx = ball.x + d.dx; let ty = ball.y + d.dy;
-                if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] !== 1) {
-                    activeHintDir = d; 
-                    draw(); 
-                    return;
+            for (let d of checks) {
+                let cx = ball.x + d.dx; let cy = ball.y + d.dy;
+                if (cy >= 0 && cy < rows && cx >= 0 && cx < cols && grid[cy][cx] === 2) {
+                    activeHintDir = d; draw(); return;
                 }
             }
         }
@@ -730,9 +744,9 @@
                 popup.classList.remove('show');
                 currentLevel++;
                 
-                // Save current level progression to Local Storage
-                localStorage.setItem('roller_splash_level', currentLevel);
-                localStorage.setItem('roller_splash_diff', currentDifficulty);
+                // Absolute Persistent Auto-Save Trigger
+                localStorage.setItem('roller_stardust_lvl', currentLevel);
+                localStorage.setItem('roller_stardust_diff', currentDifficulty);
                 
                 pickRandomColor();
                 generateValidMaze();
