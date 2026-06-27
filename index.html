@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unstoppable Roller</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fdfbf7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #menu-screen, #game-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            padding: 20px;
+            position: absolute;
+        }
+        #game-screen { display: none; }
+        
+        h1 {
+            font-size: 3rem;
+            color: #333;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .btn {
+            background: #ff5e62;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 94, 98, 0.4);
+            transition: transform 0.1s;
+            width: 80%;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-easy { background: #4caf50; box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
+        .btn-medium { background: #ff9800; box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4); }
+        .btn-hard { background: #f44336; box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4); }
+
+        #level-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        #difficulty-badge {
+            padding: 5px 15px;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        #canvas-container {
+            background: #dcdde1;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            display: block;
+            border-radius: 8px;
+            background: #2f3640;
+        }
+        #popup-msg {
+            position: fixed;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fbc531;
+            text-shadow: 3px 3px 0px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            transform: scale(0);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 10;
+        }
+        #popup-msg.show { transform: scale(1); }
+    </style>
+</head>
+<body>
+
+    <div id="menu-screen">
+        <h1>ROLLER</h1>
+        <p class="subtitle">Swipe to paint the entire maze!</p>
+        <button class="btn btn-easy" onclick="startGame('EASY')">EASY</button>
+        <button class="btn btn-medium" onclick="startGame('MEDIUM')">MEDIUM</button>
+        <button class="btn btn-hard" onclick="startGame('HARD')">HARD</button>
+    </div>
+
+    <div id="game-screen">
+        <div id="level-header">Level <span id="level-num">1</span></div>
+        <div id="difficulty-badge"></div>
+        <div id="canvas-container">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <button class="btn" style="background:#666; box-shadow:none; margin-top:20px; padding:10px 25px; font-size:1rem; width:auto;" onclick="backToMenu()">Menu</button>
+    </div>
+
+    <div id="popup-msg">GOOD!</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let currentDifficulty = 'EASY';
+        let currentLevel = 1;
+        let grid = [];
+        let rows = 0;
+        let cols = 0;
+        let tileSize = 0;
+        
+        let ball = { x: 0, y: 0, targetX: 0, targetY: 0, isMoving: false, vx: 0, vy: 0 };
+        
+        const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!", "AMAZING!"];
+        
+        // Touch/Mouse Swipe tracking Variables
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        function startGame(difficulty) {
+            currentDifficulty = difficulty;
+            currentLevel = 1;
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            
+            const badge = document.getElementById('difficulty-badge');
+            badge.innerText = difficulty;
+            badge.className = ''; 
+            badge.classList.add('btn-' + difficulty.toLowerCase());
+
+            generateLevel();
+        }
+
+        function backToMenu() {
+            document.getElementById('menu-screen').style.display = 'flex';
+            document.getElementById('game-screen').style.display = 'none';
+        }
+
+        // Procedural Maze Generator (Level badhne par size aur complexity badhegi)
+        function generateLevel() {
+            document.getElementById('level-num').innerText = currentLevel;
+
+            // Difficulty aur Level ke hisab se grid ka size set karna
+            let baseSize = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
+            let levelBonus = Math.min(Math.floor(currentLevel / 5), 4); // Max +4 size caps
+            
+            rows = baseSize + levelBonus;
+            cols = baseSize + levelBonus;
+
+            // Canvas responsive sizing
+            const maxCanvasWidth = Math.min(window.innerWidth - 40, 450);
+            tileSize = Math.floor(maxCanvasWidth / cols);
+            canvas.width = cols * tileSize;
+            canvas.height = rows * tileSize;
+
+            // Grid array initialize karein (1 = Wall, 0 = Empty/Unpainted Path)
+            grid = [];
+            for (let r = 0; r < rows; r++) {
+                grid.push(new Array(cols).fill(1));
+            }
+
+            // Simple DFS Algorithm se raste (paths) banana
+            function mazeDFS(r, c) {
+                grid[r][c] = 0;
+                const dirs = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
+                
+                for (let [dr, dc] of dirs) {
+                    let nr = r + dr, nc = c + dc;
+                    if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && grid[nr][nc] === 1) {
+                        grid[r + dr/2][c + dc/2] = 0;
+                        mazeDFS(nr, nc);
+                    }
+                }
+            }
+            mazeDFS(1, 1);
+
+            // Level complexity badhane ke liye random blocks kholna taaki loops banein
+            for (let i = 0; i < (rows * cols) / 5; i++) {
+                let r = Math.floor(Math.random() * (rows - 2)) + 1;
+                let col = Math.floor(Math.random() * (cols - 2)) + 1;
+                grid[r][col] = 0;
+            }
+
+            // Ball ki starting position dhundhna (Kisi khali raste par)
+            let foundStart = false;
+            for (let r = 1; r < rows && !foundStart; r++) {
+                for (let c = 1; c < cols && !foundStart; c++) {
+                    if (grid[r][c] === 0) {
+                        ball.x = c;
+                        ball.y = r;
+                        ball.targetX = c;
+                        ball.targetY = r;
+                        ball.isMoving = false;
+                        grid[r][c] = 2; // 2 matlab painted path
+                        foundStart = true;
+                    }
+                }
+            }
+            draw();
+        }
+
+        // Game Loop Drawing
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Grid
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === 1) {
+                        ctx.fillStyle = '#2f3640'; // Wall Color
+                    } else if (grid[r][c] === 2) {
+                        ctx.fillStyle = '#ff5e62'; // Painted Path Color
+                    } else {
+                        ctx.fillStyle = '#718093'; // Unpainted Path Color
+                    }
+                    ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
+                }
+            }
+
+            // Draw Ball
+            ctx.beginPath();
+            let currentBallX = ball.isMoving ? ball.x * tileSize + tileSize/2 : ball.targetX * tileSize + tileSize/2;
+            let currentBallY = ball.isMoving ? ball.y * tileSize + tileSize/2 : ball.targetY * tileSize + tileSize/2;
+            ctx.arc(currentBallX, currentBallY, tileSize * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Ball movement logic (Tab tak chalegi jab tak diwar na aaye)
+        function moveBall(dx, dy) {
+            if (ball.isMoving) return;
+
+            let nextX = ball.x;
+            let nextY = ball.y;
+
+            // Check karo ball kahan tak slide ho sakti hai
+            while (true) {
+                let checkX = nextX + dx;
+                let checkY = nextY + dy;
+                if (checkY >= 0 && checkY < rows && checkX >= 0 && checkX < cols && grid[checkY][checkX] !== 1) {
+                    nextX = checkX;
+                    nextY = checkY;
+                    grid[nextY][nextX] = 2; // Raste ko paint karte chalo
+                } else {
+                    break;
+                }
+            }
+
+            if (nextX !== ball.x || nextY !== ball.y) {
+                ball.isMoving = true;
+                ball.targetX = nextX;
+                ball.targetY = nextY;
+                
+                // Animation effect handle karne ke liye smoothly transition loop
+                let speed = 0.3; 
+                function animate() {
+                    if (Math.abs(ball.x - ball.targetX) < speed && Math.abs(ball.y - ball.targetY) < speed) {
+                        ball.x = ball.targetX;
+                        ball.y = ball.targetY;
+                        ball.isMoving = false;
+                        draw();
+                        checkWinCondition();
+                    } else {
+                        ball.x += dx * speed;
+                        ball.y += dy * speed;
+                        draw();
+                        requestAnimationFrame(animate);
+                    }
+                }
+                animate();
+            }
+        }
+
+        // Win Verification (Kya pura floor paint ho gaya?)
+        function checkWinCondition() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === 0) return; // Agar ek bhi khali floor bacha hai toh continue
+                }
+            }
+            
+            // Sab paint ho gaya toh Jeet gaye!
+            showWinPopup();
+        }
+
+        function showWinPopup() {
+            const popup = document.getElementById('popup-msg');
+            const randomMsg = winMessages[Math.floor(Math.random() * winMessages.length)];
+            popup.innerText = randomMsg;
+            popup.classList.add('show');
+
+            setTimeout(() => {
+                popup.classList.remove('show');
+                currentLevel++;
+                generateLevel(); // Auto-move to next level
+            }, 1200);
+        }
+
+        // Controls Handling (Swipe and Keyboard)
+        function handleSwipe(diffX, diffY) {
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 30) moveBall(1, 0);  // Right
+                else if (diffX < -30) moveBall(-1, 0); // Left
+            } else {
+                if (diffY > 30) moveBall(0, 1);  // Down
+                else if (diffY < -30) moveBall(0, -1); // Up
+            }
+        }
+
+        // Mouse Events
+        window.addEventListener('mousedown', e => { touchStartX = e.clientX; touchStartY = e.clientY; });
+        window.addEventListener('mouseup', e => { handleSwipe(e.clientX - touchStartX, e.clientY - touchStartY); });
+
+        // Touch Events (Mobile)
+        window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, {passive: false});
+        window.addEventListener('touchend', e => { handleSwipe(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY); }, {passive: false});
+
+        // Keyboard support backup
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowUp' || e.key === 'w') moveBall(0, -1);
+            if (e.key === 'ArrowDown' || e.key === 's') moveBall(0, 1);
+            if (e.key === 'ArrowLeft' || e.key === 'a') moveBall(-1, 0);
+            if (e.key === 'ArrowRight' || e.key === 'd') moveBall(1, 0);
+        });
+    </script>
+</body>
+</html>
