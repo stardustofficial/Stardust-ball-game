@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>STARDUST STUDIO- Ultimate Premium</title>
+    <title>Roller Splash Pro - Stardust Studio Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
 
@@ -27,35 +27,68 @@
             padding: calc(10px + env(safe-area-inset-top)) 0 calc(10px + env(safe-area-inset-bottom)) 0;
         }
 
-        /* --- SPLASH SCREEN --- */
+        /* --- STARDUST STUDIO ANIMATED SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff;
+            background: #0d0e15;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 60px 20px;
             z-index: 999;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
+        }
+        .splash-center-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-auto: auto;
+            flex-grow: 1;
+            justify-content: center;
         }
         .splash-logo {
-            font-size: 3rem;
+            font-size: 2.6rem;
             font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+            margin-bottom: 10px;
+            text-align: center;
+            animation: logoFloat 3s ease-in-out infinite alternate;
+        }
+        .splash-sub {
+            font-size: 1rem;
             color: #ff4757;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        @keyframes logoFloat {
+            0% { transform: translateY(0px); text-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+            100% { transform: translateY(-12px); text-shadow: 0 0 30px rgba(255, 71, 87, 0.9); }
         }
         .start-app-btn {
             background: #2ed573;
             color: white;
             border: none;
-            padding: 16px 50px;
-            font-size: 1.3rem;
+            padding: 18px 60px;
+            font-size: 1.4rem;
             font-weight: 900;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(46,213,115,0.3);
+            box-shadow: 0 10px 25px rgba(46,213,115,0.4);
+            transition: transform 0.1s ease;
+        }
+        .start-app-btn:active { transform: scale(0.95); }
+        .creator-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #57606f;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         /* --- SCREENS --- */
@@ -97,25 +130,25 @@
         .btn-medium { background: #ffa502; }
         .btn-hard { background: #ff4757; }
 
-        /* --- COMPACT HUD & CONTROLS --- */
+        /* --- HUD BAR --- */
         .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 5px 10px;
+            padding: 5px 5px;
             margin-bottom: 10px;
             z-index: 10;
         }
         .controls-right-group {
             display: flex;
-            gap: 12px;
+            gap: 8px;
         }
         .control-circle-btn {
             background: #ffffff;
             border: none;
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -123,13 +156,14 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .control-circle-btn svg { width: 24px; height: 24px; fill: #2f3542; }
+        .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
+        .control-circle-btn.muted svg { fill: #a4b0be; }
         
         .hud-center {
             text-align: center;
         }
-        #level-header { font-size: 1.6rem; font-weight: 900; color: #2f3542; }
-        #difficulty-label { font-size: 0.8rem; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
+        #level-header { font-size: 1.5rem; font-weight: 900; color: #2f3542; }
+        #difficulty-label { font-size: 0.75rem; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- THE MAXIMIZED NO-BORDER CANVAS CONTAINER --- */
         #canvas-container {
@@ -154,7 +188,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 10px 10px;
+            padding: 10px 5px;
             z-index: 10;
         }
         .back-btn {
@@ -171,8 +205,8 @@
         .hint-btn {
             background: #ffa502;
             border: none;
-            width: 56px;
-            height: 56px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -180,7 +214,7 @@
             justify-content: center;
             box-shadow: 0 6px 18px rgba(255, 165, 2, 0.4);
         }
-        .hint-btn svg { width: 26px; height: 26px; fill: #ffffff; }
+        .hint-btn svg { width: 24px; height: 24px; fill: #ffffff; }
 
         #popup-msg {
             position: fixed;
@@ -200,8 +234,12 @@
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo">STARDUST STUDIO</div>
-        <button class="start-app-btn" onclick="dismissSplash()">PLAY GAME</button>
+        <div class="splash-center-group">
+            <div class="splash-logo">STARDUST STUDIO</div>
+            <div class="splash-sub">PRESENTS</div>
+            <button class="start-app-btn" onclick="dismissSplash()">PLAY ARENA</button>
+        </div>
+        <div class="creator-tag">Made by Zishan</div>
     </div>
 
     <div id="menu-screen">
@@ -221,9 +259,11 @@
                 <div id="difficulty-label">EASY</div>
             </div>
             <div class="controls-right-group">
-                <button class="control-circle-btn" id="audio-toggle-btn" onclick="toggleAudioMuteState()">
-                    <svg id="sound-on-svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                    <svg id="sound-off-svg" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                <button class="control-circle-btn" id="music-toggle-btn" title="Toggle BG Music" onclick="toggleBackgroundMusic()">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                </button>
+                <button class="control-circle-btn" id="sfx-toggle-btn" title="Toggle Swipe Sounds" onclick="toggleSfxSound()">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
                 </button>
                 <button class="control-circle-btn" onclick="refreshCurrentLevel()">
                     <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -246,19 +286,20 @@
     <div id="popup-msg">PERFECT!</div>
 
     <script>
-        // --- HIGH-VOLUME MUSIC SYNTHESIZER ---
+        // --- SEPARATED AUDIO CONTROLLING SYSTEM ---
         let audioCtx = null;
-        let masterGain = null;
-        let isAudioMuted = false;
+        let musicGain = null;
+        let isMusicMuted = false;
+        let isSfxMuted = false;
         let scaleFreqs = [293.66, 329.63, 392.00, 440.00, 523.25, 587.33];
         let notePointer = 0;
 
         function initAudioEngine() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                masterGain = audioCtx.createGain();
-                masterGain.gain.setValueAtTime(isAudioMuted ? 0 : 0.85, audioCtx.currentTime);
-                masterGain.connect(audioCtx.destination);
+                musicGain = audioCtx.createGain();
+                musicGain.gain.setValueAtTime(isMusicMuted ? 0 : 0.22, audioCtx.currentTime);
+                musicGain.connect(audioCtx.destination);
                 triggerNextMelodyStep();
             }
         }
@@ -275,11 +316,11 @@
             osc.type = 'sine';
             osc.frequency.setValueAtTime(scaleFreqs[notePointer], time);
             
-            voiceGain.gain.setValueAtTime(0.18, time);
+            voiceGain.gain.setValueAtTime(1.0, time);
             voiceGain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
 
             osc.connect(voiceGain);
-            voiceGain.connect(masterGain);
+            voiceGain.connect(musicGain);
             
             osc.start(time);
             osc.stop(time + 0.35);
@@ -288,17 +329,23 @@
             setTimeout(triggerNextMelodyStep, 380);
         }
 
-        function toggleAudioMuteState() {
-            isAudioMuted = !isAudioMuted;
-            if (masterGain && audioCtx) {
-                masterGain.gain.setValueAtTime(isAudioMuted ? 0 : 0.85, audioCtx.currentTime);
+        function toggleBackgroundMusic() {
+            isMusicMuted = !isMusicMuted;
+            if (musicGain && audioCtx) {
+                musicGain.gain.setValueAtTime(isMusicMuted ? 0 : 0.22, audioCtx.currentTime);
             }
-            document.getElementById('sound-on-svg').style.display = isAudioMuted ? 'none' : 'block';
-            document.getElementById('sound-off-svg').style.display = isAudioMuted ? 'block' : 'none';
+            let btn = document.getElementById('music-toggle-btn');
+            if(isMusicMuted) btn.classList.add('muted'); else btn.classList.remove('muted');
+        }
+
+        function toggleSfxSound() {
+            isSfxMuted = !isSfxMuted;
+            let btn = document.getElementById('sfx-toggle-btn');
+            if(isSfxMuted) btn.classList.add('muted'); else btn.classList.remove('muted');
         }
 
         function playSwipeSound() {
-            if (!audioCtx || audioCtx.state === 'suspended' || isAudioMuted) return;
+            if (!audioCtx || audioCtx.state === 'suspended' || isSfxMuted) return;
             let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let g = audioCtx.createGain();
@@ -323,7 +370,7 @@
         function dismissSplash() {
             initAudioEngine();
             document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 300);
+            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 400);
         }
 
         // --- CORE GRID MAZE GAME LOGIC ---
@@ -334,7 +381,7 @@
         let currentLevel = 1;
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
-        let particles = []; // Particle splash emitter container
+        let particles = []; 
         
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
@@ -347,20 +394,12 @@
         let touchStartX = 0, touchStartY = 0;
         let pulseTimer = 0;
 
-        // Try restoring persistent saved profile immediately upon initial launch
-        if (localStorage.getItem('rs_level_save')) {
-            currentLevel = parseInt(localStorage.getItem('rs_level_save'));
-            currentDifficulty = localStorage.getItem('rs_diff_save') || 'EASY';
-        }
-
         function selectDifficulty(difficulty) {
             currentDifficulty = difficulty;
-            // Reset state if switching completely new profile
-            if (localStorage.getItem('rs_diff_save') !== difficulty) {
-                currentLevel = 1;
-            } else {
-                currentLevel = parseInt(localStorage.getItem('rs_level_save')) || 1;
-            }
+            // Load difficulty-specific progress level safely
+            let savedLevel = localStorage.getItem('rs_level_' + difficulty);
+            currentLevel = savedLevel ? parseInt(savedLevel) : 1;
+
             loadActiveGameScreen();
         }
 
@@ -502,7 +541,6 @@
                 }
             }
 
-            // Continuous animation particle pipeline processing
             for(let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.alpha -= p.decay;
@@ -611,11 +649,10 @@
             }
         }
 
-        // --- HIGH DETAILED AI BFS PUZZLE SOLVER ENGINE FOR HINT ---
+        // --- BFS AI SOLVER ENGINE FOR INTUITIVE HINTS ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
 
-            // Helper serializer function to monitor grid map states
             function getSerializedState(bx, by, gState) {
                 return `${bx},${by},` + gState.map(r => r.join('')).join('|');
             }
@@ -630,17 +667,13 @@
             }
 
             const vectors = [{dx:1, dy:0}, {dx:-1, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}];
-            
-            // Queue format stores: current position, current grid configuration, and the FIRST move direction taken
             let queue = [];
             let visitedStates = new Set();
 
-            // Setup initial root paths
             for (let v of vectors) {
                 let nx = ball.x; let ny = ball.y;
                 let clonedGrid = grid.map(r => [...r]);
                 
-                // Simulate slide motion path line execution
                 while (nx + v.dx >= 0 && nx + v.dx < cols && ny + v.dy >= 0 && ny + v.dy < rows && clonedGrid[ny + v.dy][nx + v.dx] !== 1) {
                     nx += v.dx; ny += v.dy;
                     if (clonedGrid[ny][nx] === 0) clonedGrid[ny][nx] = 2;
@@ -652,9 +685,8 @@
                 }
             }
 
-            // Run active multi-stage BFS analysis to discover full maze completion solutions
             let safetyCounter = 0;
-            while (queue.length > 0 && safetyCounter < 4000) {
+            while (queue.length > 0 && safetyCounter < 3000) {
                 safetyCounter++;
                 let curr = queue.shift();
 
@@ -682,7 +714,7 @@
                 }
             }
 
-            // Fallback recovery check if grid is altered or too complex
+            // Casual directional fallback
             const casualChecks = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1}];
             for (let d of casualChecks) {
                 let targetX = ball.x + d.dx; let targetY = ball.y + d.dy;
@@ -704,16 +736,15 @@
                 popup.classList.remove('show');
                 currentLevel++;
                 
-                // Write active progress profile inside permanent secure memory storage
-                localStorage.setItem('rs_level_save', currentLevel);
-                localStorage.setItem('rs_diff_save', currentDifficulty);
+                // Write active progress strictly under respective difficulty keys
+                localStorage.setItem('rs_level_' + currentDifficulty, currentLevel);
 
                 pickRandomColor();
                 generateValidMaze();
             }, 800);
         }
 
-        // --- REALTIME CONTINUOUS DRAG TRACKING (No finger lifting required) ---
+        // --- REALTIME CONTINUOUS DRAG TRACKING ---
         function processRealtimeTouch(currentX, currentY) {
             if (!isTouchActive || ball.isMoving) return;
             let diffX = currentX - touchStartX;
