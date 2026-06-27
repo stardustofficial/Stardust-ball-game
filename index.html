@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust Edition</title>
+    <title>Roller Splash Pro - Stardust Absolute Fixed</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
@@ -25,7 +25,7 @@
             overflow: hidden;
         }
 
-        /* --- STARDUST SPLASH SCREEN --- */
+        /* --- STARDUST SPLASH SCREEN WITH START BUTTON --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -35,36 +35,46 @@
             align-items: center;
             justify-content: center;
             z-index: 999;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
+            padding: 20px;
         }
         .splash-logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
+            font-size: 10vw;
+            max-font-size: 3.5rem;
             font-weight: 900;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-transform: uppercase;
             background: linear-gradient(45deg, #ffecb3, #ffd700, #ffb300);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(255,215,0,0.3);
-            animation: logoIntro 2.5s ease-in-out forwards;
+            text-align: center;
+            margin-bottom: 5px;
         }
         .splash-sub {
-            font-size: 1rem;
+            font-size: 4.5vw;
             color: #636e72;
             text-transform: uppercase;
-            letter-spacing: 6px;
-            margin-top: 12px;
+            letter-spacing: 8px;
+            margin-bottom: 40px;
             font-weight: 700;
-            opacity: 0;
-            animation: fadeInSub 1s ease-in-out 0.8s forwards;
+            text-align: center;
         }
-        @keyframes logoIntro {
-            0% { transform: scale(0.8); opacity: 0; filter: blur(5px); }
-            50% { transform: scale(1.05); opacity: 1; filter: blur(0); }
-            100% { transform: scale(1); opacity: 1; }
+        .start-app-btn {
+            background: linear-gradient(45deg, #ffd700, #ff9f43);
+            color: #0d0e15;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255,215,0,0.4);
+            letter-spacing: 2px;
+            transition: transform 0.1s ease;
         }
-        @keyframes fadeInSub { to { opacity: 1; } }
+        .start-app-btn:active { transform: scale(0.95); }
 
         /* --- GAME SCREENS --- */
         #menu-screen, #game-screen {
@@ -73,29 +83,29 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 480px;
+            max-width: 450px;
             height: 100vh;
             padding: 20px;
             position: absolute;
-            transition: all 0.5s ease-in-out;
+            transition: all 0.4s ease-in-out;
             opacity: 0; pointer-events: none;
         }
         #menu-screen { opacity: 1; pointer-events: auto; }
         
         h1 {
-            font-size: 3.5rem;
+            font-size: 12vw;
             color: #2c3e50;
             margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 4px;
             font-weight: 900;
-            text-shadow: 2px 4px 10px rgba(0,0,0,0.1);
         }
         .subtitle {
             color: #7f8c8d;
             margin-bottom: 40px;
-            font-size: 1.1rem;
+            font-size: 4vw;
             font-weight: 500;
+            text-align: center;
         }
         .btn {
             color: white;
@@ -110,19 +120,18 @@
             margin: 12px 0;
             text-align: center;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            letter-spacing: 1px;
         }
         .btn:active { transform: scale(0.95); }
         .btn-easy { background: linear-gradient(45deg, #11998e, #38ef7d); }
         .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
         .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
 
-        /* --- GAME LAYOUT ELEMENTS --- */
+        /* --- GAME LAYOUT --- */
         .top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 85%;
+            width: 90%;
             margin-bottom: 15px;
         }
         .settings-btn {
@@ -138,12 +147,8 @@
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .header-center {
-            text-align: center;
-            flex-grow: 1;
-        }
         #level-header {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             color: #2c3e50;
         }
@@ -155,14 +160,12 @@
             font-size: 0.8rem;
             font-weight: 800;
             margin-top: 4px;
-            letter-spacing: 1px;
         }
         #canvas-container {
             background: #ffffff;
             border-radius: 24px;
             padding: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-            position: relative;
         }
         canvas {
             display: block;
@@ -174,7 +177,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 85%;
+            width: 90%;
             margin-top: 25px;
         }
         .back-btn {
@@ -221,7 +224,6 @@
             width: 80%;
             max-width: 350px;
             text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
         .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 20px; color: #2c3e50;}
         .setting-row {
@@ -230,7 +232,6 @@
             align-items: center;
             margin: 15px 0;
             font-weight: 700;
-            font-size: 1.1rem;
         }
         .toggle-btn {
             background: #4caf50;
@@ -253,12 +254,15 @@
             font-weight: 700;
         }
 
+        /* RESPONSIVE WIN POPUP */
         #popup-msg {
             position: fixed;
-            font-size: 3.5rem;
+            width: 90%;
+            text-align: center;
+            font-size: 7.5vw;
             font-weight: 900;
             color: #f1c40f;
-            text-shadow: 3px 3px 0px #2c3e50;
+            text-shadow: 2px 2px 0px #2c3e50;
             transform: scale(0);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
@@ -272,6 +276,7 @@
     <div id="splash-screen">
         <div class="splash-logo">STARDUST</div>
         <div class="splash-sub">Studios</div>
+        <button class="start-app-btn" onclick="dismissSplashAndPlay()">START GAME</button>
     </div>
 
     <div id="menu-screen">
@@ -285,7 +290,7 @@
     <div id="game-screen">
         <div class="top-row">
             <button class="settings-btn" onclick="toggleSettingsModal(true)">⚙️</button>
-            <div class="header-center">
+            <div style="text-align: center; flex-grow: 1;">
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-badge">EASY</div>
             </div>
@@ -319,75 +324,68 @@
     <div id="popup-msg">GOOD!</div>
 
     <script>
-        // --- ADVANCED AUDIO ENGINE (WEB AUDIO API) ---
+        // --- SECURE AUDIO DRIVER ENGINE ---
         let audioCtx = null;
         let soundEnabled = true;
         let musicEnabled = true;
-        let bgMusicOsc = null;
-        let bgMusicGain = null;
+        let bgOscillator = null;
+        let bgGainNode = null;
 
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
             }
         }
 
         function playStardustIntroMusic() {
             initAudio();
             if (!soundEnabled) return;
-            
             let now = audioCtx.currentTime;
-            // Majestic Synth Chord Entry
-            let freqs = [196.00, 293.66, 392.00, 493.88]; // G Major Cinematic Chord
-            freqs.forEach((f, index) => {
+            let introNotes = [261.63, 329.63, 392.00, 523.25]; // Rich Cinematic Harmony
+            
+            introNotes.forEach((f) => {
                 let osc = audioCtx.createOscillator();
                 let gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
+                osc.type = 'triangle';
                 osc.frequency.setValueAtTime(f, now);
                 
-                // Smooth professional fade-in and long fade-out
                 gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(0.06, now + 0.4);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+                gain.gain.linearRampToValueAtTime(0.12, now + 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
                 
-                // Filter to make it warm
-                let filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(800, now);
-                
-                osc.connect(filter);
-                filter.connect(gain);
+                osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
                 osc.start(now);
-                osc.stop(now + 2.3);
+                osc.stop(now + 1.8);
             });
         }
 
-        function startBackgroundMusicLoop() {
+        function startAmbientBackgroundMusic() {
             initAudio();
-            if (!musicEnabled || bgMusicOsc) return;
+            if (!musicEnabled || bgOscillator) return;
 
             let now = audioCtx.currentTime;
-            bgMusicOsc = audioCtx.createOscillator();
-            bgMusicGain = audioCtx.createGain();
+            bgOscillator = audioCtx.createOscillator();
+            bgGainNode = audioCtx.createGain();
             
-            bgMusicOsc.type = 'triangle'; // Super soft chill tone
-            bgMusicOsc.frequency.setValueAtTime(146.83, now); // D3 comforting frequency
+            bgOscillator.type = 'sine';
+            bgOscillator.frequency.setValueAtTime(196.00, now); // Beautiful Low Ambient Synth Chord
             
-            // Subtle rhythmic volume modulation for premium chill mood
-            bgMusicGain.gain.setValueAtTime(0.04, now);
+            bgGainNode.gain.setValueAtTime(0.07, now); // Sweet soft spot volume
             
-            bgMusicOsc.connect(bgMusicGain);
-            bgMusicGain.connect(audioCtx.destination);
-            bgMusicOsc.start(now);
+            bgOscillator.connect(bgGainNode);
+            bgGainNode.connect(audioCtx.destination);
+            bgOscillator.start(now);
         }
 
-        function stopBackgroundMusicLoop() {
-            if (bgMusicOsc) {
-                try { bgMusicOsc.stop(); } catch(e){}
-                bgMusicOsc = null;
-                bgMusicGain = null;
+        function stopAmbientMusic() {
+            if (bgOscillator) {
+                try { bgOscillator.stop(); } catch(e){}
+                bgOscillator = null;
+                bgGainNode = null;
             }
         }
 
@@ -395,40 +393,35 @@
             if (!soundEnabled) return;
             initAudio();
             let now = audioCtx.currentTime;
-            
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(450, now); // High punchy start
-            osc.frequency.exponentialRampToValueAtTime(150, now + 0.12); // Deep slide down
+            osc.frequency.setValueAtTime(520, now);
+            osc.frequency.exponentialRampToValueAtTime(190, now + 0.09);
             
-            gain.gain.setValueAtTime(0.4, now); // Increased punchy volume
-            gain.gain.linearRampToValueAtTime(0.001, now + 0.14);
+            gain.gain.setValueAtTime(0.45, now); // Loud, satisfying arcade pop
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.11);
             
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start(now);
-            osc.stop(now + 0.15);
+            osc.stop(now + 0.12);
         }
 
-        // Auto-Trigger Splash Screen Assets
-        window.addEventListener('DOMContentLoaded', () => {
+        // --- BUTTON ACTION TO DISMISS SPLASH AND FIRE AUDIO ---
+        function dismissSplashAndPlay() {
+            playStardustIntroMusic();
+            
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
             setTimeout(() => {
-                playStardustIntroMusic();
-            }, 200);
+                splash.style.display = 'none';
+                startAmbientBackgroundMusic(); // Instantly triggers soft looping music
+            }, 500);
+        }
 
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    startBackgroundMusicLoop(); // Start soft ambient loop when menu loads
-                }, 800);
-            }, 2500);
-        });
-
-        // --- GAME CORE ENGINE ---
+        // --- GAME SYSTEM ENGINE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -437,10 +430,10 @@
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
         let currentPaintColor = '#38ef7d';
-        let activeHintDir = null; // Stores target hint direction {dx, dy}
+        let activeHintDir = null; // Holds {dx, dy} structure
         
         let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
-        const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!", "AMAZING!"];
+        const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!"];
         const paintColorsPool = ['#38ef7d', '#ff5e62', '#ee0979', '#f1c40f', '#2ecc71', '#9b59b6', '#00d2d3', '#ff9f43'];
         const wallColor = '#2c3e50';
         const unpaintedPathColor = '#bdc3c7';
@@ -451,17 +444,15 @@
         }
         function toggleSound() {
             soundEnabled = !soundEnabled;
-            const btn = document.getElementById('sound-toggle');
-            btn.innerText = soundEnabled ? 'ON' : 'OFF';
-            btn.className = soundEnabled ? 'toggle-btn' : 'toggle-btn off';
+            document.getElementById('sound-toggle').innerText = soundEnabled ? 'ON' : 'OFF';
+            document.getElementById('sound-toggle').className = soundEnabled ? 'toggle-btn' : 'toggle-btn off';
         }
         function toggleMusic() {
             musicEnabled = !musicEnabled;
-            const btn = document.getElementById('music-toggle');
-            btn.innerText = musicEnabled ? 'ON' : 'OFF';
-            btn.className = musicEnabled ? 'toggle-btn' : 'toggle-btn off';
-            if (musicEnabled) startBackgroundMusicLoop();
-            else stopBackgroundMusicLoop();
+            document.getElementById('music-toggle').innerText = musicEnabled ? 'ON' : 'OFF';
+            document.getElementById('music-toggle').className = musicEnabled ? 'toggle-btn' : 'toggle-btn off';
+            if (musicEnabled) startAmbientBackgroundMusic();
+            else stopAmbientMusic();
         }
 
         function startGame(difficulty) {
@@ -472,9 +463,8 @@
             
             document.getElementById('menu-screen').style.opacity = '0';
             document.getElementById('menu-screen').style.pointerEvents = 'none';
-            const gameScreen = document.getElementById('game-screen');
-            gameScreen.style.opacity = '1';
-            gameScreen.style.pointerEvents = 'auto';
+            document.getElementById('game-screen').style.opacity = '1';
+            document.getElementById('game-screen').style.pointerEvents = 'auto';
             
             const badge = document.getElementById('difficulty-badge');
             badge.innerText = difficulty;
@@ -494,43 +484,61 @@
         }
 
         function pickRandomColor() {
-            let index = Math.floor(Math.random() * paintColorsPool.length);
-            currentPaintColor = paintColorsPool[index];
+            currentPaintColor = paintColorsPool[Math.floor(Math.random() * paintColorsPool.length)];
         }
 
-        // --- FLOOD FILL VALIDATOR (Anti-trap level checker) ---
-        function isMaze100PercentSolvable() {
-            let reachableCount = 0;
-            let totalPathCells = 0;
-            let visited = Array.from({length: rows}, () => new Array(cols).fill(false));
-            
+        // --- FULL SLIDE-STOP SOLVABILITY VALIDATION ---
+        function simulateSlideSolvability() {
+            let totalFloorTiles = 0;
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 0) totalPathCells++;
+                    if (grid[r][c] === 0) totalFloorTiles++;
                 }
             }
-            totalPathCells++; // account for starting (1,1) position
+            totalFloorTiles++; // Starting point cell
+
+            let visitedStates = Array.from({length: rows}, () => new Array(cols).fill(false));
+            let paintedTilesTracker = Array.from({length: rows}, () => new Array(cols).fill(false));
             
-            let queue = [{r: 1, c: 1}];
-            visited[1][1] = true;
-            
-            while(queue.length > 0) {
+            let queue = [{x: 1, y: 1}];
+            visitedStates[1][1] = true;
+            paintedTilesTracker[1][1] = true;
+
+            const dirs = [[0,-1], [0,1], [-1,0], [1,0]];
+
+            while (queue.length > 0) {
                 let curr = queue.shift();
-                reachableCount++;
-                
-                let dirs = [[-1,0], [1,0], [0,-1], [0,1]];
-                for (let [dr, dc] of dirs) {
-                    let nr = curr.r + dr;
-                    let nc = curr.c + dc;
-                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-                        if (grid[nr][nc] === 0 && !visited[nr][nc]) {
-                            visited[nr][nc] = true;
-                            queue.push({r: nr, c: nc});
+
+                for (let [dx, dy] of dirs) {
+                    let cx = curr.x;
+                    let cy = curr.y;
+
+                    while (true) {
+                        let nx = cx + dx;
+                        let ny = cy + dy;
+                        if (ny >= 0 && ny < rows && nx >= 0 && nx < cols && grid[ny][nx] !== 1) {
+                            cx = nx;
+                            cy = ny;
+                            paintedTilesTracker[cy][cx] = true;
+                        } else {
+                            break;
                         }
+                    }
+
+                    if (!visitedStates[cy][cx]) {
+                        visitedStates[cy][cx] = true;
+                        queue.push({x: cx, y: cy});
                     }
                 }
             }
-            return reachableCount === totalPathCells;
+
+            let actualPaintedCount = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (paintedTilesTracker[r][c]) actualPaintedCount++;
+                }
+            }
+            return actualPaintedCount === totalFloorTiles;
         }
 
         function generateValidMaze() {
@@ -539,18 +547,15 @@
 
             let baseSize = currentDifficulty === 'EASY' ? 5 : currentDifficulty === 'MEDIUM' ? 7 : 9;
             let levelBonus = Math.min(Math.floor(currentLevel / 4), 2); 
-            
-            rows = baseSize + levelBonus;
-            cols = baseSize + levelBonus;
+            rows = baseSize + levelBonus; cols = baseSize + levelBonus;
             if (rows % 2 === 0) { rows++; cols++; }
 
-            const maxCanvasWidth = Math.min(window.innerWidth - 50, 400);
+            const maxCanvasWidth = Math.min(window.innerWidth - 50, 380);
             tileSize = Math.floor(maxCanvasWidth / cols);
-            canvas.width = cols * tileSize;
-            canvas.height = rows * tileSize;
+            canvas.width = cols * tileSize; canvas.height = rows * tileSize;
 
-            let generationAttempts = 0;
-            while (generationAttempts < 100) {
+            let success = false;
+            for (let attempts = 0; attempts < 300; attempts++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(1));
                 
                 function dfs(r, c) {
@@ -565,119 +570,96 @@
                     }
                 }
                 dfs(1, 1);
-                
-                if (isMaze100PercentSolvable()) {
-                    break; 
+
+                if (simulateSlideSolvability()) {
+                    success = true;
+                    break;
                 }
-                generationAttempts++;
             }
 
-            ball.x = 1; ball.y = 1;
-            ball.renderX = 1; ball.renderY = 1;
-            ball.targetX = 1; ball.targetY = 1;
-            ball.isMoving = false;
-            grid[1][1] = 2; 
-
+            ball.x = 1; ball.y = 1; ball.renderX = 1; ball.renderY = 1;
+            ball.targetX = 1; ball.targetY = 1; ball.isMoving = false;
+            grid[1][1] = 2;
             draw();
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Maze
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 1) {
-                        ctx.fillStyle = wallColor;
-                    } else if (grid[r][c] === 2) {
-                        ctx.fillStyle = currentPaintColor;
-                    } else {
-                        ctx.fillStyle = unpaintedPathColor;
-                    }
+                    if (grid[r][c] === 1) ctx.fillStyle = wallColor;
+                    else if (grid[r][c] === 2) ctx.fillStyle = currentPaintColor;
+                    else ctx.fillStyle = unpaintedPathColor;
                     ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
                 }
             }
 
-            // Continuous safe painting
             if (ball.isMoving) {
                 let currC = Math.round(ball.renderX);
                 let currR = Math.round(ball.renderY);
-                if (grid[currR][currC] === 0) {
-                    grid[currR][currC] = 2;
-                }
+                if (grid[currR][currC] === 0) grid[currR][currC] = 2;
             }
 
-            // Draw Bot Hint Neon Arrow if active
+            // --- REAL-TIME NEON HINT ARROW GRAPHICS ENGINE ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
-                let arrowX = ball.x * tileSize + tileSize / 2;
-                let arrowY = ball.y * tileSize + tileSize / 2;
-                ctx.translate(arrowX, arrowY);
+                // Safe center alignment exactly on the ball's current square
+                let renderBallX = ball.x * tileSize + tileSize / 2;
+                let renderBallY = ball.y * tileSize + tileSize / 2;
+                ctx.translate(renderBallX, renderBallY);
                 
-                // Rotate based on hint direction
                 let angle = 0;
                 if (activeHintDir.dx === 1) angle = 0;
                 if (activeHintDir.dx === -1) angle = Math.PI;
                 if (activeHintDir.dy === 1) angle = Math.PI / 2;
                 if (activeHintDir.dy === -1) angle = -Math.PI / 2;
+                
                 ctx.rotate(angle);
-
-                // Neon Arrow Geometry design
                 ctx.fillStyle = '#f1c40f';
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 10;
                 ctx.shadowColor = '#f1c40f';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.2, 0);
-                ctx.lineTo(-tileSize * 0.2, -tileSize * 0.18);
-                ctx.lineTo(-tileSize * 0.1, 0);
-                ctx.lineTo(-tileSize * 0.2,  tileSize * 0.18);
+                ctx.moveTo(tileSize * 0.22, 0);
+                ctx.lineTo(-tileSize * 0.18, -tileSize * 0.18);
+                ctx.lineTo(-tileSize * 0.08, 0);
+                ctx.lineTo(-tileSize * 0.18,  tileSize * 0.18);
                 ctx.closePath();
                 ctx.fill();
                 ctx.restore();
             }
 
-            // Draw Premium Ball
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.35, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
-            ctx.closePath();
         }
 
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
-
-            // Turn off matching hint arrow once player follows it
+            
+            // Instantly clear matching directional arrow guide on player swipe move
             if (activeHintDir && activeHintDir.dx === dx && activeHintDir.dy === dy) {
                 activeHintDir = null;
             }
 
-            let nextX = ball.x;
-            let nextY = ball.y;
-
+            let nextX = ball.x; let nextY = ball.y;
             while (true) {
-                let checkX = nextX + dx;
-                let checkY = nextY + dy;
+                let checkX = nextX + dx; let checkY = nextY + dy;
                 if (checkY >= 0 && checkY < rows && checkX >= 0 && checkX < cols && grid[checkY][checkX] !== 1) {
-                    nextX = checkX;
-                    nextY = checkY;
-                } else {
-                    break;
-                }
+                    nextX = checkX; nextY = checkY;
+                } else break;
             }
 
             if (nextX !== ball.x || nextY !== ball.y) {
                 ball.isMoving = true;
-                ball.targetX = nextX;
-                ball.targetY = nextY;
-                
-                playLoudSwipeSound(); 
+                ball.targetX = nextX; ball.targetY = nextY;
+                playLoudSwipeSound();
 
-                let speed = 0.28; 
+                let speed = 0.3;
                 function animate() {
                     let moveDone = true;
-                    
                     if (ball.renderX !== ball.targetX) {
                         let diff = ball.targetX - ball.renderX;
                         if (Math.abs(diff) <= speed) ball.renderX = ball.targetX;
@@ -690,50 +672,34 @@
                         else ball.renderY += Math.sign(diff) * speed;
                         moveDone = false;
                     }
-
                     draw();
-
                     if (moveDone) {
-                        ball.x = ball.targetX;
-                        ball.y = ball.targetY;
+                        ball.x = ball.targetX; ball.y = ball.targetY;
                         ball.isMoving = false;
                         checkWinCondition();
-                    } else {
-                        requestAnimationFrame(animate);
-                    }
+                    } else requestAnimationFrame(animate);
                 }
                 animate();
             }
         }
 
-        // --- BOT LIVE ARROW HINT LOGIC ---
+        // --- BOT LIVE BOT ARROW HINT DISCOVERY ENGINE ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
-            const directions = [
-                { dx: 0, dy: -1 }, // Up
-                { dx: 0, dy: 1 },  // Down
-                { dx: -1, dy: 0 }, // Left
-                { dx: 1, dy: 0 }   // Right
-            ];
-
-            // Look for non-colored paths first
+            const directions = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+            
+            // First Priority: Find unpainted open floor directions
             for (let d of directions) {
-                let tx = ball.x + d.dx;
-                let ty = ball.y + d.dy;
+                let tx = ball.x + d.dx; let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] === 0) {
-                    activeHintDir = d;
-                    draw();
-                    return;
+                    activeHintDir = d; draw(); return;
                 }
             }
-            // General valid direction fallback
+            // Fallback Priority: Find any unblocked passable corridor paths
             for (let d of directions) {
-                let tx = ball.x + d.dx;
-                let ty = ball.y + d.dy;
+                let tx = ball.x + d.dx; let ty = ball.y + d.dy;
                 if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] !== 1) {
-                    activeHintDir = d;
-                    draw();
-                    return;
+                    activeHintDir = d; draw(); return;
                 }
             }
         }
@@ -741,32 +707,25 @@
         function checkWinCondition() {
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 0) return; 
+                    if (grid[r][c] === 0) return;
                 }
             }
-            showWinPopup();
-        }
-
-        function showWinPopup() {
             const popup = document.getElementById('popup-msg');
             popup.innerText = winMessages[Math.floor(Math.random() * winMessages.length)];
             popup.classList.add('show');
-
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
-                pickRandomColor(); 
+                pickRandomColor();
                 generateValidMaze();
-            }, 1000);
+            }, 1100);
         }
 
         function handleSwipe(diffX, diffY) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 30) moveBall(1, 0);
-                else if (diffX < -30) moveBall(-1, 0);
+                if (diffX > 30) moveBall(1, 0); else if (diffX < -30) moveBall(-1, 0);
             } else {
-                if (diffY > 30) moveBall(0, 1);
-                else if (diffY < -30) moveBall(0, -1);
+                if (diffY > 30) moveBall(0, 1); else if (diffY < -30) moveBall(0, -1);
             }
         }
 
@@ -774,13 +733,6 @@
         window.addEventListener('mouseup', e => { handleSwipe(e.clientX - touchStartX, e.clientY - touchStartY); });
         window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
         window.addEventListener('touchend', e => { handleSwipe(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY); });
-
-        window.addEventListener('keydown', e => {
-            if (e.key === 'ArrowUp' || e.key === 'w') moveBall(0, -1);
-            if (e.key === 'ArrowDown' || e.key === 's') moveBall(0, 1);
-            if (e.key === 'ArrowLeft' || e.key === 'a') moveBall(-1, 0);
-            if (e.key === 'ArrowRight' || e.key === 'd') moveBall(1, 0);
-        });
     </script>
 </body>
 </html>
