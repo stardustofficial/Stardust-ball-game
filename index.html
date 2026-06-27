@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Unstoppable Roller</title>
+    <title>Roller Splash Pro</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,8 +13,8 @@
             padding: 0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #fdfbf7;
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -28,83 +28,153 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             height: 100vh;
             padding: 20px;
             position: absolute;
+            transition: all 0.5s ease-in-out;
         }
-        #game-screen { display: none; }
+        #game-screen { opacity: 0; pointer-events: none; transform: scale(0.9); }
         
-        h1 {
-            font-size: 3rem;
-            color: #333;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Premium Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        .subtitle {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-        .btn {
-            background: #ff5e62;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 94, 98, 0.4);
-            transition: transform 0.1s;
-            width: 80%;
-            margin: 10px 0;
-            text-align: center;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-easy { background: #4caf50; box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
-        .btn-medium { background: #ff9800; box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4); }
-        .btn-hard { background: #f44336; box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4); }
 
-        #level-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #888;
+        h1 {
+            font-size: 3.5rem;
+            color: #2c3e50;
             margin-bottom: 5px;
             text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-shadow: 2px 4px 10px rgba(0,0,0,0.1);
+            animation: bounce 3s ease-in-out infinite;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .btn {
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 85%;
+            margin: 12px 0;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            letter-spacing: 1px;
+        }
+        .btn:active { transform: scale(0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn-easy { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
+        .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
+
+        #level-header {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 2px;
         }
         #difficulty-badge {
-            padding: 5px 15px;
-            border-radius: 15px;
+            padding: 6px 20px;
+            border-radius: 50px;
             color: white;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         #canvas-container {
-            background: #dcdde1;
-            border-radius: 15px;
-            padding: 10px;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            position: relative;
         }
         canvas {
             display: block;
-            border-radius: 8px;
-            background: #2f3640;
+            border-radius: 16px;
+            background: #ecf0f1;
         }
+        
+        /* Bottom Controls Row */
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 85%;
+            margin-top: 25px;
+        }
+        .back-btn {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .hint-btn {
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 15px rgba(241, 196, 15, 0.4);
+            animation: pulse 2s infinite;
+        }
+
         #popup-msg {
             position: fixed;
             font-size: 3.5rem;
             font-weight: 900;
-            color: #fbc531;
-            text-shadow: 3px 3px 0px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            color: #f1c40f;
+            text-shadow: 3px 3px 0px #2c3e50;
             transform: scale(0);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
             z-index: 10;
         }
         #popup-msg.show { transform: scale(1); }
+        
+        #hint-text {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        #hint-text.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -119,11 +189,15 @@
 
     <div id="game-screen">
         <div id="level-header">Level <span id="level-num">1</span></div>
-        <div id="difficulty-badge"></div>
+        <div id="difficulty-badge">EASY</div>
         <div id="canvas-container">
             <canvas id="gameCanvas"></canvas>
+            <div id="hint-text">Bot: Try moving Up!</div>
         </div>
-        <button class="btn" style="background:#666; box-shadow:none; margin-top:20px; padding:10px 25px; font-size:1rem; width:auto;" onclick="backToMenu()">Menu</button>
+        <div class="bottom-controls">
+            <button class="back-btn" onclick="backToMenu()">Menu</button>
+            <button class="hint-btn" onclick="giveHint()">💡</button>
+        </div>
     </div>
 
     <div id="popup-msg">GOOD!</div>
@@ -135,143 +209,145 @@
         let currentDifficulty = 'EASY';
         let currentLevel = 1;
         let grid = [];
-        let rows = 0;
-        let cols = 0;
-        let tileSize = 0;
+        let rows = 0, cols = 0, tileSize = 0;
         
-        let ball = { x: 0, y: 0, targetX: 0, targetY: 0, isMoving: false, vx: 0, vy: 0 };
+        // Ball exact dynamic pixel tracking for ultra smooth paint
+        let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
         
         const winMessages = ["GOOD!", "GREAT!", "UNSTOPPABLE!", "AWESOME!", "PERFECT!", "AMAZING!"];
-        
-        // Touch/Mouse Swipe tracking Variables
-        let touchStartX = 0;
-        let touchStartY = 0;
+        const themeColors = {
+            EASY: { wall: '#2c3e50', path: '#bdc3c7', paint: '#38ef7d', ball: '#ffffff' },
+            MEDIUM: { wall: '#2c3e50', path: '#bdc3c7', paint: '#ff5e62', ball: '#ffffff' },
+            HARD: { wall: '#2c3e50', path: '#bdc3c7', paint: '#ee0979', ball: '#ffffff' }
+        };
+
+        let touchStartX = 0, touchStartY = 0;
 
         function startGame(difficulty) {
             currentDifficulty = difficulty;
             currentLevel = 1;
-            document.getElementById('menu-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'flex';
+            
+            document.getElementById('menu-screen').style.opacity = '0';
+            document.getElementById('menu-screen').style.pointerEvents = 'none';
+            
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.style.opacity = '1';
+            gameScreen.style.pointerEvents = 'auto';
+            gameScreen.style.transform = 'scale(1)';
             
             const badge = document.getElementById('difficulty-badge');
             badge.innerText = difficulty;
-            badge.className = ''; 
-            badge.classList.add('btn-' + difficulty.toLowerCase());
+            badge.style.background = difficulty === 'EASY' ? 'linear-gradient(45deg, #11998e, #38ef7d)' : 
+                                    difficulty === 'MEDIUM' ? 'linear-gradient(45deg, #ff9966, #ff5e62)' : 
+                                    'linear-gradient(45deg, #ee0979, #ff6a00)';
 
-            generateLevel();
+            generateValidMaze();
         }
 
         function backToMenu() {
-            document.getElementById('menu-screen').style.display = 'flex';
-            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('menu-screen').style.opacity = '1';
+            document.getElementById('menu-screen').style.pointerEvents = 'auto';
+            
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.style.opacity = '0';
+            gameScreen.style.pointerEvents = 'none';
+            gameScreen.style.transform = 'scale(0.9)';
         }
 
-        // Procedural Maze Generator (Level badhne par size aur complexity badhegi)
-        function generateLevel() {
+        // 100% Solvable Perfect Maze Builder (No Dead Blocks)
+        function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
 
-            // Difficulty aur Level ke hisab se grid ka size set karna
-            let baseSize = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
-            let levelBonus = Math.min(Math.floor(currentLevel / 5), 4); // Max +4 size caps
+            let baseSize = currentDifficulty === 'EASY' ? 5 : currentDifficulty === 'MEDIUM' ? 7 : 9;
+            let levelBonus = Math.min(Math.floor(currentLevel / 4), 3); 
             
+            // Grid must be odd for DFS perfect cell calculation
             rows = baseSize + levelBonus;
             cols = baseSize + levelBonus;
+            if (rows % 2 === 0) { rows++; cols++; }
 
-            // Canvas responsive sizing
-            const maxCanvasWidth = Math.min(window.innerWidth - 40, 450);
+            const maxCanvasWidth = Math.min(window.innerWidth - 50, 400);
             tileSize = Math.floor(maxCanvasWidth / cols);
             canvas.width = cols * tileSize;
             canvas.height = rows * tileSize;
 
-            // Grid array initialize karein (1 = Wall, 0 = Empty/Unpainted Path)
-            grid = [];
-            for (let r = 0; r < rows; r++) {
-                grid.push(new Array(cols).fill(1));
-            }
+            grid = Array.from({length: rows}, () => new Array(cols).fill(1));
 
-            // Simple DFS Algorithm se raste (paths) banana
-            function mazeDFS(r, c) {
+            // Generate clean solvable paths
+            function dfs(r, c) {
                 grid[r][c] = 0;
-                const dirs = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
-                
-                for (let [dr, dc] of dirs) {
+                const directions = [[-2, 0], [2, 0], [0, -2], [0, 2]].sort(() => Math.random() - 0.5);
+                for (let [dr, dc] of directions) {
                     let nr = r + dr, nc = c + dc;
                     if (nr > 0 && nr < rows - 1 && nc > 0 && nc < cols - 1 && grid[nr][nc] === 1) {
                         grid[r + dr/2][c + dc/2] = 0;
-                        mazeDFS(nr, nc);
+                        dfs(nr, nc);
                     }
                 }
             }
-            mazeDFS(1, 1);
+            dfs(1, 1);
 
-            // Level complexity badhane ke liye random blocks kholna taaki loops banein
-            for (let i = 0; i < (rows * cols) / 5; i++) {
-                let r = Math.floor(Math.random() * (rows - 2)) + 1;
-                let col = Math.floor(Math.random() * (cols - 2)) + 1;
-                grid[r][col] = 0;
-            }
+            // Set Ball start position securely
+            ball.x = 1; ball.y = 1;
+            ball.renderX = 1; ball.renderY = 1;
+            ball.targetX = 1; ball.targetY = 1;
+            ball.isMoving = false;
+            grid[1][1] = 2; // Paint starting point
 
-            // Ball ki starting position dhundhna (Kisi khali raste par)
-            let foundStart = false;
-            for (let r = 1; r < rows && !foundStart; r++) {
-                for (let c = 1; c < cols && !foundStart; c++) {
-                    if (grid[r][c] === 0) {
-                        ball.x = c;
-                        ball.y = r;
-                        ball.targetX = c;
-                        ball.targetY = r;
-                        ball.isMoving = false;
-                        grid[r][c] = 2; // 2 matlab painted path
-                        foundStart = true;
-                    }
-                }
-            }
             draw();
         }
 
-        // Game Loop Drawing
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let colors = themeColors[currentDifficulty];
 
-            // Draw Grid
+            // Render Maze Cells
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
-                        ctx.fillStyle = '#2f3640'; // Wall Color
+                        ctx.fillStyle = colors.wall;
                     } else if (grid[r][c] === 2) {
-                        ctx.fillStyle = '#ff5e62'; // Painted Path Color
+                        ctx.fillStyle = colors.paint;
                     } else {
-                        ctx.fillStyle = '#718093'; // Unpainted Path Color
+                        ctx.fillStyle = colors.path;
                     }
                     ctx.fillRect(c * tileSize, r * tileSize, tileSize, tileSize);
                 }
             }
 
-            // Draw Ball
+            // Real-time painting while ball is sliding smoothly
+            if (ball.isMoving) {
+                let currC = Math.round(ball.renderX);
+                let currR = Math.round(ball.renderY);
+                if (grid[currR][currC] === 0) {
+                    grid[currR][currC] = 2;
+                }
+            }
+
+            // Draw Smooth Ball
             ctx.beginPath();
-            let currentBallX = ball.isMoving ? ball.x * tileSize + tileSize/2 : ball.targetX * tileSize + tileSize/2;
-            let currentBallY = ball.isMoving ? ball.y * tileSize + tileSize/2 : ball.targetY * tileSize + tileSize/2;
-            ctx.arc(currentBallX, currentBallY, tileSize * 0.35, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
+            ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = colors.ball;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "rgba(0,0,0,0.2)";
             ctx.fill();
+            ctx.shadowBlur = 0; // Reset shadow
             ctx.closePath();
         }
 
-        // Ball movement logic (Tab tak chalegi jab tak diwar na aaye)
         function moveBall(dx, dy) {
             if (ball.isMoving) return;
 
             let nextX = ball.x;
             let nextY = ball.y;
 
-            // Check karo ball kahan tak slide ho sakti hai
+            // Find wall landing spot
             while (true) {
                 let checkX = nextX + dx;
                 let checkY = nextY + dy;
                 if (checkY >= 0 && checkY < rows && checkX >= 0 && checkX < cols && grid[checkY][checkX] !== 1) {
                     nextX = checkX;
                     nextY = checkY;
-                    grid[nextY][nextX] = 2; // Raste ko paint karte chalo
                 } else {
                     break;
                 }
@@ -282,19 +358,31 @@
                 ball.targetX = nextX;
                 ball.targetY = nextY;
                 
-                // Animation effect handle karne ke liye smoothly transition loop
-                let speed = 0.3; 
+                let speed = 0.25; // Smooth movement speed
                 function animate() {
-                    if (Math.abs(ball.x - ball.targetX) < speed && Math.abs(ball.y - ball.targetY) < speed) {
+                    let moveDone = true;
+                    
+                    if (ball.renderX !== ball.targetX) {
+                        let diff = ball.targetX - ball.renderX;
+                        if (Math.abs(diff) <= speed) ball.renderX = ball.targetX;
+                        else ball.renderX += Math.sign(diff) * speed;
+                        moveDone = false;
+                    }
+                    if (ball.renderY !== ball.targetY) {
+                        let diff = ball.targetY - ball.renderY;
+                        if (Math.abs(diff) <= speed) ball.renderY = ball.targetY;
+                        else ball.renderY += Math.sign(diff) * speed;
+                        moveDone = false;
+                    }
+
+                    draw();
+
+                    if (moveDone) {
                         ball.x = ball.targetX;
                         ball.y = ball.targetY;
                         ball.isMoving = false;
-                        draw();
                         checkWinCondition();
                     } else {
-                        ball.x += dx * speed;
-                        ball.y += dy * speed;
-                        draw();
                         requestAnimationFrame(animate);
                     }
                 }
@@ -302,51 +390,81 @@
             }
         }
 
-        // Win Verification (Kya pura floor paint ho gaya?)
-        function checkWinCondition() {
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 0) return; // Agar ek bhi khali floor bacha hai toh continue
+        // Automated AI Idea / Bot Hint generator
+        function giveHint() {
+            if (ball.isMoving) return;
+            const directions = [
+                { name: 'Up', dx: 0, dy: -1 },
+                { name: 'Down', dx: 0, dy: 1 },
+                { name: 'Left', dx: -1, dy: 0 },
+                { name: 'Right', dx: 1, dy: 0 }
+            ];
+
+            // AI looks for paths that haven't been painted yet
+            for (let d of directions) {
+                let tx = ball.x + d.dx;
+                let ty = ball.y + d.dy;
+                if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] === 0) {
+                    showHintPopup(`Bot: Swipe ${d.name}!`);
+                    return;
                 }
             }
             
-            // Sab paint ho gaya toh Jeet gaye!
+            // Backup generic open path hint
+            for (let d of directions) {
+                let tx = ball.x + d.dx;
+                let ty = ball.y + d.dy;
+                if (ty >= 0 && ty < rows && tx >= 0 && tx < cols && grid[ty][tx] !== 1) {
+                    showHintPopup(`Bot: Try moving ${d.name}!`);
+                    return;
+                }
+            }
+        }
+
+        function showHintPopup(msg) {
+            const el = document.getElementById('hint-text');
+            el.innerText = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2000);
+        }
+
+        function checkWinCondition() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === 0) return; 
+                }
+            }
             showWinPopup();
         }
 
         function showWinPopup() {
             const popup = document.getElementById('popup-msg');
-            const randomMsg = winMessages[Math.floor(Math.random() * winMessages.length)];
-            popup.innerText = randomMsg;
+            popup.innerText = winMessages[Math.floor(Math.random() * winMessages.length)];
             popup.classList.add('show');
 
             setTimeout(() => {
                 popup.classList.remove('show');
                 currentLevel++;
-                generateLevel(); // Auto-move to next level
-            }, 1200);
+                generateValidMaze();
+            }, 1000);
         }
 
-        // Controls Handling (Swipe and Keyboard)
+        // Swipe Controls Logic
         function handleSwipe(diffX, diffY) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 30) moveBall(1, 0);  // Right
-                else if (diffX < -30) moveBall(-1, 0); // Left
+                if (diffX > 30) moveBall(1, 0);
+                else if (diffX < -30) moveBall(-1, 0);
             } else {
-                if (diffY > 30) moveBall(0, 1);  // Down
-                else if (diffY < -30) moveBall(0, -1); // Up
+                if (diffY > 30) moveBall(0, 1);
+                else if (diffY < -30) moveBall(0, -1);
             }
         }
 
-        // Mouse Events
         window.addEventListener('mousedown', e => { touchStartX = e.clientX; touchStartY = e.clientY; });
         window.addEventListener('mouseup', e => { handleSwipe(e.clientX - touchStartX, e.clientY - touchStartY); });
+        window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
+        window.addEventListener('touchend', e => { handleSwipe(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY); });
 
-        // Touch Events (Mobile)
-        window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, {passive: false});
-        window.addEventListener('touchend', e => { handleSwipe(e.changedTouches[0].clientX - touchStartX, e.changedTouches[0].clientY - touchStartY); }, {passive: false});
-
-        // Keyboard support backup
         window.addEventListener('keydown', e => {
             if (e.key === 'ArrowUp' || e.key === 'w') moveBall(0, -1);
             if (e.key === 'ArrowDown' || e.key === 's') moveBall(0, 1);
