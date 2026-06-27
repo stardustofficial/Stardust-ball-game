@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roller Splash Pro - Stardust Final Edition</title>
+    <title>Roller Splash Pro - Stardust Master Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2 family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -126,7 +126,7 @@
         .btn-medium { background: linear-gradient(45deg, #ff9966, #ff5e62); }
         .btn-hard { background: linear-gradient(45deg, #ee0979, #ff6a00); }
 
-        /* --- TOP ROW CONTROLS --- */
+        /* --- TOP ROW CONTROLS WITH VECTOR SVGS --- */
         .top-row {
             display: flex;
             justify-content: space-between;
@@ -140,7 +140,6 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            font-size: 1.2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -149,6 +148,11 @@
             transition: transform 0.1s ease;
         }
         .control-circle-btn:active { transform: scale(0.9); }
+        .control-circle-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #2c3e50;
+        }
         
         #level-header {
             font-size: 1.6rem;
@@ -177,7 +181,7 @@
             background: #ecf0f1;
         }
         
-        /* --- BOTTOM FOOTER SYSTEM --- */
+        /* --- BOTTOM CONTROLS --- */
         .bottom-controls {
             display: flex;
             justify-content: space-between;
@@ -196,20 +200,25 @@
         }
         .hint-btn {
             background: #f1c40f;
-            color: #2c3e50;
             border: none;
             width: 55px;
             height: 55px;
             border-radius: 50%;
-            font-size: 1.6rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 6px 15px rgba(241, 196, 15, 0.4);
+            transition: transform 0.1s ease;
+        }
+        .hint-btn:active { transform: scale(0.9); }
+        .hint-btn svg {
+            width: 26px;
+            height: 26px;
+            fill: #2c3e50;
         }
 
-        /* --- SETTINGS PANEL --- */
+        /* --- MODAL DIALOGS --- */
         #settings-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -293,12 +302,20 @@
 
     <div id="game-screen">
         <div class="top-row">
-            <button class="control-circle-btn" onclick="toggleSettingsModal(true)">⚙️</button>
+            <button class="control-circle-btn" onclick="toggleSettingsModal(true)">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3-1.57-3-3.5s1.07-3.5 3-3.5 3 1.57 3 3.5-1.07 3.5-3 3.5z"/>
+                </svg>
+            </button>
             <div style="text-align: center; flex-grow: 1;">
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-badge">EASY</div>
             </div>
-            <button class="control-circle-btn" onclick="refreshCurrentLevel()" title="Reset Level">🔄</button>
+            <button class="control-circle-btn" onclick="refreshCurrentLevel()" title="Reset Level">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+            </button>
         </div>
 
         <div id="canvas-container">
@@ -306,7 +323,11 @@
         </div>
         <div class="bottom-controls">
             <button class="back-btn" onclick="backToMenu()">Menu</button>
-            <button class="hint-btn" onclick="triggerHintArrow()">💡</button>
+            <button class="hint-btn" onclick="triggerHintArrow()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C7.58 2 4 5.58 4 10c0 2.66 1.29 5.02 3.28 6.5l.02.02c.4.3.7.7.7 1.18V19c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-1.3c0-.48.3-.88.7-1.18l.02-.02C18.71 15.02 20 12.66 20 10c0-4.42-3.58-8-8-8zm1 16h-2v-1h2v1zm0-2.5h-2c0-1.5-1.5-1.5-1.5-3 0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 1.5-1.5 1.5-1.5 3z"/>
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -328,7 +349,7 @@
     <div id="popup-msg">GOOD!</div>
 
     <script>
-        // --- SECURE LOW-LATENCY AUDIO DRIVER ENGINE ---
+        // --- STARDUST AUDIO ARCHITECTURE ---
         let audioCtx = null;
         let soundEnabled = true;
         let musicEnabled = true;
@@ -365,7 +386,6 @@
             });
         }
 
-        // True Continuous Looping Soft Ambient Background Music Engine
         function startAmbientBackgroundMusic() {
             initAudio();
             if (!musicEnabled || bgOscillator) return;
@@ -375,8 +395,8 @@
             bgGainNode = audioCtx.createGain();
             
             bgOscillator.type = 'sine';
-            bgOscillator.frequency.setValueAtTime(220.00, now); // Sweet Low-pitch Melodic Tone
-            bgGainNode.gain.setValueAtTime(0.06, now); // Soft background volume
+            bgOscillator.frequency.setValueAtTime(220.00, now); 
+            bgGainNode.gain.setValueAtTime(0.06, now); 
             
             bgOscillator.connect(bgGainNode);
             bgGainNode.connect(audioCtx.destination);
@@ -415,12 +435,12 @@
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
-                startAmbientBackgroundMusic(); // Music triggers safely on action callback
+                startAmbientBackgroundMusic(); 
                 checkSavedGameStatus();
             }, 500);
         }
 
-        // --- GAME SYSTEM SYSTEM ---
+        // --- MASTER CORE ENGINE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -455,8 +475,8 @@
         }
 
         function checkSavedGameStatus() {
-            const savedLevel = localStorage.getItem('roller_stardust_lvl');
-            const savedDiff = localStorage.getItem('roller_stardust_diff');
+            const savedLevel = localStorage.getItem('stardust_lvl');
+            const savedDiff = localStorage.getItem('stardust_diff');
             if (savedLevel && savedDiff) {
                 currentLevel = parseInt(savedLevel);
                 currentDifficulty = savedDiff;
@@ -467,8 +487,8 @@
         function selectDifficulty(difficulty) {
             currentDifficulty = difficulty;
             currentLevel = 1;
-            localStorage.setItem('roller_stardust_lvl', currentLevel);
-            localStorage.setItem('roller_stardust_diff', currentDifficulty);
+            localStorage.setItem('stardust_lvl', currentLevel);
+            localStorage.setItem('stardust_diff', currentDifficulty);
             loadActiveGameScreen();
         }
 
@@ -500,12 +520,10 @@
             currentPaintColor = paintColorsPool[Math.floor(Math.random() * paintColorsPool.length)];
         }
 
-        // --- LEVEL REFRESH MECHANISM (Resets map paint while preserving level scale) ---
+        // --- LEVEL REFRESH ENGINE (Preserves Map Structure, Clears Paint Status) ---
         function refreshCurrentLevel() {
             if (ball.isMoving) return;
             activeHintDir = null;
-            
-            // Clear layout painting status back to clean state
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 2) grid[r][c] = 0;
@@ -513,11 +531,11 @@
             }
             ball.x = 1; ball.y = 1; ball.renderX = 1; ball.renderY = 1;
             ball.targetX = 1; ball.targetY = 1;
-            grid[1][1] = 2; // Initial position painted
+            grid[1][1] = 2; 
             draw();
         }
 
-        // --- ANTI-GLITCH SLIDE SOLVER (Ensures 100% full corridor wall hitting coverage) ---
+        // --- ADVANCED SLIDE-STOP SOLVER (Checks and Rejects Trap Tiles Globally) ---
         function checkSlideCoverage() {
             let visitedPoints = Array.from({length: rows}, () => new Array(cols).fill(false));
             let paintedTracker = Array.from({length: rows}, () => new Array(cols).fill(false));
@@ -535,7 +553,7 @@
                     let cx = curr.x;
                     let cy = curr.y;
 
-                    // Keep sliding until a wall block is triggered
+                    // Simulated Slide Physics matching grid mechanics
                     while (cx + dx >= 0 && cx + dx < cols && cy + dy >= 0 && cy + dy < rows && grid[cy + dy][cx + dx] !== 1) {
                         cx += dx;
                         cy += dy;
@@ -549,10 +567,11 @@
                 }
             }
 
+            // Reject layout instantly if any floor path is completely unreachable via standard slide stops
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 0 && !paintedTracker[r][c]) {
-                        return false; // Found a trapped unpaintable grey tile floor block
+                        return false; 
                     }
                 }
             }
@@ -571,10 +590,9 @@
             canvas.width = cols * tileSize; canvas.height = rows * tileSize;
 
             let stable = false;
-            for (let loop = 0; loop < 1000; loop++) {
+            for (let loop = 0; loop < 2000; loop++) {
                 grid = Array.from({length: rows}, () => new Array(cols).fill(1));
                 
-                // Deep Standard Perfect Maze DFS Generator Block
                 let stack = [{r: 1, c: 1}];
                 grid[1][1] = 0;
 
@@ -600,6 +618,15 @@
                     }
                 }
 
+                // Add random outer wall structures to enrich corner bounce spots
+                for (let i = 0; i < (size === 7 ? 2 : size === 9 ? 4 : 6); i++) {
+                    let rx = Math.floor(Math.random() * (cols - 2)) + 1;
+                    let ry = Math.floor(Math.random() * (rows - 2)) + 1;
+                    if ((rx !== 1 || ry !== 1) && grid[ry][rx] === 0) {
+                        grid[ry][rx] = 1;
+                    }
+                }
+
                 if (checkSlideCoverage()) {
                     stable = true;
                     break;
@@ -615,7 +642,6 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Level Grid Walls/Paths
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) ctx.fillStyle = wallColor;
@@ -625,14 +651,13 @@
                 }
             }
 
-            // Continuous Path Painter Trail Tracker Engine
             if (ball.isMoving) {
                 let checkR = Math.round(ball.renderY);
                 let checkC = Math.round(ball.renderX);
                 if (grid[checkR][checkC] === 0) grid[checkR][checkC] = 2;
             }
 
-            // --- NEON GLOW HINT ARROW GRAPHICS ENGINE ---
+            // --- PRO NEON GLOW HINT ARROW ---
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 let exactBallX = ball.x * tileSize + tileSize / 2;
@@ -647,11 +672,11 @@
                 
                 ctx.rotate(angle);
                 ctx.fillStyle = '#f1c40f';
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 18;
                 ctx.shadowColor = '#f1c40f';
                 
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.28, 0);
+                ctx.moveTo(tileSize * 0.3, 0);
                 ctx.lineTo(-tileSize * 0.15, -tileSize * 0.22);
                 ctx.lineTo(-tileSize * 0.04, 0);
                 ctx.lineTo(-tileSize * 0.15,  tileSize * 0.22);
@@ -660,7 +685,6 @@
                 ctx.restore();
             }
 
-            // Smooth Moving Ball Render
             ctx.beginPath();
             ctx.arc(ball.renderX * tileSize + tileSize/2, ball.renderY * tileSize + tileSize/2, tileSize * 0.36, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
@@ -672,7 +696,7 @@
             if (ball.isMoving) return;
             
             if (activeHintDir) {
-                activeHintDir = null; // Clear hint instantly on action
+                activeHintDir = null; 
             }
 
             let nextX = ball.x; let nextY = ball.y;
@@ -712,7 +736,7 @@
             }
         }
 
-        // --- HINT ENGINE BOT (Looks for valid gray or open paths) ---
+        // --- HINT ENGINE BOT ---
         function triggerHintArrow() {
             if (ball.isMoving) return;
             const checks = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
@@ -744,9 +768,8 @@
                 popup.classList.remove('show');
                 currentLevel++;
                 
-                // Absolute Persistent Auto-Save Trigger
-                localStorage.setItem('roller_stardust_lvl', currentLevel);
-                localStorage.setItem('roller_stardust_diff', currentDifficulty);
+                localStorage.setItem('stardust_lvl', currentLevel);
+                localStorage.setItem('stardust_diff', currentDifficulty);
                 
                 pickRandomColor();
                 generateValidMaze();
