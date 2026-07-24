@@ -29,7 +29,7 @@
             touch-action: none;
         }
 
-        /* --- 1. ORIGINAL STARDUST SPLASH SCREEN --- */
+        /* --- 1. STARDUST SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -92,20 +92,34 @@
             text-transform: uppercase;
         }
 
-        /* --- 2. HOME HUD & XP BAR --- */
-        .top-profile-bar {
+        /* --- SCREENS --- */
+        #menu-screen, #game-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
             max-width: 500px;
-            padding: 12px 16px;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0; right: 0; margin: auto;
+            padding: calc(15px + env(safe-area-inset-top)) 15px calc(15px + env(safe-area-inset-bottom)) 15px;
+            transition: opacity 0.2s ease;
+        }
+        #menu-screen { justify-content: space-between; z-index: 5; }
+        #game-screen { opacity: 0; pointer-events: none; justify-content: flex-start; }
+
+        /* HOME SCREEN PROFILE & HUD HEADER */
+        .home-profile-header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
+            margin-bottom: 10px;
         }
         .profile-box {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: #ffffff;
             padding: 8px 16px;
             border-radius: 30px;
@@ -132,9 +146,10 @@
         }
         .xp-fill { height: 100%; width: 20%; background: #2ed573; transition: width 0.3s ease; }
 
+        .header-right-group { display: flex; gap: 8px; align-items: center; }
         .coin-chip {
             background: #ffffff;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 30px;
             font-weight: 900;
             color: #ffa502;
@@ -142,30 +157,39 @@
             align-items: center;
             gap: 6px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
         }
         .coin-chip svg { width: 18px; height: 18px; fill: #ffa502; }
 
-        /* --- SCREENS --- */
-        #menu-screen, #game-screen {
+        .shop-btn {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(30,144,255,0.3);
+        }
+        .shop-btn svg { width: 16px; height: 16px; fill: #ffffff; }
+
+        .home-main-content {
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 500px;
-            height: 100%;
-            position: absolute;
-            top: 0; left: 0; right: 0; margin: auto;
-            padding: calc(10px + env(safe-area-inset-top)) 15px calc(15px + env(safe-area-inset-bottom)) 15px;
-            transition: opacity 0.2s ease;
+            margin: auto 0;
         }
-        #menu-screen { justify-content: center; z-index: 5; }
-        #game-screen { opacity: 0; pointer-events: none; }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             color: #2f3542;
             font-weight: 900;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: center;
             line-height: 1.1;
         }
@@ -188,13 +212,13 @@
         .btn-medium { background: #ffa502; }
         .btn-hard { background: #ff4757; }
 
-        /* --- HUD CONTROLS --- */
+        /* --- CLEAN GAMEPLAY HUD --- */
         .hud-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             z-index: 10;
         }
         .control-circle-btn {
@@ -210,10 +234,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
-        .control-circle-btn.muted svg { fill: #a4b0be; }
 
         .hud-center { text-align: center; }
-        #level-header { font-size: 1.3rem; font-weight: 900; color: #2f3542; }
+        #level-header { font-size: 1.4rem; font-weight: 900; color: #2f3542; }
         #difficulty-label { font-size: 0.75rem; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
 
         /* --- FULL SCREEN CANVAS ARENA --- */
@@ -223,7 +246,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px 0;
+            padding: 0;
             position: relative;
         }
         canvas {
@@ -231,31 +254,9 @@
             border: none;
             outline: none;
             background: #ffffff;
-            border-radius: 18px;
+            border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
-
-        .bottom-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 8px 5px;
-            z-index: 10;
-        }
-        .hint-btn {
-            background: #ffa502;
-            border: none;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 18px rgba(255, 165, 2, 0.4);
-        }
-        .hint-btn svg { width: 24px; height: 24px; fill: #ffffff; }
 
         #popup-msg {
             position: fixed;
@@ -284,35 +285,43 @@
         <div class="creator-tag">Made by Zishan</div>
     </div>
 
-    <!-- PLAYER PROFILE HUD -->
-    <div class="top-profile-bar">
-        <div class="profile-box">
-            <div class="avatar-circle">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            </div>
-            <div class="xp-group">
-                <span class="xp-text">LVL <span id="player-lvl-num">1</span></span>
-                <div class="xp-track"><div class="xp-fill" id="xp-fill-bar"></div></div>
-            </div>
-        </div>
-        <div class="coin-chip">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-            <span id="coin-counter">100</span>
-        </div>
-    </div>
-
-    <!-- HOME MENU SCREEN -->
+    <!-- HOME MENU SCREEN WITH ALL ELEMENTS (XP, COINS, SHOP) -->
     <div id="menu-screen">
-        <h1>ROLLER SPLASH</h1>
-        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY ARENA</button>
-        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM ARENA</button>
-        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD ARENA</button>
+        <div class="home-profile-header">
+            <div class="profile-box">
+                <div class="avatar-circle">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="xp-group">
+                    <span class="xp-text">LVL <span id="player-lvl-num">1</span></span>
+                    <div class="xp-track"><div class="xp-fill" id="xp-fill-bar"></div></div>
+                </div>
+            </div>
+            
+            <div class="header-right-group">
+                <div class="coin-chip">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                    <span id="coin-counter">100</span>
+                </div>
+                <button class="shop-btn" onclick="alert('Shop feature coming soon!')">
+                    <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    SHOP
+                </button>
+            </div>
+        </div>
+
+        <div class="home-main-content">
+            <h1>ROLLER SPLASH</h1>
+            <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY ARENA</button>
+            <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM ARENA</button>
+            <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD ARENA</button>
+        </div>
     </div>
 
-    <!-- GAMEPLAY ARENA SCREEN -->
+    <!-- GAMEPLAY ARENA SCREEN (CLEAN, NO EXTRA ICONS) -->
     <div id="game-screen">
         <div class="hud-row">
-            <!-- HOME ICON BUTTON -->
+            <!-- ONLY HOME ICON BUTTON LEFT -->
             <button class="control-circle-btn" title="Go to Home Screen" onclick="backToMenu()">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             </button>
@@ -320,27 +329,12 @@
                 <div id="level-header">Level <span id="level-num">1</span></div>
                 <div id="difficulty-label">EASY MODE</div>
             </div>
-            <div style="display: flex; gap: 8px;">
-                <button class="control-circle-btn" id="sfx-toggle-btn" title="Toggle SFX Sound" onclick="toggleSfxSound()">
-                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-                </button>
-                <button class="control-circle-btn" title="Restart Level" onclick="refreshCurrentLevel()">
-                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                </button>
-            </div>
+            <!-- Dummy spacer to balance UI symmetry -->
+            <div style="width: 44px;"></div>
         </div>
 
         <div id="canvas-container">
             <canvas id="gameCanvas"></canvas>
-        </div>
-
-        <div class="bottom-controls">
-            <button class="control-circle-btn" onclick="backToMenu()">
-                <svg viewBox="0 0 24 24"><path d="M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"/></svg>
-            </button>
-            <button class="hint-btn" onclick="triggerHintArrow()">
-                <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
-            </button>
         </div>
     </div>
 
@@ -349,14 +343,13 @@
     <script>
         // --- AUDIO ENGINE ---
         let audioCtx = null;
-        let isSfxMuted = false;
 
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
 
         function playSwipeSound() {
-            if (!audioCtx || audioCtx.state === 'suspended' || isSfxMuted) return;
+            if (!audioCtx || audioCtx.state === 'suspended') return;
             let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
             let g = audioCtx.createGain();
@@ -367,11 +360,6 @@
             g.gain.linearRampToValueAtTime(0.001, time + 0.05);
             osc.connect(g); g.connect(audioCtx.destination);
             osc.start(time); osc.stop(time + 0.06);
-        }
-
-        function toggleSfxSound() {
-            isSfxMuted = !isSfxMuted;
-            document.getElementById('sfx-toggle-btn').classList.toggle('muted', isSfxMuted);
         }
 
         function dismissSplash() {
@@ -392,7 +380,6 @@
 
         let grid = [];
         let rows = 0, cols = 0, tileSize = 0;
-        let particles = [];
 
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
@@ -437,10 +424,10 @@
 
         function generateValidMaze() {
             document.getElementById('level-num').innerText = currentLevel;
-            activeHintDir = null; particles = [];
+            activeHintDir = null;
 
-            // Grid size based on difficulty
-            let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
+            // Expanded Grid sizes for longer extended borders in Medium & Hard
+            let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 9 : 12;
             rows = size; cols = size;
 
             let container = document.getElementById('canvas-container');
@@ -460,7 +447,7 @@
                     }
                 }
                 
-                let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 5 : 9;
+                let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 7 : 14;
                 for (let b = 0; b < blockCount; b++) {
                     let bx = Math.floor(Math.random() * (cols - 2)) + 1;
                     let by = Math.floor(Math.random() * (rows - 2)) + 1;
@@ -472,6 +459,9 @@
             ball.x = 1; ball.y = 1; ball.renderX = 1; ball.renderY = 1;
             ball.targetX = 1; ball.targetY = 1; ball.isMoving = false;
             grid[1][1] = 2;
+
+            // Trigger AI hint computation directly so guidance path is active
+            triggerHintPath();
         }
 
         function checkSlideCoverage() {
@@ -503,20 +493,8 @@
             return true;
         }
 
-        function refreshCurrentLevel() {
-            if (ball.isMoving) return;
-            activeHintDir = null; particles = [];
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 2) grid[r][c] = 0;
-                }
-            }
-            ball.x = 1; ball.y = 1; ball.renderX = 1; ball.renderY = 1;
-            grid[1][1] = 2;
-        }
-
         function renderLoop() {
-            pulseTimer += 0.16;
+            pulseTimer += 0.08;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // GRID & DETAILED WALL DRAWING
@@ -525,7 +503,7 @@
                     if (grid[r][c] === 1) {
                         ctx.fillStyle = wallColor;
                         ctx.fillRect(c * tileSize, r * tileSize, tileSize + 0.5, tileSize + 0.5);
-                        // Wall depth highlight border
+                        // Deep Wall highlight border
                         ctx.fillStyle = '#57606f';
                         ctx.fillRect(c * tileSize, r * tileSize, tileSize, 3);
                     } else {
@@ -543,17 +521,47 @@
                 }
             }
 
-            // FLOATING BFS HINT ARROW
+            // --- UPGRADED PROFESSIONAL EXTENDED HINT SYSTEM ---
             if (activeHintDir && !ball.isMoving) {
+                let endX = ball.x;
+                let endY = ball.y;
+                while (endX + activeHintDir.dx >= 0 && endX + activeHintDir.dx < cols &&
+                       endY + activeHintDir.dy >= 0 && endY + activeHintDir.dy < rows &&
+                       grid[endY + activeHintDir.dy][endX + activeHintDir.dx] !== 1) {
+                    endX += activeHintDir.dx;
+                    endY += activeHintDir.dy;
+                }
+
+                let startPxX = ball.x * tileSize + tileSize / 2;
+                let startPxY = ball.y * tileSize + tileSize / 2;
+                let endPxX = endX * tileSize + tileSize / 2;
+                let endPxY = endY * tileSize + tileSize / 2;
+
                 ctx.save();
-                ctx.translate(ball.x * tileSize + tileSize / 2, ball.y * tileSize + tileSize / 2);
-                let angle = activeHintDir.dx === 1 ? 0 : activeHintDir.dx === -1 ? Math.PI : activeHintDir.dy === 1 ? Math.PI/2 : -Math.PI/2;
-                ctx.rotate(angle);
-                ctx.translate(Math.sin(pulseTimer) * 5, 0);
-                ctx.fillStyle = '#ffa502';
+                // Glowing gradient cyan-blue line
+                let grad = ctx.createLinearGradient(startPxX, startPxY, endPxX, endPxY);
+                grad.addColorStop(0, '#00f2fe');
+                grad.addColorStop(1, '#4facfe');
+
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = Math.max(4, tileSize * 0.18);
+                ctx.lineCap = 'round';
+                ctx.setLineDash([tileSize * 0.2, tileSize * 0.15]);
+                ctx.lineDashOffset = -pulseTimer * 20;
+
+                ctx.shadowColor = '#00f2fe';
+                ctx.shadowBlur = 12;
+
                 ctx.beginPath();
-                ctx.moveTo(tileSize * 0.4, 0); ctx.lineTo(-tileSize * 0.1, -tileSize * 0.25);
-                ctx.lineTo(0, 0); ctx.lineTo(-tileSize * 0.1, tileSize * 0.25); ctx.fill();
+                ctx.moveTo(startPxX, startPxY);
+                ctx.lineTo(endPxX, endPxY);
+                ctx.stroke();
+
+                // Animated glowing target node at path end
+                ctx.beginPath();
+                ctx.arc(endPxX, endPxY, tileSize * 0.18, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f2fe';
+                ctx.fill();
                 ctx.restore();
             }
 
@@ -612,14 +620,15 @@
                         ball.x = ball.targetX; ball.y = ball.targetY;
                         ball.isMoving = false;
                         checkWinCondition();
+                        if (!ball.isMoving) triggerHintPath();
                     } else requestAnimationFrame(animate);
                 }
                 animate();
             }
         }
 
-        // BFS AI HINT ENGINE
-        function triggerHintArrow() {
+        // BFS AI EXTENDED HINT COMPUTATION
+        function triggerHintPath() {
             if (ball.isMoving) return;
 
             function getSerializedState(bx, by, gState) { return `${bx},${by},` + gState.map(r => r.join('')).join('|'); }
