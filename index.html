@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Roller Splash Deluxe - Ultimate Edition</title>
+    <title>Roller Splash Pro - Light Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -15,21 +15,10 @@
             padding: 0;
         }
 
-        :root {
-            --bg-theme: #0b0e14;
-            --card-bg: rgba(255, 255, 255, 0.06);
-            --border-glow: rgba(255, 255, 255, 0.12);
-            --accent-green: #2ed573;
-            --accent-gold: #ffa502;
-            --accent-red: #ff4757;
-            --accent-cyan: #00d2d3;
-            --text-main: #ffffff;
-        }
-
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg-theme);
-            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            background: #f6f8fb;
+            color: #2f3542;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -38,80 +27,73 @@
             height: -webkit-fill-available;
             overflow: hidden;
             touch-action: none;
-            transition: background 0.5s ease;
         }
 
-        /* --- BACKGROUND THEMES --- */
-        body.theme-galaxy { background: radial-gradient(circle at center, #1b1035, #080410); }
-        body.theme-neon { background: radial-gradient(circle at center, #0a192f, #020c1b); }
-        body.theme-forest { background: radial-gradient(circle at center, #0f281e, #05100b); }
-        body.theme-lava { background: radial-gradient(circle at center, #2b090a, #0f0203); }
-
-        /* --- UTILITY & MODALS --- */
-        .hidden { display: none !important; }
-        .glass-panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .icon-svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* --- SPLASH SCREEN --- */
+        /* --- 1. ORIGINAL STARDUST SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
-            inset: 0;
-            background: #060709;
-            z-index: 999;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0d0e15;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             padding: 60px 20px;
-            transition: opacity 0.5s ease;
+            z-index: 999;
+            transition: opacity 0.4s ease;
         }
-        .splash-title {
-            font-size: 3rem;
+        .splash-center-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
+            justify-content: center;
+        }
+        .splash-logo {
+            font-size: 2.6rem;
             font-weight: 900;
-            letter-spacing: 3px;
-            background: linear-gradient(135deg, #00d2d3, #ff4757);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+            margin-bottom: 10px;
             text-align: center;
-            animation: pulseGlow 2s infinite alternate;
+            animation: logoFloat 3s ease-in-out infinite alternate;
         }
-        @keyframes pulseGlow {
-            0% { filter: drop-shadow(0 0 10px rgba(0,210,211,0.4)); }
-            100% { filter: drop-shadow(0 0 25px rgba(255,71,87,0.8)); }
-        }
-        .primary-btn {
-            background: linear-gradient(135deg, #2ed573, #10ac84);
-            color: #fff;
-            border: none;
-            padding: 16px 45px;
-            font-size: 1.2rem;
+        .splash-sub {
+            font-size: 1rem;
+            color: #ff4757;
             font-weight: 800;
+            letter-spacing: 6px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        @keyframes logoFloat {
+            0% { transform: translateY(0px); text-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+            100% { transform: translateY(-12px); text-shadow: 0 0 30px rgba(255, 71, 87, 0.9); }
+        }
+        .start-app-btn {
+            background: #2ed573;
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.4rem;
+            font-weight: 900;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(46,213,115,0.4);
-            transition: transform 0.15s, box-shadow 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: transform 0.1s ease;
         }
-        .primary-btn:active { transform: scale(0.95); }
+        .start-app-btn:active { transform: scale(0.95); }
+        .creator-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #57606f;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
-        /* --- TOP DASHBOARD BAR --- */
-        .dashboard-bar {
+        /* --- 2. HOME HUD & XP BAR --- */
+        .top-profile-bar {
             width: 100%;
             max-width: 500px;
             padding: 12px 16px;
@@ -120,282 +102,230 @@
             align-items: center;
             z-index: 10;
         }
-        .profile-chip {
+        .profile-box {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            background: #ffffff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .avatar {
-            width: 40px;
-            height: 40px;
+        .avatar-circle {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff9ff3, #f368e0);
+            background: linear-gradient(135deg, #ff4757, #ffa502);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #fff;
         }
-        .xp-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .xp-bar-bg {
-            width: 70px;
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
+        .avatar-circle svg { width: 20px; height: 20px; fill: #ffffff; }
+        .xp-group { display: flex; flex-direction: column; gap: 3px; }
+        .xp-text { font-size: 0.75rem; font-weight: 800; color: #747d8c; }
+        .xp-track {
+            width: 80px;
+            height: 7px;
+            background: #eccc68;
+            border-radius: 4px;
             overflow: hidden;
         }
-        .xp-bar-fill {
-            height: 100%;
-            width: 45%;
-            background: var(--accent-cyan);
-        }
-        .stats-group {
-            display: flex;
-            gap: 10px;
-        }
-        .stat-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
+        .xp-fill { height: 100%; width: 20%; background: #2ed573; transition: width 0.3s ease; }
+
+        .coin-chip {
+            background: #ffffff;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 900;
+            color: #ffa502;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 800;
-            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .stat-coins { background: rgba(255, 165, 2, 0.2); color: var(--accent-gold); border: 1px solid rgba(255, 165, 2, 0.3); }
-        .stat-gems { background: rgba(0, 210, 211, 0.2); color: var(--accent-cyan); border: 1px solid rgba(0, 210, 211, 0.3); }
+        .coin-chip svg { width: 18px; height: 18px; fill: #ffa502; }
 
-        /* --- MAIN UI CONTAINERS --- */
-        #menu-screen, #game-screen, #shop-modal, #win-modal {
+        /* --- SCREENS --- */
+        #menu-screen, #game-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
             max-width: 500px;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             position: absolute;
-            top: 0;
-            padding: calc(10px + env(safe-area-inset-top)) 16px calc(15px + env(safe-area-inset-bottom)) 16px;
-            transition: opacity 0.3s ease;
+            top: 0; left: 0; right: 0; margin: auto;
+            padding: calc(10px + env(safe-area-inset-top)) 15px calc(15px + env(safe-area-inset-bottom)) 15px;
+            transition: opacity 0.2s ease;
         }
+        #menu-screen { justify-content: center; z-index: 5; }
+        #game-screen { opacity: 0; pointer-events: none; }
 
-        #menu-screen { justify-content: center; gap: 15px; z-index: 5; }
-        
-        .menu-title {
+        h1 {
             font-size: 2.8rem;
+            color: #2f3542;
             font-weight: 900;
+            margin-bottom: 30px;
             text-align: center;
             line-height: 1.1;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #fff, #a4b0be);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
-        .menu-nav-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .menu-btn {
-            padding: 16px;
-            font-size: 1rem;
-            font-weight: 800;
-            border-radius: 16px;
-            border: 1px solid var(--border-glow);
-            background: var(--card-bg);
-            color: #fff;
+        .btn {
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            border-radius: 40px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.1s, background 0.2s;
-        }
-        .menu-btn:active { transform: scale(0.96); }
-        .menu-btn-full { grid-column: span 2; background: linear-gradient(135deg, #ff4757, #ff6b81); border: none; }
-
-        /* --- HUD & GAMEPLAY --- */
-        .hud-row {
             width: 100%;
+            margin: 8px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-easy { background: #2ed573; }
+        .btn-medium { background: #ffa502; }
+        .btn-hard { background: #ff4757; }
+
+        /* --- HUD CONTROLS --- */
+        .hud-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            width: 100%;
+            margin-bottom: 8px;
+            z-index: 10;
         }
-        .hud-btn {
+        .control-circle-btn {
+            background: #ffffff;
+            border: none;
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            border: none;
-            background: var(--card-bg);
-            color: #fff;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: 1px solid var(--border-glow);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .hud-btn.muted { opacity: 0.4; }
+        .control-circle-btn svg { width: 22px; height: 22px; fill: #2f3542; }
+        .control-circle-btn.muted svg { fill: #a4b0be; }
 
+        .hud-center { text-align: center; }
+        #level-header { font-size: 1.3rem; font-weight: 900; color: #2f3542; }
+        #difficulty-label { font-size: 0.75rem; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- FULL SCREEN CANVAS ARENA --- */
         #canvas-container {
             width: 100%;
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 5px 0;
             position: relative;
         }
         canvas {
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: block;
+            border: none;
+            outline: none;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
 
-        /* --- SHOP MODAL --- */
-        #shop-modal {
-            background: rgba(11, 14, 20, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 20;
-            justify-content: flex-start;
-            padding-top: 40px;
-        }
-        .shop-header {
+        .bottom-controls {
             display: flex;
             justify-content: space-between;
-            width: 100%;
             align-items: center;
-            margin-bottom: 20px;
-        }
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
             width: 100%;
-            overflow-y: auto;
-            max-height: 70vh;
-            padding-bottom: 20px;
+            padding: 8px 5px;
+            z-index: 10;
         }
-        .shop-card {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            border-radius: 16px;
+        .hint-btn {
+            background: #ffa502;
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
             cursor: pointer;
-            position: relative;
-        }
-        .shop-card.active { border: 2px solid var(--accent-green); }
-        .preview-ball { width: 40px; height: 40px; border-radius: 50%; }
-
-        /* --- WIN MODAL --- */
-        #win-modal {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
-            z-index: 30;
-            justify-content: center;
-            align-items: center;
-        }
-        .win-card {
-            width: 90%;
-            padding: 30px 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            text-align: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(255, 165, 2, 0.4);
         }
-        .stars-row { display: flex; gap: 8px; }
-        .star-svg { width: 40px; height: 40px; fill: #57606f; transition: fill 0.3s; }
-        .star-svg.earned { fill: var(--accent-gold); filter: drop-shadow(0 0 10px var(--accent-gold)); }
+        .hint-btn svg { width: 24px; height: 24px; fill: #ffffff; }
 
-        /* SHAKE & CAM EFFECTS */
-        .shake { animation: camShake 0.25s ease-in-out; }
-        @keyframes camShake {
-            0%, 100% { transform: translate(0,0); }
-            25% { transform: translate(-5px, 5px); }
-            50% { transform: translate(5px, -5px); }
-            75% { transform: translate(-5px, -5px); }
+        #popup-msg {
+            position: fixed;
+            top: 42%;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #2ed573;
+            transform: scale(0);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 99;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+        #popup-msg.show { transform: scale(1); }
     </style>
 </head>
-<body class="theme-galaxy">
+<body>
 
-    <!-- SPLASH SCREEN -->
+    <!-- 1. STARDUST SPLASH SCREEN -->
     <div id="splash-screen">
-        <div style="margin-top: auto; margin-bottom: auto; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <div class="splash-title">ROLLER SPLASH<br>PRO</div>
-            <p style="color: #a4b0be; font-weight: 600; letter-spacing: 2px; font-size: 0.85rem;">STARDUST STUDIO</p>
+        <div class="splash-center-group">
+            <div class="splash-logo">STARDUST STUDIO</div>
+            <div class="splash-sub">PRESENTS</div>
+            <button class="start-app-btn" onclick="dismissSplash()">PLAY ARENA</button>
         </div>
-        <button class="primary-btn" onclick="dismissSplash()">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            PLAY ARENA
-        </button>
+        <div class="creator-tag">Made by Zishan</div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
-    <div class="dashboard-bar glass-panel">
-        <div class="profile-chip">
-            <div class="avatar">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <!-- PLAYER PROFILE HUD -->
+    <div class="top-profile-bar">
+        <div class="profile-box">
+            <div class="avatar-circle">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
-            <div class="xp-container">
-                <span style="font-size: 0.75rem; font-weight: 800; color: #a4b0be;">LVL <span id="player-lvl">1</span></span>
-                <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-fill"></div></div>
+            <div class="xp-group">
+                <span class="xp-text">LVL <span id="player-lvl-num">1</span></span>
+                <div class="xp-track"><div class="xp-fill" id="xp-fill-bar"></div></div>
             </div>
         </div>
-        <div class="stats-group">
-            <div class="stat-badge stat-coins">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                <span id="coin-count">500</span>
-            </div>
-            <div class="stat-badge stat-gems">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 9l10 13 10-13-10-7zm0 3.8L17.8 9 12 16.5 6.2 9 12 5.8z"/></svg>
-                <span id="gem-count">25</span>
-            </div>
+        <div class="coin-chip">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+            <span id="coin-counter">100</span>
         </div>
     </div>
 
-    <!-- MAIN MENU -->
+    <!-- HOME MENU SCREEN -->
     <div id="menu-screen">
-        <h1 class="menu-title">ROLLER SPLASH</h1>
-        <div class="menu-nav-grid">
-            <button class="menu-btn menu-btn-full" onclick="startMode('EASY')">
-                <svg class="icon-svg" style="width:28px; height:28px;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                PLAY GAME
-            </button>
-            <button class="menu-btn" onclick="openShop()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                SHOP
-            </button>
-            <button class="menu-btn" onclick="cycleTheme()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.58 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
-                THEMES
-            </button>
-        </div>
+        <h1>ROLLER SPLASH</h1>
+        <button class="btn btn-easy" onclick="selectDifficulty('EASY')">EASY ARENA</button>
+        <button class="btn btn-medium" onclick="selectDifficulty('MEDIUM')">MEDIUM ARENA</button>
+        <button class="btn btn-hard" onclick="selectDifficulty('HARD')">HARD ARENA</button>
     </div>
 
-    <!-- GAMEPLAY ARENA -->
-    <div id="game-screen" class="hidden">
+    <!-- GAMEPLAY ARENA SCREEN -->
+    <div id="game-screen">
         <div class="hud-row">
-            <button class="hud-btn" onclick="backToMenu()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <!-- HOME ICON BUTTON -->
+            <button class="control-circle-btn" title="Go to Home Screen" onclick="backToMenu()">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             </button>
-            <div style="text-align: center;">
-                <div style="font-size: 1.2rem; font-weight: 900;" id="world-level-tag">WORLD 1 - LVL 1</div>
-                <div style="font-size: 0.7rem; font-weight: 800; color: #a4b0be;" id="mode-tag">EASY ARENA</div>
+            <div class="hud-center">
+                <div id="level-header">Level <span id="level-num">1</span></div>
+                <div id="difficulty-label">EASY MODE</div>
             </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="hud-btn" id="sfx-btn" onclick="toggleSFX()">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            <div style="display: flex; gap: 8px;">
+                <button class="control-circle-btn" id="sfx-toggle-btn" title="Toggle SFX Sound" onclick="toggleSfxSound()">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
                 </button>
-                <button class="hud-btn" onclick="refreshCurrentLevel()">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                <button class="control-circle-btn" title="Restart Level" onclick="refreshCurrentLevel()">
+                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
                 </button>
             </div>
         </div>
@@ -404,65 +334,20 @@
             <canvas id="gameCanvas"></canvas>
         </div>
 
-        <div class="hud-row" style="margin-top: 10px;">
-            <button class="primary-btn" style="padding: 12px 24px; font-size: 0.9rem;" onclick="triggerHintArrow()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
-                HINT
+        <div class="bottom-controls">
+            <button class="control-circle-btn" onclick="backToMenu()">
+                <svg viewBox="0 0 24 24"><path d="M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"/></svg>
+            </button>
+            <button class="hint-btn" onclick="triggerHintArrow()">
+                <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
             </button>
         </div>
     </div>
 
-    <!-- SHOP MODAL -->
-    <div id="shop-modal" class="hidden">
-        <div class="shop-header">
-            <h2>BALL SKINS</h2>
-            <button class="hud-btn" onclick="closeShop()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        <div class="shop-grid">
-            <div class="shop-card glass-panel active" onclick="selectSkin('classic', this)">
-                <div class="preview-ball" style="background: radial-gradient(circle at 30% 30%, #ffffff, #a4b0be);"></div>
-                <span style="font-weight:800; font-size:0.9rem;">CLASSIC</span>
-                <span style="color:var(--accent-green); font-size:0.8rem; font-weight:800;">EQUIPPED</span>
-            </div>
-            <div class="shop-card glass-panel" onclick="selectSkin('neon', this)">
-                <div class="preview-ball" style="background: radial-gradient(circle at 30% 30%, #00d2d3, #01a3a4); box-shadow: 0 0 10px #00d2d3;"></div>
-                <span style="font-weight:800; font-size:0.9rem;">CYBER NEON</span>
-                <span style="color:var(--accent-gold); font-size:0.8rem; font-weight:800;">100 COINS</span>
-            </div>
-            <div class="shop-card glass-panel" onclick="selectSkin('lava', this)">
-                <div class="preview-ball" style="background: radial-gradient(circle at 30% 30%, #ff4757, #ff6b81); box-shadow: 0 0 10px #ff4757;"></div>
-                <span style="font-weight:800; font-size:0.9rem;">LAVA GLOW</span>
-                <span style="color:var(--accent-gold); font-size:0.8rem; font-weight:800;">250 COINS</span>
-            </div>
-            <div class="shop-card glass-panel" onclick="selectSkin('gold', this)">
-                <div class="preview-ball" style="background: radial-gradient(circle at 30% 30%, #ffa502, #eccc68); box-shadow: 0 0 10px #ffa502;"></div>
-                <span style="font-weight:800; font-size:0.9rem;">ROYAL GOLD</span>
-                <span style="color:var(--accent-gold); font-size:0.8rem; font-weight:800;">500 COINS</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- WIN SCREEN MODAL -->
-    <div id="win-modal" class="hidden">
-        <div class="win-card glass-panel">
-            <h1 style="font-size: 2.2rem; font-weight: 900; color: var(--accent-green);">STAGE CLEAR!</h1>
-            <div class="stars-row">
-                <svg class="star-svg earned" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                <svg class="star-svg earned" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                <svg class="star-svg earned" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </div>
-            <div style="display: flex; gap: 20px; font-size: 1.1rem; font-weight: 800;">
-                <div>+<span id="win-coins">50</span> COINS</div>
-                <div>+<span id="win-xp">120</span> XP</div>
-            </div>
-            <button class="primary-btn" onclick="nextLevel()">CONTINUE</button>
-        </div>
-    </div>
+    <div id="popup-msg">PERFECT!</div>
 
     <script>
-        /* --- AUDIO ENGINE --- */
+        // --- AUDIO ENGINE ---
         let audioCtx = null;
         let isSfxMuted = false;
 
@@ -470,96 +355,80 @@
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
 
-        function playSound(type) {
-            if (!audioCtx || isSfxMuted) return;
+        function playSwipeSound() {
+            if (!audioCtx || audioCtx.state === 'suspended' || isSfxMuted) return;
             let time = audioCtx.currentTime;
             let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'swipe') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, time);
-                osc.frequency.exponentialRampToValueAtTime(150, time + 0.08);
-                gain.gain.setValueAtTime(0.2, time);
-                gain.gain.linearRampToValueAtTime(0.01, time + 0.08);
-                osc.start(time); osc.stop(time + 0.08);
-            } else if (type === 'win') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, time);
-                osc.frequency.setValueAtTime(659.25, time + 0.1);
-                osc.frequency.setValueAtTime(783.99, time + 0.2);
-                gain.gain.setValueAtTime(0.3, time);
-                gain.gain.linearRampToValueAtTime(0.01, time + 0.4);
-                osc.start(time); osc.stop(time + 0.4);
-            }
+            let g = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(460, time);
+            osc.frequency.exponentialRampToValueAtTime(240, time + 0.05);
+            g.gain.setValueAtTime(0.3, time);
+            g.gain.linearRampToValueAtTime(0.001, time + 0.05);
+            osc.connect(g); g.connect(audioCtx.destination);
+            osc.start(time); osc.stop(time + 0.06);
         }
 
-        function toggleSFX() {
+        function toggleSfxSound() {
             isSfxMuted = !isSfxMuted;
-            document.getElementById('sfx-btn').classList.toggle('muted', isSfxMuted);
+            document.getElementById('sfx-toggle-btn').classList.toggle('muted', isSfxMuted);
         }
 
         function dismissSplash() {
             initAudio();
             document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('splash-screen').classList.add('hidden'), 500);
+            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 400);
         }
 
-        /* --- GAME LOGIC & STATE --- */
+        // --- GAME MECHANICS & STATE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let coins = 500, gems = 25, playerLvl = 1;
-        let currentDifficulty = 'EASY', currentLevel = 1, currentWorld = 1;
-        let grid = [], rows = 0, cols = 0, tileSize = 0;
-        let particles = [], paintSplashes = [];
-        let activeSkin = 'classic';
+        let currentDifficulty = 'EASY';
+        let currentLevel = 1;
+        let playerXP = 0;
+        let playerLevel = 1;
+        let coins = 100;
+
+        let grid = [];
+        let rows = 0, cols = 0, tileSize = 0;
+        let particles = [];
 
         const paintColorsPool = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6'];
         let currentPaintColor = '#ff4757';
-        const wallColor = '#1e272e', unpaintedPathColor = '#ffffff';
+        const wallColor = '#2f3542';
+        const unpaintedPathColor = '#ffffff';
 
-        let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1, rotation: 0 };
+        let ball = { x: 1, y: 1, renderX: 1, renderY: 1, isMoving: false, targetX: 1, targetY: 1 };
         let activeHintDir = null;
-        let isTouchActive = false, touchStartX = 0, touchStartY = 0;
+        let isTouchActive = false;
+        let touchStartX = 0, touchStartY = 0;
         let pulseTimer = 0;
 
-        const themes = ['theme-galaxy', 'theme-neon', 'theme-forest', 'theme-lava'];
-        let currentThemeIdx = 0;
-
-        function cycleTheme() {
-            document.body.className = '';
-            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-            document.body.classList.add(themes[currentThemeIdx]);
+        function selectDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            let savedLevel = localStorage.getItem('rs_level_' + difficulty);
+            currentLevel = savedLevel ? parseInt(savedLevel) : 1;
+            loadActiveGameScreen();
         }
 
-        function startMode(diff) {
-            currentDifficulty = diff;
-            let savedLevel = localStorage.getItem('rs_level_' + diff);
-            currentLevel = savedLevel ? parseInt(savedLevel) : 1;
-            
-            document.getElementById('menu-screen').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-            
+        function loadActiveGameScreen() {
             pickRandomColor();
+            document.getElementById('menu-screen').style.opacity = '0';
+            document.getElementById('menu-screen').style.pointerEvents = 'none';
+            document.getElementById('game-screen').style.opacity = '1';
+            document.getElementById('game-screen').style.pointerEvents = 'auto';
+            document.getElementById('difficulty-label').innerText = currentDifficulty + " MODE";
             generateValidMaze();
             renderLoop();
         }
 
         function backToMenu() {
-            document.getElementById('game-screen').classList.add('hidden');
-            document.getElementById('menu-screen').classList.remove('hidden');
-        }
-
-        function openShop() { document.getElementById('shop-modal').classList.remove('hidden'); }
-        function closeShop() { document.getElementById('shop-modal').classList.add('hidden'); }
-
-        function selectSkin(skin, el) {
-            activeSkin = skin;
-            document.querySelectorAll('.shop-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
+            document.getElementById('menu-screen').style.opacity = '1';
+            document.getElementById('menu-screen').style.pointerEvents = 'auto';
+            document.getElementById('game-screen').style.opacity = '0';
+            document.getElementById('game-screen').style.pointerEvents = 'none';
+            activeHintDir = null;
         }
 
         function pickRandomColor() {
@@ -567,16 +436,20 @@
         }
 
         function generateValidMaze() {
-            currentWorld = Math.floor((currentLevel - 1) / 30) + 1;
-            document.getElementById('world-level-tag').innerText = `WORLD ${currentWorld} - LVL ${currentLevel}`;
-            activeHintDir = null; particles = []; paintSplashes = [];
+            document.getElementById('level-num').innerText = currentLevel;
+            activeHintDir = null; particles = [];
 
+            // Grid size based on difficulty
             let size = currentDifficulty === 'EASY' ? 6 : currentDifficulty === 'MEDIUM' ? 8 : 10;
             rows = size; cols = size;
 
             let container = document.getElementById('canvas-container');
-            let sideSize = Math.min(container.clientWidth * 0.95, container.clientHeight * 0.95);
-            canvas.width = sideSize; canvas.height = sideSize;
+            let availableWidth = container.clientWidth * 0.98;
+            let availableHeight = container.clientHeight * 0.98;
+            let sideSize = Math.min(availableWidth, availableHeight);
+
+            canvas.width = sideSize;
+            canvas.height = sideSize;
             tileSize = canvas.width / cols;
 
             for (let loop = 0; loop < 3000; loop++) {
@@ -586,6 +459,7 @@
                         if(r === 0 || r === rows-1 || c === 0 || c === cols-1) grid[r][c] = 1;
                     }
                 }
+                
                 let blockCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 5 : 9;
                 for (let b = 0; b < blockCount; b++) {
                     let bx = Math.floor(Math.random() * (cols - 2)) + 1;
@@ -631,6 +505,7 @@
 
         function refreshCurrentLevel() {
             if (ball.isMoving) return;
+            activeHintDir = null; particles = [];
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 2) grid[r][c] = 0;
@@ -640,26 +515,19 @@
             grid[1][1] = 2;
         }
 
-        function spawnParticles(px, py) {
-            for(let i=0; i<4; i++) {
-                particles.push({
-                    x: px * tileSize + tileSize/2, y: py * tileSize + tileSize/2,
-                    vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
-                    size: (Math.random() * 5) + 3, alpha: 1, decay: 0.04
-                });
-            }
-        }
-
         function renderLoop() {
-            pulseTimer += 0.1;
+            pulseTimer += 0.16;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // GRID & PAINT DRAWING
+            // GRID & DETAILED WALL DRAWING
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 1) {
                         ctx.fillStyle = wallColor;
                         ctx.fillRect(c * tileSize, r * tileSize, tileSize + 0.5, tileSize + 0.5);
+                        // Wall depth highlight border
+                        ctx.fillStyle = '#57606f';
+                        ctx.fillRect(c * tileSize, r * tileSize, tileSize, 3);
                     } else {
                         ctx.fillStyle = (grid[r][c] === 2) ? currentPaintColor : unpaintedPathColor;
                         ctx.fillRect(c * tileSize, r * tileSize, tileSize + 0.5, tileSize + 0.5);
@@ -667,23 +535,7 @@
                 }
             }
 
-            // PARTICLES
-            for(let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
-                if(p.alpha <= 0) particles.splice(i, 1);
-                else {
-                    ctx.save(); ctx.globalAlpha = p.alpha;
-                    ctx.fillStyle = currentPaintColor; ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            // PAINTING MOVEMENT
             if (ball.isMoving) {
-                ball.rotation += 0.2;
-                spawnParticles(ball.renderX, ball.renderY);
                 let checkR = Math.round(ball.renderY);
                 let checkC = Math.round(ball.renderX);
                 if (checkR >= 0 && checkR < rows && checkC >= 0 && checkC < cols) {
@@ -691,7 +543,7 @@
                 }
             }
 
-            // FLOATING HINT OVERLAY
+            // FLOATING BFS HINT ARROW
             if (activeHintDir && !ball.isMoving) {
                 ctx.save();
                 ctx.translate(ball.x * tileSize + tileSize / 2, ball.y * tileSize + tileSize / 2);
@@ -705,31 +557,21 @@
                 ctx.restore();
             }
 
-            // PREMIUM BALL RENDERING
+            // SMOOTH SPHERE BALL WITH SHADOW
             ctx.save();
             let bx = ball.renderX * tileSize + tileSize/2;
             let by = ball.renderY * tileSize + tileSize/2;
             let radius = tileSize * 0.38;
 
-            ctx.translate(bx, by);
-            ctx.rotate(ball.rotation);
-
-            // Ball Shadow
             ctx.beginPath();
-            ctx.arc(2, 4, radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.arc(bx + 2, by + 3, radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.15)';
             ctx.fill();
 
-            // Ball Body Gradient
             ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            let grad = ctx.createRadialGradient(-radius*0.3, -radius*0.3, radius*0.1, 0, 0, radius);
-            
-            if (activeSkin === 'neon') { grad.addColorStop(0, '#00d2d3'); grad.addColorStop(1, '#01a3a4'); }
-            else if (activeSkin === 'lava') { grad.addColorStop(0, '#ff4757'); grad.addColorStop(1, '#ff6b81'); }
-            else if (activeSkin === 'gold') { grad.addColorStop(0, '#ffa502'); grad.addColorStop(1, '#eccc68'); }
-            else { grad.addColorStop(0, '#ffffff'); grad.addColorStop(1, '#a4b0be'); }
-
+            ctx.arc(bx, by, radius, 0, Math.PI * 2);
+            let grad = ctx.createRadialGradient(bx - radius*0.3, by - radius*0.3, radius*0.1, bx, by, radius);
+            grad.addColorStop(0, '#ffffff'); grad.addColorStop(1, '#a4b0be');
             ctx.fillStyle = grad;
             ctx.fill();
             ctx.restore();
@@ -749,7 +591,7 @@
             if (nextX !== ball.x || nextY !== ball.y) {
                 ball.isMoving = true;
                 ball.targetX = nextX; ball.targetY = nextY;
-                playSound('swipe');
+                playSwipeSound();
 
                 let velocity = 0.85;
                 function animate() {
@@ -776,18 +618,14 @@
             }
         }
 
-        /* --- BFS AI HINT SOLVER --- */
+        // BFS AI HINT ENGINE
         function triggerHintArrow() {
             if (ball.isMoving) return;
 
-            function getSerializedState(bx, by, gState) {
-                return `${bx},${by},` + gState.map(r => r.join('')).join('|');
-            }
+            function getSerializedState(bx, by, gState) { return `${bx},${by},` + gState.map(r => r.join('')).join('|'); }
             function isFullyPainted(gState) {
                 for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        if (gState[r][c] === 0) return false;
-                    }
+                    for (let c = 0; c < cols; c++) { if (gState[r][c] === 0) return false; }
                 }
                 return true;
             }
@@ -833,45 +671,52 @@
             }
         }
 
+        function addPlayerXP(amount) {
+            playerXP += amount;
+            if (playerXP >= 100) {
+                playerLevel++;
+                playerXP = playerXP % 100;
+                document.getElementById('player-lvl-num').innerText = playerLevel;
+            }
+            document.getElementById('xp-fill-bar').style.width = playerXP + '%';
+        }
+
         function checkWinCondition() {
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 0) return;
                 }
             }
-            playSound('win');
-            document.getElementById('canvas-container').classList.add('shake');
-            setTimeout(() => document.getElementById('canvas-container').classList.remove('shake'), 300);
-
-            coins += 50;
-            document.getElementById('coin-count').innerText = coins;
-            document.getElementById('win-modal').classList.remove('hidden');
+            const popup = document.getElementById('popup-msg');
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+                currentLevel++;
+                coins += 25;
+                document.getElementById('coin-counter').innerText = coins;
+                addPlayerXP(35);
+                localStorage.setItem('rs_level_' + currentDifficulty, currentLevel);
+                pickRandomColor();
+                generateValidMaze();
+            }, 800);
         }
 
-        function nextLevel() {
-            document.getElementById('win-modal').classList.add('hidden');
-            currentLevel++;
-            localStorage.setItem('rs_level_' + currentDifficulty, currentLevel);
-            pickRandomColor();
-            generateValidMaze();
-        }
-
-        /* --- TOUCH & DRAG TRACKING --- */
-        function processTouch(cx, cy) {
+        function processRealtimeTouch(currentX, currentY) {
             if (!isTouchActive || ball.isMoving) return;
-            let diffX = cx - touchStartX, diffY = cy - touchStartY;
+            let diffX = currentX - touchStartX;
+            let diffY = currentY - touchStartY;
             if (Math.abs(diffX) > 16 || Math.abs(diffY) > 16) {
                 if (Math.abs(diffX) > Math.abs(diffY)) moveBall(diffX > 0 ? 1 : -1, 0);
                 else moveBall(0, diffY > 0 ? 1 : -1);
-                touchStartX = cx; touchStartY = cy;
+                touchStartX = currentX; touchStartY = currentY;
             }
         }
 
         window.addEventListener('touchstart', e => { isTouchActive = true; touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
-        window.addEventListener('touchmove', e => processTouch(e.touches[0].clientX, e.touches[0].clientY));
+        window.addEventListener('touchmove', e => processRealtimeTouch(e.touches[0].clientX, e.touches[0].clientY));
         window.addEventListener('touchend', () => isTouchActive = false);
         window.addEventListener('mousedown', e => { isTouchActive = true; touchStartX = e.clientX; touchStartY = e.clientY; });
-        window.addEventListener('mousemove', e => processTouch(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => processRealtimeTouch(e.clientX, e.clientY));
         window.addEventListener('mouseup', () => isTouchActive = false);
     </script>
 </body>
