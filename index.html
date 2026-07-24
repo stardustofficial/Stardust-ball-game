@@ -1,411 +1,1384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Roller Splash · Stardust</title>
-  <style>
-    /* ----- RESET & ROOT ----- */
-    * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #0b0d15;
-      display: flex; align-items: center; justify-content: center;
-      height: 100vh; height: -webkit-fill-available;
-      overflow: hidden; margin: 0;
-      color: #fff;
-    }
-    /* glassmorphism card base */
-    .glass {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px) saturate(180%);
-      -webkit-backdrop-filter: blur(12px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.02);
-    }
-    /* ----- APP SHELL (mobile-first) ----- */
-    #app {
-      width: 100%; height: 100%;
-      max-width: 480px; max-height: 900px;
-      background: #13161f;
-      border-radius: 36px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03);
-      display: flex; flex-direction: column;
-    }
-    /* ----- MAIN MENU (HOME) ----- */
-    #menu-screen {
-      display: flex; flex-direction: column;
-      height: 100%; width: 100%;
-      padding: 24px 20px 20px;
-      background: radial-gradient(circle at 20% 20%, #1e2538, #0b0d15 90%);
-      position: relative;
-      overflow-y: auto;
-    }
-    .menu-bg-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-    .menu-bg-particles span {
-      position: absolute; width: 6px; height: 6px; background: #ffd966;
-      border-radius: 50%; opacity: 0.2; animation: floatParticle 18s infinite linear;
-    }
-    @keyframes floatParticle {
-      0% { transform: translateY(0) scale(1); opacity: 0.2; }
-      50% { opacity: 0.6; transform: translateY(-80px) scale(1.8); }
-      100% { transform: translateY(0) scale(1); opacity: 0.2; }
-    }
-    .menu-header { display: flex; justify-content: space-between; align-items: center; z-index: 2; }
-    .logo { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px; background: linear-gradient(135deg, #f7971e, #ffd200); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,215,0,0.2); }
-    .profile-badge { background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 60px; font-size: 0.8rem; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-    .profile-badge .avatar { width: 32px; height: 32px; border-radius: 50%; background: #ffa502; }
-    .resources { display: flex; gap: 18px; margin-top: 12px; z-index: 2; flex-wrap: wrap; }
-    .resource-item { background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 40px; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.04); }
-    .resource-item .icon { font-size: 1.2rem; }
-    .xp-bar { margin-top: 12px; height: 8px; background: rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden; z-index: 2; }
-    .xp-fill { height: 100%; width: 73%; background: linear-gradient(90deg, #f7971e, #ffd200); border-radius: 20px; box-shadow: 0 0 20px #ffd20055; }
-    .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 16px; z-index: 2; }
-    .menu-grid-item { background: rgba(255,255,255,0.04); border-radius: 20px; padding: 14px 4px; text-align: center; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
-    .menu-grid-item:active { transform: scale(0.94); background: rgba(255,255,255,0.08); }
-    .menu-grid-item .label { font-size: 0.6rem; opacity: 0.6; margin-top: 4px; }
-    .play-btn { background: linear-gradient(135deg, #f7971e, #ffd200); border: none; border-radius: 60px; padding: 18px; font-weight: 800; font-size: 1.4rem; color: #13161f; box-shadow: 0 10px 30px rgba(255,215,0,0.3); transition: 0.15s; z-index: 2; margin-top: 8px; }
-    .play-btn:active { transform: scale(0.96); }
-    .world-map-preview { margin: 12px 0; border-radius: 24px; overflow: hidden; height: 100px; background: #1e2538; z-index: 2; display: flex; align-items: center; padding: 0 12px; gap: 8px; border: 1px solid rgba(255,255,255,0.04); }
-    .world-dot { width: 40px; height: 40px; border-radius: 50%; background: #2f3542; flex-shrink: 0; border: 2px solid transparent; }
-    .world-dot.active { border-color: #ffd200; background: #ffa502; box-shadow: 0 0 20px #ffa50277; }
-    .world-dot.locked { opacity: 0.3; }
-    /* ----- GAME SCREEN (canvas + hud) ----- */
-    #game-screen {
-      display: none; flex-direction: column; height: 100%;
-      background: #0b0d15;
-    }
-    .game-hud { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .game-hud .level-tag { font-weight: 700; font-size: 1.2rem; }
-    .game-hud .difficulty-tag { font-size: 0.7rem; opacity: 0.5; background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 30px; }
-    .game-hud .hud-actions { display: flex; gap: 12px; }
-    .hud-btn { background: rgba(255,255,255,0.06); border: none; border-radius: 30px; padding: 6px 12px; color: #fff; font-size: 1.2rem; backdrop-filter: blur(4px); }
-    #canvas-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px; }
-    canvas { width: 100%; height: 100%; border-radius: 24px; background: #0f121c; box-shadow: inset 0 0 40px rgba(0,0,0,0.6); }
-    .game-bottom { display: flex; justify-content: space-between; padding: 12px 20px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); border-top: 1px solid rgba(255,255,255,0.04); }
-    .game-bottom .hint-btn { background: #ffa502; border: none; border-radius: 40px; padding: 8px 24px; font-weight: 700; color: #13161f; }
-    /* ----- POPUPS / MODALS (glass) ----- */
-    .modal-overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-      display: flex; align-items: center; justify-content: center; z-index: 99;
-      opacity: 0; pointer-events: none; transition: 0.25s;
-    }
-    .modal-overlay.show { opacity: 1; pointer-events: auto; }
-    .modal-card { max-width: 320px; width: 90%; padding: 30px 24px; background: rgba(20,25,40,0.85); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 40px 80px rgba(0,0,0,0.8); text-align: center; }
-    .modal-card h2 { font-weight: 700; margin-bottom: 8px; }
-    .modal-card .sub { opacity: 0.6; font-size: 0.9rem; }
-    .modal-card .btn-primary { background: #ffd200; color: #13161f; border: none; padding: 14px 32px; border-radius: 60px; font-weight: 800; margin-top: 20px; width: 100%; }
-    /* ----- SCROLLBAR ----- */
-    ::-webkit-scrollbar { width: 0; }
-    /* animations */
-    @keyframes fadeUp { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
-    .fade-up { animation: fadeUp 0.3s ease both; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Roller Splash Pro</title>
+    <style>
+        /* ===== RESET & ROOT ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0b0d15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            height: -webkit-fill-available;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            max-height: 900px;
+            background: #13161f;
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== GLASS ===== */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+        }
+
+        /* ===== TOP MENU BAR ===== */
+        #top-menu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            flex-shrink: 0;
+            z-index: 20;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        #top-menu .logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        #top-menu .menu-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-radius: 30px;
+            padding: 6px 12px;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: 0.15s;
+            white-space: nowrap;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .menu-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .menu-btn .badge {
+            background: #ff4757;
+            border-radius: 30px;
+            padding: 0 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+
+        /* ===== SPLASH ===== */
+        #splash {
+            position: absolute;
+            inset: 0;
+            background: #0d0e15;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+            gap: 20px;
+        }
+        #splash.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #splash .logo-big {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #splash .sub {
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            color: #ffa502;
+            font-weight: 700;
+        }
+        #splash .start-btn {
+            background: #2ed573;
+            border: none;
+            padding: 16px 56px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(46, 213, 115, 0.3);
+            transition: 0.15s;
+        }
+        #splash .start-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* ===== MENU SCREEN ===== */
+        #menu-screen {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 16px 20px 20px;
+            overflow-y: auto;
+            background: radial-gradient(circle at 20% 20%, #1e2538, #0b0d15 90%);
+            gap: 12px;
+        }
+
+        #menu-screen .stats-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        #menu-screen .stat-item {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        #menu-screen .stat-item svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .xp-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 4px 0;
+        }
+        .xp-track .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            border-radius: 20px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .diff-btn {
+            padding: 14px 0;
+            border: none;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #fff;
+        }
+        .diff-btn:active {
+            transform: scale(0.94);
+        }
+        .diff-btn.easy {
+            background: #2ed573;
+        }
+        .diff-btn.medium {
+            background: #ffa502;
+        }
+        .diff-btn.hard {
+            background: #ff4757;
+        }
+
+        /* ===== GAME SCREEN ===== */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            background: #0b0d15;
+        }
+
+        #game-screen .game-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            flex-shrink: 0;
+        }
+
+        #game-screen .game-hud .level-info {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        #game-screen .game-hud .level-info .diff-tag {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin-left: 8px;
+        }
+
+        #canvas-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            min-height: 0;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: #0f121c;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+            touch-action: none;
+        }
+
+        .game-bottom {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            flex-shrink: 0;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .game-bottom .action-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-radius: 30px;
+            padding: 8px 16px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .game-bottom .action-btn:active {
+            transform: scale(0.92);
+        }
+        .game-bottom .action-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        .game-bottom .action-btn.hint {
+            background: #ffa502;
+            color: #13161f;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.25s;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-card {
+            background: rgba(20, 25, 40, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 30px 24px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+        }
+        .modal-card h2 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+        .modal-card .sub {
+            opacity: 0.6;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .modal-card .modal-btn {
+            background: #ffd200;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-weight: 800;
+            color: #13161f;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .modal-card .modal-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* ===== SHOP / CUSTOMIZE OVERLAY ===== */
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .slide-overlay.open {
+            transform: translateX(0);
+        }
+        .slide-overlay .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .slide-overlay .header h2 {
+            font-weight: 700;
+        }
+        .slide-overlay .header .close-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .slide-overlay .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .slide-overlay .items-grid .item {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .slide-overlay .items-grid .item:active {
+            transform: scale(0.94);
+        }
+        .slide-overlay .items-grid .item.owned {
+            border-color: #2ed573;
+        }
+        .slide-overlay .items-grid .item.equipped {
+            border-color: #ffd200;
+            background: rgba(255, 215, 0, 0.08);
+        }
+        .slide-overlay .items-grid .item .preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+        }
+        .slide-overlay .items-grid .item .name {
+            font-size: 0.6rem;
+            opacity: 0.7;
+        }
+        .slide-overlay .items-grid .item .price {
+            font-size: 0.6rem;
+            color: #ffd200;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:400px) {
+            #top-menu .logo {
+                font-size: 0.9rem;
+            }
+            .menu-btn {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+            .menu-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="app">
-  <!-- MENU SCREEN -->
-  <div id="menu-screen">
-    <div class="menu-bg-particles"><span style="left:10%;top:20%;animation-duration:22s;"></span><span style="left:70%;top:60%;animation-duration:28s;"></span><span style="left:40%;top:80%;animation-duration:18s;"></span><span style="left:90%;top:10%;animation-duration:32s;"></span></div>
-    <div class="menu-header">
-      <div class="logo">✦ Roller Splash</div>
-      <div class="profile-badge"><span class="avatar"></span> Zishan</div>
+
+    <div id="app">
+
+        <!-- ===== SPLASH ===== -->
+        <div id="splash">
+            <div class="logo-big">Roller Splash</div>
+            <div class="sub">STARDUST STUDIO</div>
+            <button class="start-btn" id="startBtn">PLAY</button>
+        </div>
+
+        <!-- ===== TOP MENU BAR ===== -->
+        <div id="top-menu">
+            <span class="logo">✦ Roller</span>
+            <div class="menu-group">
+                <button class="menu-btn" id="shopBtn">
+                    <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.5 9h10.2l-1.5-5H6.5L5 4H1v2h3l1.5 5zm1.2 3l-1 4h8.6l-1-4H8.7z"/></svg>
+                    <span class="badge" id="shopBadge">0</span>
+                </button>
+                <button class="menu-btn" id="customizeBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+                </button>
+                <button class="menu-btn" id="musicBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                </button>
+                <button class="menu-btn" id="sfxBtn">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== MENU SCREEN ===== -->
+        <div id="menu-screen">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    Lv.<span id="playerLevel">1</span>
+                </div>
+                <div class="stat-item">
+                    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    <span id="coinDisplay">0</span>
+                </div>
+                <div class="stat-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6v6l4 2"/></svg>
+                    <span id="xpDisplay">0</span> XP
+                </div>
+            </div>
+            <div class="xp-track"><div class="fill" id="xpFill" style="width:0%"></div></div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;">
+                <span style="background:rgba(255,255,255,0.04);padding:4px 14px;border-radius:30px;font-size:0.7rem;">⭐ Daily Reward</span>
+                <span style="background:rgba(255,255,255,0.04);padding:4px 14px;border-radius:30px;font-size:0.7rem;">🔥 Combo x<span id="comboDisplay">0</span></span>
+            </div>
+
+            <div class="difficulty-grid">
+                <button class="diff-btn easy" data-diff="EASY">EASY</button>
+                <button class="diff-btn medium" data-diff="MEDIUM">MEDIUM</button>
+                <button class="diff-btn hard" data-diff="HARD">HARD</button>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:4px;">
+                <button class="menu-btn" style="flex:1;justify-content:center;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);" id="dailyBtn">📅 Daily</button>
+                <button class="menu-btn" style="flex:1;justify-content:center;" id="achievementBtn">🏆 Achievements</button>
+            </div>
+
+            <div style="margin-top:auto;text-align:center;font-size:0.6rem;opacity:0.3;padding:8px 0;">
+                Made by Zishan · v2.0
+            </div>
+        </div>
+
+        <!-- ===== GAME SCREEN ===== -->
+        <div id="game-screen">
+            <div class="game-hud">
+                <div class="level-info">
+                    Level <span id="levelNum">1</span>
+                    <span class="diff-tag" id="diffTag">EASY</span>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="menu-btn" id="gameBackBtn">
+                        <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                    </button>
+                    <button class="menu-btn" id="gameRefreshBtn">
+                        <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="canvas-container">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+            <div class="game-bottom">
+                <button class="action-btn" id="hintBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C7.58 2 4 5.58 4 10c0 2.66 1.29 5.02 3.28 6.5v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c1.99-1.48 3.28-3.84 3.28-6.5 0-4.42-3.58-8-8-8zm1 14h-2v-1h2v1z"/></svg>
+                    Hint
+                </button>
+                <button class="action-btn" id="quitBtn">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+                    Quit
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== WIN MODAL ===== -->
+        <div class="modal-overlay" id="winModal">
+            <div class="modal-card">
+                <h2>✨ PERFECT!</h2>
+                <div class="sub" id="winReward">+50 XP · +20 Coins</div>
+                <button class="modal-btn" id="nextBtn">NEXT LEVEL</button>
+            </div>
+        </div>
+
+        <!-- ===== SHOP SLIDE ===== -->
+        <div class="slide-overlay" id="shopOverlay">
+            <div class="header">
+                <h2>🏪 Shop</h2>
+                <button class="close-btn" id="shopCloseBtn">✕ Close</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                <button class="menu-btn" data-shop-tab="balls" style="background:rgba(255,255,255,0.08);">Balls</button>
+                <button class="menu-btn" data-shop-tab="paints">Paints</button>
+                <button class="menu-btn" data-shop-tab="trails">Trails</button>
+            </div>
+            <div class="items-grid" id="shopItems"></div>
+        </div>
+
+        <!-- ===== CUSTOMIZE SLIDE ===== -->
+        <div class="slide-overlay" id="customizeOverlay">
+            <div class="header">
+                <h2>🎨 Customize</h2>
+                <button class="close-btn" id="customizeCloseBtn">✕ Close</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                <button class="menu-btn" data-custom-tab="balls" style="background:rgba(255,255,255,0.08);">Balls</button>
+                <button class="menu-btn" data-custom-tab="paints">Paints</button>
+                <button class="menu-btn" data-custom-tab="trails">Trails</button>
+            </div>
+            <div class="items-grid" id="customizeItems"></div>
+        </div>
+
     </div>
-    <div class="resources">
-      <div class="resource-item"><span class="icon">🪙</span> 1.2k</div>
-      <div class="resource-item"><span class="icon">💎</span> 82</div>
-      <div class="resource-item"><span class="icon">⚡</span> 5/8</div>
-    </div>
-    <div class="xp-bar"><div class="xp-fill"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:0.7rem;opacity:0.5;z-index:2;"><span>LVL 14</span><span>XP 1840 / 2500</span></div>
 
-    <div class="menu-grid">
-      <div class="menu-grid-item">🏆<div class="label">Achieve</div></div>
-      <div class="menu-grid-item">📊<div class="label">Stats</div></div>
-      <div class="menu-grid-item">🎯<div class="label">Events</div></div>
-      <div class="menu-grid-item">🏪<div class="label">Shop</div></div>
-      <div class="menu-grid-item">📜<div class="label">Pass</div></div>
-      <div class="menu-grid-item">🎨<div class="label">Custom</div></div>
-      <div class="menu-grid-item">🌍<div class="label">World</div></div>
-      <div class="menu-grid-item">⚙️<div class="label">Settings</div></div>
-    </div>
+    <script>
+        // ============================================================
+        //  COMPLETE GAME ENGINE — ORIGINAL ROLLER SPLASH + PREMIUM SYSTEMS
+        // ============================================================
 
-    <button class="play-btn" id="playBtn">▶  CONTINUE</button>
+        (function() {
+            'use strict';
 
-    <div class="world-map-preview">
-      <div class="world-dot active"></div><div class="world-dot active"></div><div class="world-dot active"></div><div class="world-dot"></div><div class="world-dot locked"></div><div class="world-dot locked"></div>
-      <span style="font-size:0.6rem;opacity:0.4;margin-left:auto;">World 2</span>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:8px;z-index:2;flex-wrap:wrap;">
-      <span style="background:rgba(255,255,255,0.04);padding:4px 14px;border-radius:30px;font-size:0.7rem;">⭐ Daily reward</span>
-      <span style="background:rgba(255,255,255,0.04);padding:4px 14px;border-radius:30px;font-size:0.7rem;">🔥 5x combo</span>
-    </div>
-  </div>
+            // ---------- DOM REFS ----------
+            const splash = document.getElementById('splash');
+            const startBtn = document.getElementById('startBtn');
+            const menuScreen = document.getElementById('menu-screen');
+            const gameScreen = document.getElementById('game-screen');
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const levelNum = document.getElementById('levelNum');
+            const diffTag = document.getElementById('diffTag');
+            const playerLevel = document.getElementById('playerLevel');
+            const coinDisplay = document.getElementById('coinDisplay');
+            const xpDisplay = document.getElementById('xpDisplay');
+            const xpFill = document.getElementById('xpFill');
+            const comboDisplay = document.getElementById('comboDisplay');
+            const winModal = document.getElementById('winModal');
+            const winReward = document.getElementById('winReward');
+            const nextBtn = document.getElementById('nextBtn');
 
-  <!-- GAME SCREEN -->
-  <div id="game-screen">
-    <div class="game-hud">
-      <div><span class="level-tag">Level 4</span> <span class="difficulty-tag">NORMAL</span></div>
-      <div class="hud-actions">
-        <button class="hud-btn" id="backMenuBtn">✕</button>
-        <button class="hud-btn" id="refreshBtn">⟳</button>
-      </div>
-    </div>
-    <div id="canvas-container"><canvas id="gameCanvas"></canvas></div>
-    <div class="game-bottom">
-      <button class="hud-btn" id="hintBtn">💡 Hint</button>
-      <button class="hud-btn" id="musicToggle">🔊</button>
-      <button class="hud-btn" id="sfxToggle">🔊</button>
-    </div>
-  </div>
+            // ---------- AUDIO ----------
+            let audioCtx = null;
+            let isMusicOn = true;
+            let isSfxOn = true;
+            let musicGain = null;
 
-  <!-- MODAL (win / perfect) -->
-  <div class="modal-overlay" id="winModal">
-    <div class="modal-card">
-      <h2>✨ PERFECT!</h2>
-      <div class="sub">+100 XP · +20 coins</div>
-      <button class="btn-primary" id="nextLevelBtn">NEXT LEVEL</button>
-    </div>
-  </div>
-</div>
-<script>
-  // ----- PREMIUM GAME ENGINE (Roller Splash Pro) -----
-  (function(){
-    "use strict";
-    // DOM refs
-    const menuScreen = document.getElementById('menu-screen');
-    const gameScreen = document.getElementById('game-screen');
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const winModal = document.getElementById('winModal');
-    const nextBtn = document.getElementById('nextLevelBtn');
-    const backBtn = document.getElementById('backMenuBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const hintBtn = document.getElementById('hintBtn');
-    const playBtn = document.getElementById('playBtn');
-    const musicToggle = document.getElementById('musicToggle');
-    const sfxToggle = document.getElementById('sfxToggle');
-    let isMusicOn = true, isSfxOn = true;
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                    musicGain = audioCtx.createGain();
+                    musicGain.gain.value = 0.15;
+                    musicGain.connect(audioCtx.destination);
+                }
+            }
 
-    // ----- AUDIO ENGINE (Web Audio) -----
-    let audioCtx = null;
-    function initAudio() { if(!audioCtx) { audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } }
-    function playTone(freq, dur, vol=0.15, type='sine') {
-      if(!audioCtx || !isSfxOn) return;
-      try { const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=type; o.frequency.value=freq; g.gain.value=vol; g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+dur); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur); } catch(e){}
-    }
-    function playSwipe() { playTone(420, 0.08, 0.12, 'triangle'); }
-    function playWin() { playTone(523, 0.12); setTimeout(()=>playTone(659,0.12),130); setTimeout(()=>playTone(784,0.18),260); }
+            function playTone(freq, dur, vol = 0.12, type = 'sine') {
+                if (!audioCtx || !isSfxOn) return;
+                try {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.type = type;
+                    o.frequency.value = freq;
+                    g.gain.value = vol;
+                    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.start();
+                    o.stop(audioCtx.currentTime + dur);
+                } catch (e) {}
+            }
 
-    // ----- CORE GAME STATE -----
-    let rows=8, cols=8, tileSize=0;
-    let grid = [];
-    let ball = { x:1, y:1, rx:1, ry:1, moving:false, tx:1, ty:1 };
-    let paintColor = '#ffa502';
-    const colors = ['#ff4757','#2ed573','#1e90ff','#ffa502','#9b59b6','#ff6b81','#f1c40f'];
-    let particles = [];
-    let hintDir = null;
-    let pulse = 0;
+            function playSwipe() { playTone(420, 0.06, 0.1, 'triangle'); }
 
-    // ----- MAZE GENERATION (procedural) -----
-    function generateMaze(diff='normal') {
-      const sizeMap = { easy:6, normal:8, hard:10, expert:12 };
-      const size = sizeMap[diff] || 8;
-      rows=size; cols=size;
-      // resize canvas
-      const container = document.getElementById('canvas-container');
-      const w = container.clientWidth * 0.94;
-      const h = container.clientHeight * 0.94;
-      const side = Math.min(w, h, 480);
-      canvas.width = side; canvas.height = side;
-      tileSize = side / cols;
+            function playWin() {
+                playTone(523, 0.1);
+                setTimeout(() => playTone(659, 0.1), 120);
+                setTimeout(() => playTone(784, 0.15), 240);
+            }
 
-      let attempts=0; let ok=false;
-      while(!ok && attempts<2000) {
-        attempts++;
-        grid = Array.from({length:rows}, ()=>Array(cols).fill(0));
-        // borders
-        for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) if(r===0||r===rows-1||c===0||c===cols-1) grid[r][c]=1;
-        // random walls
-        const wallCount = diff==='easy'?3: diff==='normal'?6: diff==='hard'?10:14;
-        for(let i=0;i<wallCount;i++){ let rx=1+Math.floor(Math.random()*(cols-2)); let ry=1+Math.floor(Math.random()*(rows-2)); if(rx===1&&ry===1) continue; grid[ry][rx]=1; }
-        // check connectivity (simple BFS)
-        const visited=Array.from({length:rows},()=>Array(cols).fill(false));
-        const q=[]; visited[1][1]=true; q.push([1,1]);
-        const dirs=[[0,1],[1,0],[0,-1],[-1,0]];
-        while(q.length){ const [cx,cy]=q.shift(); for(const [dx,dy] of dirs){ let nx=cx+dx, ny=cy+dy; while(nx>=0&&nx<cols&&ny>=0&&ny<rows&&grid[ny][nx]!==1){ if(!visited[ny][nx]){visited[ny][nx]=true; q.push([nx,ny]);} nx+=dx; ny+=dy; } } }
-        let all=true; for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) if(grid[r][c]===0 && !visited[r][c]) all=false;
-        if(all) ok=true;
-      }
-      // reset ball
-      ball.x=1; ball.y=1; ball.rx=1; ball.ry=1; ball.moving=false; ball.tx=1; ball.ty=1;
-      grid[1][1]=2; // painted start
-      hintDir=null; particles=[];
-      pickRandomColor();
-    }
+            // ---------- PLAYER DATA ----------
+            let player = {
+                level: 1,
+                xp: 0,
+                xpNext: 100,
+                coins: 0,
+                combo: 0,
+                maxCombo: 0,
+                totalGames: 0,
+                perfects: 0,
+                unlockedBalls: ['default'],
+                unlockedPaints: ['default'],
+                unlockedTrails: ['default'],
+                equippedBall: 'default',
+                equippedPaint: 'default',
+                equippedTrail: 'default'
+            };
 
-    function pickRandomColor() { paintColor = colors[Math.floor(Math.random()*colors.length)]; }
+            // ---------- SHOP DATA ----------
+            const shopItems = {
+                balls: [
+                    { id: 'default', name: 'Classic', price: 0, color: '#ffffff' },
+                    { id: 'golden', name: 'Golden', price: 50, color: '#ffd700' },
+                    { id: 'ruby', name: 'Ruby', price: 80, color: '#ff4757' },
+                    { id: 'sapphire', name: 'Sapphire', price: 80, color: '#1e90ff' },
+                    { id: 'emerald', name: 'Emerald', price: 80, color: '#2ed573' },
+                    { id: 'galaxy', name: 'Galaxy', price: 150, color: '#9b59b6' },
+                ],
+                paints: [
+                    { id: 'default', name: 'Classic', price: 0, color: '#ffa502' },
+                    { id: 'neon', name: 'Neon', price: 40, color: '#ff6b81' },
+                    { id: 'ocean', name: 'Ocean', price: 40, color: '#1e90ff' },
+                    { id: 'fire', name: 'Fire', price: 60, color: '#ff4757' },
+                    { id: 'ice', name: 'Ice', price: 60, color: '#48dbfb' },
+                    { id: 'galaxy_paint', name: 'Galaxy', price: 100, color: '#9b59b6' },
+                ],
+                trails: [
+                    { id: 'default', name: 'None', price: 0, color: 'transparent' },
+                    { id: 'sparkle', name: 'Sparkle', price: 30, color: '#ffd700' },
+                    { id: 'fire_trail', name: 'Fire', price: 50, color: '#ff4757' },
+                    { id: 'ice_trail', name: 'Ice', price: 50, color: '#48dbfb' },
+                ]
+            };
 
-    // ----- MOVE LOGIC (slide) -----
-    function tryMove(dx, dy) {
-      if(ball.moving) return;
-      let nx=ball.x, ny=ball.y;
-      while(nx+dx>=0 && nx+dx<cols && ny+dy>=0 && ny+dy<rows && grid[ny+dy][nx+dx]!==1) { nx+=dx; ny+=dy; }
-      if(nx===ball.x && ny===ball.y) return;
-      ball.moving=true; ball.tx=nx; ball.ty=ny;
-      playSwipe();
-      // animate
-      function step() {
-        const speed=0.85;
-        let done=true;
-        if(Math.abs(ball.rx-ball.tx)>0.01){ ball.rx += Math.sign(ball.tx-ball.rx)*speed; done=false; }
-        if(Math.abs(ball.ry-ball.ty)>0.01){ ball.ry += Math.sign(ball.ty-ball.ry)*speed; done=false; }
-        if(!done) { requestAnimationFrame(step); return; }
-        ball.rx=ball.tx; ball.ry=ball.ty; ball.x=ball.tx; ball.y=ball.ty; ball.moving=false;
-        // paint path
-        let cx=ball.x, cy=ball.y;
-        // paint from start to end (simulate)
-        let sx=ball.x, sy=ball.y;
-        // we need to paint all cells along the slide
-        let px=ball.x-dx, py=ball.y-dy;
-        while(px>=0&&px<cols&&py>=0&&py<rows&&grid[py][px]!==1){
-          if(grid[py][px]===0) grid[py][px]=2;
-          px-=dx; py-=dy;
-        }
-        if(grid[ball.y][ball.x]===0) grid[ball.y][ball.x]=2;
-        checkWin();
-      }
-      step();
-    }
+            // ---------- GAME STATE ----------
+            let currentDifficulty = 'EASY';
+            let currentLevel = 1;
+            let rows = 0,
+                cols = 0,
+                tileSize = 0;
+            let grid = [];
+            let ball = { x: 1, y: 1, rx: 1, ry: 1, moving: false, tx: 1, ty: 1 };
+            let paintColor = '#ffa502';
+            let ballColor = '#ffffff';
+            let trailColor = 'transparent';
+            let particles = [];
+            let hintDir = null;
+            let pulse = 0;
+            let isTouchActive = false;
+            let touchX = 0,
+                touchY = 0;
 
-    function checkWin() {
-      for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) if(grid[r][c]===0) return;
-      // WIN
-      playWin();
-      winModal.classList.add('show');
-    }
+            // ---------- SAVE / LOAD ----------
+            function saveGame() {
+                try {
+                    const data = {
+                        player: player,
+                        currentLevel: currentLevel,
+                        currentDifficulty: currentDifficulty
+                    };
+                    localStorage.setItem('rollerSplashPro', JSON.stringify(data));
+                } catch (e) {}
+            }
 
-    // ----- HINT (BFS solver) -----
-    function getHint() {
-      if(ball.moving) return null;
-      // simple BFS to find a move that leads to full coverage
-      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-      for(const [dx,dy] of dirs) {
-        let nx=ball.x, ny=ball.y;
-        let testGrid=grid.map(r=>[...r]);
-        while(nx+dx>=0&&nx+dx<cols&&ny+dy>=0&&ny+dy<rows&&testGrid[ny+dy][nx+dx]!==1){
-          nx+=dx; ny+=dy;
-          if(testGrid[ny][nx]===0) testGrid[ny][nx]=2;
-        }
-        if(nx!==ball.x || ny!==ball.y) {
-          // check if this move leads to win (quick)
-          let all=true;
-          for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) if(testGrid[r][c]===0) all=false;
-          if(all) return [dx,dy];
-        }
-      }
-      // fallback: any adjacent unpainted
-      for(const [dx,dy] of dirs) {
-        let nx=ball.x+dx, ny=ball.y+dy;
-        if(nx>=0&&nx<cols&&ny>=0&&ny<rows&&grid[ny][nx]===0) return [dx,dy];
-      }
-      return null;
-    }
+            function loadGame() {
+                try {
+                    const raw = localStorage.getItem('rollerSplashPro');
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    if (data.player) {
+                        player = data.player;
+                        // ensure arrays
+                        if (!player.unlockedBalls) player.unlockedBalls = ['default'];
+                        if (!player.unlockedPaints) player.unlockedPaints = ['default'];
+                        if (!player.unlockedTrails) player.unlockedTrails = ['default'];
+                        if (!player.equippedBall) player.equippedBall = 'default';
+                        if (!player.equippedPaint) player.equippedPaint = 'default';
+                        if (!player.equippedTrail) player.equippedTrail = 'default';
+                    }
+                    if (data.currentLevel) currentLevel = data.currentLevel;
+                    if (data.currentDifficulty) currentDifficulty = data.currentDifficulty;
+                } catch (e) {}
+            }
 
-    // ----- RENDER LOOP (premium) -----
-    function render() {
-      pulse += 0.02;
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      // draw grid
-      for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) {
-        const val = grid[r][c];
-        const x=c*tileSize, y=r*tileSize;
-        if(val===1) { // wall
-          ctx.fillStyle = '#2f3542';
-          ctx.shadowBlur=0;
-          ctx.fillRect(x,y,tileSize+0.5,tileSize+0.5);
-          continue;
-        }
-        if(val===2) { // painted
-          const grad = ctx.createRadialGradient(x+tileSize/2, y+tileSize/2, 2, x+tileSize/2, y+tileSize/2, tileSize*0.8);
-          grad.addColorStop(0, paintColor);
-          grad.addColorStop(1, '#1a1d2b');
-          ctx.fillStyle = grad;
-        } else { // unpainted
-          ctx.fillStyle = '#171b29';
-        }
-        ctx.shadowBlur=4; ctx.shadowColor='rgba(0,0,0,0.3)';
-        ctx.fillRect(x,y,tileSize+0.5,tileSize+0.5);
-      }
-      // particles
-      for(let i=particles.length-1;i>=0;i--){
-        const p=particles[i]; p.alpha-=0.02; p.size*=0.99;
-        if(p.alpha<=0){ particles.splice(i,1); continue; }
-        ctx.globalAlpha=p.alpha; ctx.fillStyle=paintColor; ctx.shadowBlur=20; ctx.shadowColor=paintColor+'66';
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-      }
-      ctx.globalAlpha=1;
-      // ball
-      const bx=ball.rx*tileSize+tileSize/2, by=ball.ry*tileSize+tileSize/2;
-      const rad=tileSize*0.38;
-      // glow
-      ctx.shadowBlur=30; ctx.shadowColor='#fff4';
-      ctx.beginPath(); ctx.arc(bx,by,rad,0,Math.PI*2);
-      ctx.fillStyle='#ffffff'; ctx.fill();
-      ctx.shadowBlur=0;
-      // reflection
-      ctx.beginPath(); ctx.arc(bx-3,by-4,rad*0.25,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fill();
+            // ---------- UI UPDATE ----------
+            function updateUI() {
+                playerLevel.textContent = player.level;
+                coinDisplay.textContent = player.coins;
+                xpDisplay.textContent = player.xp;
+                const pct = Math.min(100, (player.xp / player.xpNext) * 100);
+                xpFill.style.width = pct + '%';
+                comboDisplay.textContent = player.combo;
+                document.getElementById('shopBadge').textContent = player.coins > 0 ? '!' : '0';
+            }
 
-      // hint arrow
-      if(hintDir && !ball.moving){
-        const [hdx,hdy]=hintDir;
-        let angle=0; if(hdx===1) angle=0; if(hdx===-1) angle=Math.PI; if(hdy===1) angle=Math.PI/2; if(hdy===-1) angle=-Math.PI/2;
-        ctx.save(); ctx.translate(bx,by); ctx.rotate(angle);
-        const bounce = Math.sin(pulse*3)*tileSize*0.12;
-        ctx.translate(bounce+tileSize*0.6,0);
-        ctx.fillStyle='#ffa502'; ctx.shadowBlur=30; ctx.shadowColor='#ffa50288';
-        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-tileSize*0.4,-tileSize*0.3); ctx.lineTo(-tileSize*0.4,tileSize*0.3); ctx.closePath(); ctx.fill();
-        ctx.restore();
-      }
-      requestAnimationFrame(render);
-    }
+            // ---------- XP & LEVEL ----------
+            function addXP(amount) {
+                player.xp += amount;
+                while (player.xp >= player.xpNext) {
+                    player.xp -= player.xpNext;
+                    player.level++;
+                    player.xpNext = Math.floor(player.xpNext * 1.4) + 50;
+                }
+                updateUI();
+                saveGame();
+            }
 
-    // ----- UI BINDINGS -----
-    function startGame() {
-      menuScreen.style.display='none'; gameScreen.style.display='flex';
-      generateMaze('normal');
-      render();
-    }
-    function backToMenu() {
-      gameScreen.style.display='none'; menuScreen.style.display='flex';
-      winModal.classList.remove('show');
-    }
-    playBtn.onclick = ()=>{ initAudio(); startGame(); };
-    backBtn.onclick = backToMenu;
-    refreshBtn.onclick = ()=>{ if(!ball.moving){ generateMaze('normal'); } };
-    hintBtn.onclick = ()=>{ const h=getHint(); if(h) hintDir=h; };
-    nextBtn.onclick = ()=>{ winModal.classList.remove('show'); generateMaze('normal'); };
-    musicToggle.onclick = ()=>{ isMusicOn=!isMusicOn; musicToggle.textContent=isMusicOn?'🔊':'🔇'; };
-    sfxToggle.onclick = ()=>{ isSfxOn=!isSfxOn; sfxToggle.textContent=isSfxOn?'🔊':'🔇'; };
-    // touch / mouse drag
-    let dragX=0, dragY=0, isDragging=false;
-    const handleStart=(e)=>{ const p=e.touches?e.touches[0]:e; dragX=p.clientX; dragY=p.clientY; isDragging=true; };
-    const handleMove=(e)=>{ if(!isDragging || ball.moving) return; const p=e.touches?e.touches[0]:e; const dx=p.clientX-dragX; const dy=p.clientY-dragY; if(Math.abs(dx)>20||Math.abs(dy)>20){ if(Math.abs(dx)>Math.abs(dy)) tryMove(dx>0?1:-1,0); else tryMove(0,dy>0?1:-1); dragX=p.clientX; dragY=p.clientY; } };
-    const handleEnd=()=>{ isDragging=false; };
-    canvas.addEventListener('touchstart', handleStart); canvas.addEventListener('touchmove', handleMove); canvas.addEventListener('touchend', handleEnd);
-    canvas.addEventListener('mousedown', handleStart); canvas.addEventListener('mousemove', handleMove); canvas.addEventListener('mouseup', handleEnd);
-    // keyboard
-    document.addEventListener('keydown', (e)=>{ if(e.key==='ArrowRight') tryMove(1,0); if(e.key==='ArrowLeft') tryMove(-1,0); if(e.key==='ArrowDown') tryMove(0,1); if(e.key==='ArrowUp') tryMove(0,-1); });
+            function addCoins(amount) {
+                player.coins += amount;
+                updateUI();
+                saveGame();
+            }
 
-    // init menu visible
-    menuScreen.style.display='flex'; gameScreen.style.display='none';
-    // generate preview
-    generateMaze('normal');
-  })();
-</script>
+            // ---------- MAZE GENERATION ----------
+            function generateMaze() {
+                const sizeMap = { EASY: 6, MEDIUM: 8, HARD: 10 };
+                const size = sizeMap[currentDifficulty] || 8;
+                rows = size;
+                cols = size;
+
+                const container = document.getElementById('canvas-container');
+                const w = container.clientWidth * 0.94;
+                const h = container.clientHeight * 0.94;
+                const side = Math.min(w, h, 480);
+                canvas.width = side;
+                canvas.height = side;
+                tileSize = side / cols;
+
+                let attempts = 0;
+                let ok = false;
+                while (!ok && attempts < 3000) {
+                    attempts++;
+                    grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            if (r === 0 || r === rows - 1 || c === 0 || c === cols - 1) grid[r][c] = 1;
+                        }
+                    }
+                    const wallCount = currentDifficulty === 'EASY' ? 2 : currentDifficulty === 'MEDIUM' ? 5 : 9;
+                    for (let i = 0; i < wallCount; i++) {
+                        let rx = 1 + Math.floor(Math.random() * (cols - 2));
+                        let ry = 1 + Math.floor(Math.random() * (rows - 2));
+                        if (rx === 1 && ry === 1) continue;
+                        grid[ry][rx] = 1;
+                    }
+                    // BFS check
+                    const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+                    const q = [];
+                    visited[1][1] = true;
+                    q.push([1, 1]);
+                    const dirs = [
+                        [0, 1],
+                        [1, 0],
+                        [0, -1],
+                        [-1, 0]
+                    ];
+                    while (q.length) {
+                        const [cx, cy] = q.shift();
+                        for (const [dx, dy] of dirs) {
+                            let nx = cx + dx,
+                                ny = cy + dy;
+                            while (nx >= 0 && nx < cols && ny >= 0 && ny < rows && grid[ny][nx] !== 1) {
+                                if (!visited[ny][nx]) { visited[ny][nx] = true;
+                                    q.push([nx, ny]); }
+                                nx += dx;
+                                ny += dy;
+                            }
+                        }
+                    }
+                    let all = true;
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            if (grid[r][c] === 0 && !visited[r][c]) all = false;
+                        }
+                    }
+                    if (all) ok = true;
+                }
+
+                // Reset ball
+                ball.x = 1;
+                ball.y = 1;
+                ball.rx = 1;
+                ball.ry = 1;
+                ball.moving = false;
+                ball.tx = 1;
+                ball.ty = 1;
+                grid[1][1] = 2;
+                hintDir = null;
+                particles = [];
+
+                // Apply equipped paint
+                const paintItem = shopItems.paints.find(p => p.id === player.equippedPaint);
+                paintColor = paintItem ? paintItem.color : '#ffa502';
+
+                const ballItem = shopItems.balls.find(b => b.id === player.equippedBall);
+                ballColor = ballItem ? ballItem.color : '#ffffff';
+
+                const trailItem = shopItems.trails.find(t => t.id === player.equippedTrail);
+                trailColor = trailItem ? trailItem.color : 'transparent';
+
+                levelNum.textContent = currentLevel;
+                diffTag.textContent = currentDifficulty;
+                updateUI();
+            }
+
+            // ---------- MOVE LOGIC ----------
+            function tryMove(dx, dy) {
+                if (ball.moving) return;
+                let nx = ball.x,
+                    ny = ball.y;
+                while (nx + dx >= 0 && nx + dx < cols && ny + dy >= 0 && ny + dy < rows && grid[ny + dy][nx + dx] !== 1) {
+                    nx += dx;
+                    ny += dy;
+                }
+                if (nx === ball.x && ny === ball.y) return;
+                ball.moving = true;
+                ball.tx = nx;
+                ball.ty = ny;
+                playSwipe();
+
+                // Paint path
+                let px = ball.x,
+                    py = ball.y;
+                while (px !== nx || py !== ny) {
+                    px += dx;
+                    py += dy;
+                    if (grid[py][px] === 0) grid[py][px] = 2;
+                }
+                if (grid[ball.y][ball.x] === 0) grid[ball.y][ball.x] = 2;
+
+                function step() {
+                    const speed = 0.85;
+                    let done = true;
+                    if (Math.abs(ball.rx - ball.tx) > 0.01) {
+                        ball.rx += Math.sign(ball.tx - ball.rx) * speed;
+                        done = false;
+                    }
+                    if (Math.abs(ball.ry - ball.ty) > 0.01) {
+                        ball.ry += Math.sign(ball.ty - ball.ry) * speed;
+                        done = false;
+                    }
+                    if (!done) { requestAnimationFrame(step); return; }
+                    ball.rx = ball.tx;
+                    ball.ry = ball.ty;
+                    ball.x = ball.tx;
+                    ball.y = ball.ty;
+                    ball.moving = false;
+                    checkWin();
+                }
+                step();
+            }
+
+            // ---------- CHECK WIN ----------
+            function checkWin() {
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (grid[r][c] === 0) return;
+                    }
+                }
+                // WIN!
+                player.combo++;
+                if (player.combo > player.maxCombo) player.maxCombo = player.combo;
+                player.totalGames++;
+                player.perfects++;
+
+                const baseXP = 30 + currentLevel * 2;
+                const baseCoins = 10 + currentLevel;
+                const bonus = Math.floor(player.combo / 3) * 5;
+                const totalXP = baseXP + bonus;
+                const totalCoins = baseCoins + Math.floor(player.combo / 2);
+
+                addXP(totalXP);
+                addCoins(totalCoins);
+                winReward.textContent = `+${totalXP} XP · +${totalCoins} Coins · Combo x${player.combo}`;
+                playWin();
+                winModal.classList.add('show');
+                saveGame();
+                updateUI();
+            }
+
+            // ---------- HINT (BFS) ----------
+            function getHint() {
+                if (ball.moving) return null;
+                const dirs = [
+                    [1, 0],
+                    [-1, 0],
+                    [0, 1],
+                    [0, -1]
+                ];
+                for (const [dx, dy] of dirs) {
+                    let nx = ball.x,
+                        ny = ball.y;
+                    const testGrid = grid.map(r => [...r]);
+                    while (nx + dx >= 0 && nx + dx < cols && ny + dy >= 0 && ny + dy < rows && testGrid[ny + dy][nx + dx] !==
+                        1) {
+                        nx += dx;
+                        ny += dy;
+                        if (testGrid[ny][nx] === 0) testGrid[ny][nx] = 2;
+                    }
+                    if (nx !== ball.x || ny !== ball.y) {
+                        let all = true;
+                        for (let r = 0; r < rows; r++) {
+                            for (let c = 0; c < cols; c++) {
+                                if (testGrid[r][c] === 0) all = false;
+                            }
+                        }
+                        if (all) return [dx, dy];
+                    }
+                }
+                for (const [dx, dy] of dirs) {
+                    const nx = ball.x + dx,
+                        ny = ball.y + dy;
+                    if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && grid[ny][nx] === 0) return [dx, dy];
+                }
+                return null;
+            }
+
+            // ---------- RENDER LOOP ----------
+            function render() {
+                pulse += 0.02;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw grid
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const val = grid[r][c];
+                        const x = c * tileSize,
+                            y = r * tileSize;
+                        if (val === 1) {
+                            ctx.fillStyle = '#2f3542';
+                            ctx.shadowBlur = 0;
+                            ctx.fillRect(x, y, tileSize + 0.5, tileSize + 0.5);
+                            continue;
+                        }
+                        if (val === 2) {
+                            const grad = ctx.createRadialGradient(x + tileSize / 2, y + tileSize / 2, 2, x + tileSize / 2, y +
+                                tileSize / 2, tileSize * 0.7);
+                            grad.addColorStop(0, paintColor);
+                            grad.addColorStop(1, '#1a1d2b');
+                            ctx.fillStyle = grad;
+                        } else {
+                            ctx.fillStyle = '#171b29';
+                        }
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                        ctx.fillRect(x, y, tileSize + 0.5, tileSize + 0.5);
+                    }
+                }
+
+                // Particles / Trail
+                const trailItem = shopItems.trails.find(t => t.id === player.equippedTrail);
+                if (trailItem && trailItem.id !== 'default' && trailItem.color) {
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        const p = particles[i];
+                        p.alpha -= 0.02;
+                        p.size *= 0.98;
+                        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+                        ctx.globalAlpha = p.alpha;
+                        ctx.fillStyle = trailItem.color;
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = trailItem.color + '66';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.globalAlpha = 1;
+                } else {
+                    particles = [];
+                }
+
+                // Ball
+                const bx = ball.rx * tileSize + tileSize / 2;
+                const by = ball.ry * tileSize + tileSize / 2;
+                const rad = tileSize * 0.38;
+
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = 'rgba(255,255,255,0.15)';
+                ctx.beginPath();
+                ctx.arc(bx, by, rad, 0, Math.PI * 2);
+                ctx.fillStyle = ballColor;
+                ctx.fill();
+
+                // Gloss
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(bx - 3, by - 4, rad * 0.25, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.fill();
+
+                // Hint arrow
+                if (hintDir && !ball.moving) {
+                    const [hdx, hdy] = hintDir;
+                    let angle = 0;
+                    if (hdx === 1) angle = 0;
+                    if (hdx === -1) angle = Math.PI;
+                    if (hdy === 1) angle = Math.PI / 2;
+                    if (hdy === -1) angle = -Math.PI / 2;
+                    ctx.save();
+                    ctx.translate(bx, by);
+                    ctx.rotate(angle);
+                    const bounce = Math.sin(pulse * 3) * tileSize * 0.12;
+                    ctx.translate(bounce + tileSize * 0.6, 0);
+                    ctx.fillStyle = '#ffa502';
+                    ctx.shadowBlur = 30;
+                    ctx.shadowColor = '#ffa50288';
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(-tileSize * 0.35, -tileSize * 0.3);
+                    ctx.lineTo(-tileSize * 0.35, tileSize * 0.3);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(render);
+            }
+
+            // ---------- START GAME ----------
+            function startGame() {
+                splash.classList.add('hidden');
+                menuScreen.style.display = 'flex';
+                gameScreen.style.display = 'none';
+                loadGame();
+                updateUI();
+                generateMaze();
+                render();
+            }
+
+            function enterGame() {
+                menuScreen.style.display = 'none';
+                gameScreen.style.display = 'flex';
+                generateMaze();
+                render();
+            }
+
+            function backToMenu() {
+                gameScreen.style.display = 'none';
+                menuScreen.style.display = 'flex';
+                winModal.classList.remove('show');
+                updateUI();
+            }
+
+            // ---------- NEXT LEVEL ----------
+            function nextLevel() {
+                winModal.classList.remove('show');
+                currentLevel++;
+                saveGame();
+                generateMaze();
+                updateUI();
+            }
+
+            // ---------- SHOP ----------
+            function renderShop(tab = 'balls') {
+                const container = document.getElementById('shopItems');
+                const items = shopItems[tab] || [];
+                container.innerHTML = '';
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    const isOwned = player.unlockedBalls.includes(item.id) ||
+                        player.unlockedPaints.includes(item.id) ||
+                        player.unlockedTrails.includes(item.id);
+                    const isEquipped = player.equippedBall === item.id ||
+                        player.equippedPaint === item.id ||
+                        player.equippedTrail === item.id;
+                    if (isOwned) div.classList.add('owned');
+                    if (isEquipped) div.classList.add('equipped');
+
+                    const previewColor = item.color || '#ffffff';
+                    div.innerHTML = `
+                        <div class="preview" style="background:${previewColor};border-radius:50%;"></div>
+                        <div class="name">${item.name}</div>
+                        <div class="price">${isOwned ? (isEquipped ? '✓' : 'Owned') : item.price + '🪙'}</div>
+                    `;
+                    div.onclick = () => {
+                        if (isEquipped) return;
+                        if (isOwned) {
+                            // Equip
+                            if (tab === 'balls') player.equippedBall = item.id;
+                            if (tab === 'paints') player.equippedPaint = item.id;
+                            if (tab === 'trails') player.equippedTrail = item.id;
+                            saveGame();
+                            renderShop(tab);
+                            generateMaze();
+                            updateUI();
+                            return;
+                        }
+                        // Buy
+                        if (player.coins >= item.price) {
+                            player.coins -= item.price;
+                            if (tab === 'balls') player.unlockedBalls.push(item.id);
+                            if (tab === 'paints') player.unlockedPaints.push(item.id);
+                            if (tab === 'trails') player.unlockedTrails.push(item.id);
+                            saveGame();
+                            renderShop(tab);
+                            generateMaze();
+                            updateUI();
+                            playTone(600, 0.08);
+                        } else {
+                            playTone(200, 0.15, 0.1, 'sawtooth');
+                        }
+                    };
+                    container.appendChild(div);
+                });
+            }
+
+            // ---------- CUSTOMIZE ----------
+            function renderCustomize(tab = 'balls') {
+                const container = document.getElementById('customizeItems');
+                const items = shopItems[tab] || [];
+                container.innerHTML = '';
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    const isOwned = player.unlockedBalls.includes(item.id) ||
+                        player.unlockedPaints.includes(item.id) ||
+                        player.unlockedTrails.includes(item.id);
+                    const isEquipped = player.equippedBall === item.id ||
+                        player.equippedPaint === item.id ||
+                        player.equippedTrail === item.id;
+                    if (!isOwned) { div.style.opacity = '0.3'; }
+                    if (isEquipped) div.classList.add('equipped');
+                    if (isOwned) div.classList.add('owned');
+
+                    const previewColor = item.color || '#ffffff';
+                    div.innerHTML = `
+                        <div class="preview" style="background:${previewColor};border-radius:50%;"></div>
+                        <div class="name">${item.name}</div>
+                        <div class="price">${isEquipped ? '✓' : (isOwned ? 'Select' : '🔒')}</div>
+                    `;
+                    div.onclick = () => {
+                        if (!isOwned) return;
+                        if (isEquipped) return;
+                        if (tab === 'balls') player.equippedBall = item.id;
+                        if (tab === 'paints') player.equippedPaint = item.id;
+                        if (tab === 'trails') player.equippedTrail = item.id;
+                        saveGame();
+                        renderCustomize(tab);
+                        generateMaze();
+                        updateUI();
+                    };
+                    container.appendChild(div);
+                });
+            }
+
+            // ---------- EVENT BINDINGS ----------
+            // Splash
+            startBtn.onclick = () => { initAudio();
+                startGame(); };
+
+            // Difficulty
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.onclick = () => {
+                    currentDifficulty = btn.dataset.diff;
+                    currentLevel = 1;
+                    saveGame();
+                    enterGame();
+                };
+            });
+
+            // Game controls
+            document.getElementById('gameBackBtn').onclick = backToMenu;
+            document.getElementById('gameRefreshBtn').onclick = () => { if (!ball.moving) generateMaze(); };
+            document.getElementById('hintBtn').onclick = () => { const h = getHint(); if (h) hintDir = h; };
+            document.getElementById('quitBtn').onclick = backToMenu;
+            document.getElementById('nextBtn').onclick = nextLevel;
+
+            // Top menu
+            document.getElementById('shopBtn').onclick = () => {
+                document.getElementById('shopOverlay').classList.add('open');
+                renderShop('balls');
+            };
+            document.getElementById('shopCloseBtn').onclick = () => {
+                document.getElementById('shopOverlay').classList.remove('open');
+            };
+            document.getElementById('customizeBtn').onclick = () => {
+                document.getElementById('customizeOverlay').classList.add('open');
+                renderCustomize('balls');
+            };
+            document.getElementById('customizeCloseBtn').onclick = () => {
+                document.getElementById('customizeOverlay').classList.remove('open');
+            };
+
+            // Shop tabs
+            document.querySelectorAll('[data-shop-tab]').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('[data-shop-tab]').forEach(b => b.style.background = 'rgba(255,255,255,0.04)');
+                    btn.style.background = 'rgba(255,255,255,0.08)';
+                    renderShop(btn.dataset.shopTab);
+                };
+            });
+
+            // Customize tabs
+            document.querySelectorAll('[data-custom-tab]').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('[data-custom-tab]').forEach(b => b.style.background =
+                    'rgba(255,255,255,0.04)');
+                    btn.style.background = 'rgba(255,255,255,0.08)';
+                    renderCustomize(btn.dataset.customTab);
+                };
+            });
+
+            // Music / SFX
+            document.getElementById('musicBtn').onclick = () => {
+                isMusicOn = !isMusicOn;
+                if (musicGain) musicGain.gain.value = isMusicOn ? 0.15 : 0;
+            };
+            document.getElementById('sfxBtn').onclick = () => {
+                isSfxOn = !isSfxOn;
+            };
+
+            // Daily / Achievements
+            document.getElementById('dailyBtn').onclick = () => {
+                addCoins(15);
+                addXP(20);
+                alert('Daily reward claimed! +15 Coins, +20 XP');
+            };
+            document.getElementById('achievementBtn').onclick = () => {
+                alert(`🏆 Achievements:\nPerfect Clears: ${player.perfects}\nMax Combo: ${player.maxCombo}\nGames Played: ${player.totalGames}`);
+            };
+
+            // ---------- TOUCH / MOUSE ----------
+            let dragX = 0,
+                dragY = 0,
+                isDragging = false;
+
+            const handleStart = (e) => {
+                const p = e.touches ? e.touches[0] : e;
+                dragX = p.clientX;
+                dragY = p.clientY;
+                isDragging = true;
+            };
+
+            const handleMove = (e) => {
+                if (!isDragging || ball.moving) return;
+                const p = e.touches ? e.touches[0] : e;
+                const dx = p.clientX - dragX;
+                const dy = p.clientY - dragY;
+                const threshold = 20;
+                if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        tryMove(dx > 0 ? 1 : -1, 0);
+                    } else {
+                        tryMove(0, dy > 0 ? 1 : -1);
+                    }
+                    dragX = p.clientX;
+                    dragY = p.clientY;
+                }
+            };
+
+            const handleEnd = () => { isDragging = false; };
+
+            canvas.addEventListener('touchstart', handleStart);
+            canvas.addEventListener('touchmove', handleMove);
+            canvas.addEventListener('touchend', handleEnd);
+            canvas.addEventListener('mousedown', handleStart);
+            canvas.addEventListener('mousemove', handleMove);
+            canvas.addEventListener('mouseup', handleEnd);
+
+            // Keyboard
+            document.addEventListener('keydown', (e) => {
+                if (gameScreen.style.display === 'none') return;
+                if (e.key === 'ArrowRight') tryMove(1, 0);
+                if (e.key === 'ArrowLeft') tryMove(-1, 0);
+                if (e.key === 'ArrowDown') tryMove(0, 1);
+                if (e.key === 'ArrowUp') tryMove(0, -1);
+            });
+
+            // ---------- INIT ----------
+            loadGame();
+            updateUI();
+            generateMaze();
+            render();
+
+            // Show menu initially (splash will hide on start)
+            menuScreen.style.display = 'flex';
+            gameScreen.style.display = 'none';
+
+        })();
+    </script>
+
 </body>
 </html>
